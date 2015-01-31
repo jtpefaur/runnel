@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/shader_file">
+        <file>shaders/terrain.frag</file>
+        <file>shaders/terrain.vert</file>
+        <file>shaders/drainage.frag</file>
+        <file>shaders/drainage.vert</file>
+        <file>shaders/gradient.frag</file>
+        <file>shaders/gradient.vert</file>
+        <file>shaders/angle.frag</file>
+        <file>shaders/angle.vert</file>
+        <file>shaders/angle_edge.vert</file>
+        <file>shaders/angle_edge.frag</file>
+        <file>shaders/callaghan.vert</file>
+        <file>shaders/callaghan.frag</file>
+        <file>shaders/arbol_drenaje.frag</file>
+        <file>shaders/arbol_drenaje.vert</file>
+    </qresource>
+</RCC>

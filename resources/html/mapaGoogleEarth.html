@@ -1,0 +1,168 @@
+
+<html>
+    <head>
+        <title>Google Earth of Chile</title>
+        <script type="text/javascript" src="https://www.google.com/jsapi"> </script>
+        <script type="text/javascript">
+            var ge;
+            google.load("earth", "1", {"language":"en", "other_params":"sensor=false"});
+            
+			function init() {
+                google.earth.createInstance('map3d', initCB, failureCB);
+                document.getElementById("map3d").style.width = document.getElementById("container").style.width;
+                document.getElementById("map3d").style.height = document.getElementById("container").style.height;
+            }
+			
+            function initCB(instance) {
+                ge = instance;
+				ge.getWindow().setVisibility(true);
+				ge.getOptions().setStatusBarVisibility(true);
+				ge.getOptions().setScaleLegendVisibility(true);
+				ge.getNavigationControl().setVisibility(ge.VISIBILITY_AUTO);
+				ge.getLayerRoot().enableLayerById(ge.LAYER_BORDERS, true);
+                sideDatabaseSuccess();   
+            }
+
+            function failureCB(errorCode) {
+                console.log("Fail with the BDD");
+            }
+
+            function sideDatabaseSuccess() {
+                var lookAt = ge.createLookAt('');
+                lookAt.setLatitude(-32.25);
+                lookAt.setLongitude(-71);
+                lookAt.setRange(20000);
+                ge.getView().setAbstractView(lookAt);
+            }
+
+            google.setOnLoadCallback(init);
+            var random = "random";
+            var uniform = "uniform";
+            var uniform_coord = [];
+            
+			function obtainDataRandom(){
+                obtainData(random);
+            }
+
+            function obtainDataUniform(){
+                obtainData(uniform);
+            }
+
+            function obtainData(type_data){
+				uniform_coord = [];
+                var cant_ptos = parseInt(document.getElementById("count_points").value);
+                var globeBounds = ge.getView().getViewportGlobeBounds();
+                var North = globeBounds.getNorth();
+                var South = globeBounds.getSouth();
+                var West = globeBounds.getWest();
+                var East = globeBounds.getEast();
+				var dist_pto = Math.sqrt(cant_ptos) -1;
+				var pixel_width  = document.getElementById("map3d").offsetWidth;
+				var pixel_height = document.getElementById("map3d").offsetHeight;
+
+				information_map.setCantPoints(cant_ptos, dist_pto+1, dist_pto+1,pixel_width , pixel_height); 
+                if (type_data == uniform){
+                    form_uniform_coordenadas(dist_pto, North, South, West, East);
+                }
+				
+				
+                data_mapa(North, South, West, East, cant_ptos, type_data);           
+            }
+
+            function data_mapa(N, S, W, E, cant_ptos, type_data){ 
+               // console.log("Norte " + N + ",Sur " + S + ", Oeste "+ W +", Este "+ E);
+                var group_of_count = 100;
+                for (var j_of_data = 0; j_of_data < cant_ptos;){
+                    var i = j_of_data;
+                    var write_point = [];
+                    for(; i < (j_of_data + group_of_count) && i < cant_ptos ; ++i){
+                        var array_coord_random;
+                        if (type_data == random){
+                            array_coord_random = random_coordenadas(N, S, W, E);
+                        }
+                        if (type_data == uniform){
+                            array_coord_random = get_uniform_coordenadas(i);
+                        }
+                      //  debugger;
+                        array_coord_random[2] =  ge.getGlobe().getGroundAltitude(array_coord_random[0], array_coord_random[1]);
+                        console.log(" " +i + " " +  array_coord_random[0] + " " + array_coord_random[1] + " " + array_coord_random[2]);
+                        write_point.push(array_coord_random[0]);
+                        write_point.push(array_coord_random[1]);
+                        write_point.push(array_coord_random[2]);
+                    }
+  
+                    var floatBuffer = new Float32Array(write_point.length);           
+                    floatBuffer.set(write_point);
+                    var bytesArray = new Uint8ClampedArray(floatBuffer.buffer);
+                    information_map.getCoord(bytesArray);
+                    j_of_data = i;
+                }
+				information_map.finishInformation();
+            }
+            
+			function random_coordenadas(Lat_min,Lat_max, Long_min, Long_max){
+                coord_x =  Math.random()*(Lat_max-Lat_min)+Lat_min;
+                coord_y = Math.random()*(Long_max-Long_min)+Long_min;
+                return [coord_x, coord_y, 0];
+            }
+            
+			function form_uniform_coordenadas(dist_pto, North, South, West, East){
+                var value_horin = -1*(West - East)/dist_pto;
+                var value_vert = -1*(South - North)/dist_pto;	
+                for( var i = 0; i < (dist_pto + 1) ; i++){
+					var current_south = South + i*value_vert;
+                    for(var j = 0; j < (dist_pto + 1); j++){
+						var current_west = West + j*value_horin;      
+                        uniform_coord.push([current_south, current_west, 0]);
+                    }
+                }
+				
+            }
+            
+			function get_uniform_coordenadas(position){
+                return uniform_coord[position];
+            }
+        </script>
+    </head>
+    <style>
+        .central{
+            margin: 0 auto;
+            width: 80%;
+            height: 80%;
+        }
+    </style>
+
+    <body>
+        <div id="container" class="central">
+            <div>
+                <div id="map3d" style="height: 400px; width: 600px; position:relative;"></div>
+            </div>
+            <div>
+                <div>
+                    <select id="count_points">
+                        <option value="100000000">
+                            100.000.000
+                        </option>
+        				<option value="1000000">
+                            1.000.000
+                        </option>
+						<option value="100000">
+                            100.000
+                        </option>
+        				<option selected="selected" value="10000">
+                            10.000
+                        </option>
+        				<option value="100">
+                            100
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <button type="button" id="obtain_points" value="add_point" onclick="obtainDataUniform()">
+                        Obtain Uniform Data 
+                    </button>
+                <div>
+            </div>
+        </div>
+    </body>
+</html>

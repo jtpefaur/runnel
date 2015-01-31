@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/pageWeb">
+        <file>html/mapaGoogleEarth.html</file>
+    </qresource>
+</RCC>
