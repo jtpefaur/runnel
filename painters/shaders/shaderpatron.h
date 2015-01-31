@@ -1,7 +1,7 @@
 #ifndef SHADERPATRON_H
 #define SHADERPATRON_H
 #include "shaderutils.h"
-#include "../../drainageAlgorithms/arbol.h"
+#include "patternsAlgorithms/arbol.h"
 
 class ShaderPatron : public ShaderUtils
 {

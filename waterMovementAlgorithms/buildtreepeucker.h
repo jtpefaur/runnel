@@ -3,7 +3,8 @@
 
 #include "primitives/point.h"
 #include "terrain.h"
-#include "drainageAlgorithms/arbol.h"
+#include "patternsAlgorithms/arbol.h"
+
 class BuildTreePeucker
 {
     public:

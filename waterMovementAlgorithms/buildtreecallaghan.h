@@ -2,7 +2,7 @@
 #define BUILDTREECALLAGHAN_H
 #include <unordered_map>
 #include "primitives/point.h"
-#include "drainageAlgorithms/arbol.h"
+#include "patternsAlgorithms/arbol.h"
 
 class buildTreeCallaghan
 {

@@ -1,9 +1,11 @@
 #ifndef RUNNELCONTROLLER_H
 #define RUNNELCONTROLLER_H
 
+#include <vector>
 #include "inputData/googlemap.h"
 #include "painters/painterterrain.h"
 #include "terrain.h"
+#include <drainageAlgorithms/drainagealgorithms.h>
 
 class RunnelController: public QObject
 {
@@ -30,13 +32,14 @@ class RunnelController: public QObject
     public slots:
         void getTerrain();
         void getObtainTerrain();
-        void changeSelectDrainage(QString name);
+        void changeSelectDrainage(DrainageAlgorithms* alg);
         void changeSelectPatron(QString name);
         void changeSelectWater(QString name);
 
 
     signals:
         void setTerrainDataCollector(Terrain* ter);
+        void glewIsReady();
 
 };
 

@@ -14,8 +14,9 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        uiWindow/mainwindow.cpp \
-    uiWindow/toolbarsconfigmesh.cpp \
+        UI/mainwindow.cpp \
+    UI/toolbarsconfigmesh.cpp \
+    UI/drainageAlgorithm/callaghanconf.cpp \
     runnelcontroller.cpp \
     inputData/googlemap.cpp \
     inputData/datacollector.cpp \
@@ -33,9 +34,8 @@ SOURCES += main.cpp\
     painters/openglutils.cpp \
     drainageAlgorithms/gradientdrainagecallaghanmark.cpp \
     drainageAlgorithms/gradientdrainagehalfpointnetwork.cpp \
-    drainageAlgorithms/gradientdrainagenetwork.cpp \
     drainageAlgorithms/peuckerdrainagenetwork.cpp \
-    drainageAlgorithms/arbol.cpp \
+    patternsAlgorithms/arbol.cpp \
     patternsAlgorithms/zhangguilbertalgorithm.cpp \
     patternsAlgorithms/algorithmpatron.cpp \
     waterMovementAlgorithms/buildtreecallaghan.cpp \
@@ -45,11 +45,20 @@ SOURCES += main.cpp\
     painters/shaders/shaderangleedge.cpp \
     painters/shaders/shadercallaghan.cpp \
     painters/shaders/shaderpatron.cpp \
-    painters/shaders/shadergradient.cpp
+    painters/shaders/shadergradient.cpp \
+    UI/drainageAlgorithm/peuckerconf.cpp \
+    UI/waterAlgorithm/drainagehalfpointconf.cpp \
+    UI/drainageAlgorithm/anglediedralconf.cpp \
+    drainageAlgorithms/drainagealgorithms.cpp \
+    UI/zhangguilberconf.cpp \
+    drainageAlgorithms/nonedrainagealgorithm.cpp \
+    UI/drainageAlgorithm/noneconf.cpp
 
 
-HEADERS  += uiWindow/mainwindow.h \
-    uiWindow/toolbarsconfigmesh.h \
+
+HEADERS  += UI/mainwindow.h \
+    UI/toolbarsconfigmesh.h \
+    UI/drainageAlgorithm/callaghanconf.h \
     runnelcontroller.h \
     inputData/googlemap.h \
     inputData/datacollector.h \
@@ -68,7 +77,6 @@ HEADERS  += uiWindow/mainwindow.h \
     painters/openglutils.h \
     drainageAlgorithms/gradientdrainagecallaghanmark.h \
     drainageAlgorithms/gradientdrainagehalfpointnetwork.h \
-    drainageAlgorithms/gradientdrainagenetwork.h \
     drainageAlgorithms/peuckerdrainagenetwork.h \
     lib/glew/include/GL/glew.h \
     lib/glew/include/GL/glxew.h \
@@ -218,7 +226,7 @@ HEADERS  += uiWindow/mainwindow.h \
     lib/glm/vec3.hpp \
     lib/glm/vec4.hpp \
     lib/glm/vector_relational.hpp \
-    drainageAlgorithms/arbol.h \
+    patternsAlgorithms/arbol.h \
     patternsAlgorithms/algorithmpatron.h \
     patternsAlgorithms/zhangguilbertalgorithm.h \
     waterMovementAlgorithms/buildtreecallaghan.h \
@@ -228,10 +236,24 @@ HEADERS  += uiWindow/mainwindow.h \
     painters/shaders/shaderangleedge.h \
     painters/shaders/shadercallaghan.h \
     painters/shaders/shaderpatron.h \
-    painters/shaders/shadergradient.h
+    painters/shaders/shadergradient.h \
+    UI/drainageAlgorithm/peuckerconf.h \
+    UI/waterAlgorithm/drainagehalfpointconf.h \
+    UI/drainageAlgorithm/anglediedralconf.h \
+    drainageAlgorithms/drainagealgorithms.h \
+    UI/zhangguilberconf.h \
+    drainageAlgorithms/nonedrainagealgorithm.h \
+    UI/drainageAlgorithm/noneconf.h
+
 
 FORMS    += UI/mainwindow.ui \
-    UI/toolbarsconfigmesh.ui
+    UI/toolbarsconfigmesh.ui \
+    UI/drainageAlgorithm/callaghanconf.ui \
+    UI/drainageAlgorithm/peuckerconf.ui \
+    UI/waterAlgorithm/drainagehalfpointconf.ui \
+    UI/drainageAlgorithm/anglediedralconf.ui \
+    UI/zhangguilberconf.ui \
+    UI/drainageAlgorithm/noneconf.ui
 
 RESOURCES += \
     resources/RunnelWeb.qrc \

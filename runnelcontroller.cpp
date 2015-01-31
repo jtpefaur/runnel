@@ -1,6 +1,7 @@
 #include "runnelcontroller.h"
 #include <iostream>
 
+
 #include "builders/builderterrain.h"
 #include "painters/painterterrain.h"
 #include "inputData/tiffdata.h"
@@ -14,8 +15,11 @@ RunnelController::RunnelController():
     QObject::connect(&information_map, SIGNAL(changeTerrain()), this, SLOT(getTerrain()));
     QObject::connect(this, SIGNAL(setTerrainDataCollector(Terrain*)), &information_map, SLOT(getTerrainStruct(Terrain*)));
     QObject::connect(&information_map, SIGNAL(finishTerrain()), this, SLOT(getObtainTerrain()));
+    QObject::connect(&pterrain, SIGNAL(glewIsReady()), this, SIGNAL(glewIsReady()));
+
     gm.runMap(information_map);
     std::cout << "Start Runnel Controller..." << std::endl;
+
 }
 
 GoogleMap& RunnelController::getGoogleMap(){
@@ -60,33 +64,25 @@ void RunnelController::obtainFileTerrain(QString name_file, std::string file_typ
     }
 
     std::cout << "Finish Obtain Data..." << std::endl;
+
     this->buildTerrain();
 }
 
 void RunnelController::buildTerrain(){
+    pterrain.initGL();
     BuilderTerrain bt;
     bt.runTriangulation(ter);
     std::cout << "Finish Triangulation..." << std::endl;
     ter->normalize();
-    pterrain.initGL();
     pterrain.setTerrain(ter);
 
 }
 
-void RunnelController::changeSelectDrainage(QString name){
-    std::string name_selected = name.toStdString();
-//    switch (name_selected) {
-//        case 'Peucker':
-//          // Code
-//          break;
-//        case 'Callaghan':
-//          // Code
-//          break;
-//        default:
-//          break;
-//   }
-
+void RunnelController::changeSelectDrainage(DrainageAlgorithms* alg){
+    alg->run(ter);
+    pterrain.setDrainageAlgorithm(alg);
 }
+
 
 
 void RunnelController::changeSelectPatron(QString name){

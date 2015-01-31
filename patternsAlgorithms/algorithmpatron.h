@@ -3,8 +3,7 @@
 #include <vector>
 #include <QString>
 #include "terrain.h"
-#include "drainageAlgorithms/arbol.h"
-
+#include "patternsAlgorithms/arbol.h"
 
 class AlgorithmPatron
 {
