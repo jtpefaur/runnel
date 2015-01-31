@@ -258,8 +258,9 @@ FORMS    += UI/mainwindow.ui \
     UI/drainageAlgorithm/noneconf.ui
 
 RESOURCES += \
-    resources/RunnelWeb.qrc \
-    resources/shader.qrc
+    resources/shader.qrc \
+    resources/RunnelWeb.qrc
+
 
 win32: LIBS += -lglew32
 unix: LIBS+= -LGLEW

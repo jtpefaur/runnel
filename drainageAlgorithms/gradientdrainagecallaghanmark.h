@@ -10,8 +10,7 @@
 
 class GradientDrainageCallaghanMark : public DrainageAlgorithms
 {
-
-
+        Q_OBJECT
     public:
         GradientDrainageCallaghanMark();
         virtual ~GradientDrainageCallaghanMark();

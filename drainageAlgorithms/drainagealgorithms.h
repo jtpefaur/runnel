@@ -16,6 +16,8 @@ class DrainageAlgorithms : public QObject
         virtual QString getName() = 0;
         virtual QWidget* getConf() = 0;
 
+
+
 };
 
 #endif // DRAINAGEALGORITHMS_H
