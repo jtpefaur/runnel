@@ -11,6 +11,7 @@
 class GradientDrainageCallaghanMark : public DrainageAlgorithms
 {
 
+
     public:
         GradientDrainageCallaghanMark();
         virtual ~GradientDrainageCallaghanMark();
@@ -19,6 +20,7 @@ class GradientDrainageCallaghanMark : public DrainageAlgorithms
         virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color);
         virtual QString getName();
         virtual QWidget* getConf();
+        CallaghanConf conf;
 
     private:
 
@@ -27,10 +29,15 @@ class GradientDrainageCallaghanMark : public DrainageAlgorithms
         ShaderCallaghan* shader_callaghan;
         int w;
         int h;
+        Terrain* ter;
         float moreWater;
+        float max_water;
         float linewater;
         std::vector < runnel::Point* > points_terrain;
-        CallaghanConf conf;
+
+
+    public slots:
+        void changeAttr();
 
 
 };

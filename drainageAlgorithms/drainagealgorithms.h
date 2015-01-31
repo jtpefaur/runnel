@@ -1,10 +1,12 @@
 #ifndef DRAINAGEALGORITHMS_H
 #define DRAINAGEALGORITHMS_H
 #include <QWidget>
+#include <QObject>
 #include "terrain.h"
 
-class DrainageAlgorithms
+class DrainageAlgorithms : public QObject
 {
+        Q_OBJECT
     public:
         DrainageAlgorithms();
         virtual ~DrainageAlgorithms();

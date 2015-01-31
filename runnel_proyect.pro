@@ -38,8 +38,8 @@ SOURCES += main.cpp\
     patternsAlgorithms/arbol.cpp \
     patternsAlgorithms/zhangguilbertalgorithm.cpp \
     patternsAlgorithms/algorithmpatron.cpp \
-    waterMovementAlgorithms/buildtreecallaghan.cpp \
-    waterMovementAlgorithms/buildtreepeucker.cpp \
+    buildTree/buildtreecallaghan.cpp \
+    buildTree/buildtreepeucker.cpp \
     painters/shaders/shaderterrain.cpp \
     painters/shaders/shaderdrainage.cpp \
     painters/shaders/shaderangleedge.cpp \
@@ -50,9 +50,10 @@ SOURCES += main.cpp\
     UI/waterAlgorithm/drainagehalfpointconf.cpp \
     UI/drainageAlgorithm/anglediedralconf.cpp \
     drainageAlgorithms/drainagealgorithms.cpp \
-    UI/zhangguilberconf.cpp \
+    UI/patronAlgorithm/zhangguilberconf.cpp \
     drainageAlgorithms/nonedrainagealgorithm.cpp \
-    UI/drainageAlgorithm/noneconf.cpp
+    UI/drainageAlgorithm/noneconf.cpp \
+    buildTree/buildtree.cpp
 
 
 
@@ -229,8 +230,8 @@ HEADERS  += UI/mainwindow.h \
     patternsAlgorithms/arbol.h \
     patternsAlgorithms/algorithmpatron.h \
     patternsAlgorithms/zhangguilbertalgorithm.h \
-    waterMovementAlgorithms/buildtreecallaghan.h \
-    waterMovementAlgorithms/buildtreepeucker.h \
+    buildTree/buildtreecallaghan.h \
+    buildTree/buildtreepeucker.h \
     painters/shaders/shaderterrain.h \
     painters/shaders/shaderdrainage.h \
     painters/shaders/shaderangleedge.h \
@@ -241,9 +242,10 @@ HEADERS  += UI/mainwindow.h \
     UI/waterAlgorithm/drainagehalfpointconf.h \
     UI/drainageAlgorithm/anglediedralconf.h \
     drainageAlgorithms/drainagealgorithms.h \
-    UI/zhangguilberconf.h \
+    UI/patronAlgorithm/zhangguilberconf.h \
     drainageAlgorithms/nonedrainagealgorithm.h \
-    UI/drainageAlgorithm/noneconf.h
+    UI/drainageAlgorithm/noneconf.h \
+    buildTree/buildtree.h
 
 
 FORMS    += UI/mainwindow.ui \
@@ -252,7 +254,7 @@ FORMS    += UI/mainwindow.ui \
     UI/drainageAlgorithm/peuckerconf.ui \
     UI/waterAlgorithm/drainagehalfpointconf.ui \
     UI/drainageAlgorithm/anglediedralconf.ui \
-    UI/zhangguilberconf.ui \
+    UI/patronAlgorithm/zhangguilberconf.ui \
     UI/drainageAlgorithm/noneconf.ui
 
 RESOURCES += \

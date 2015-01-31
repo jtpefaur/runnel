@@ -218,7 +218,6 @@ void Terrain::getMoreWaterPoint(){
         float water_1 = this->struct_point[edge->id1]->water_value;
         float water_2 = this->struct_point[edge->id2]->water_value;
         float value_water =  std::max(water_1, water_2);
-     //   std::cout << "agua " << water_1 << " " << water_2 << std::endl;
         max_value_water = std::max(max_value_water,value_water);
         count_water.push_back(value_water);
         count_water.push_back(value_water);

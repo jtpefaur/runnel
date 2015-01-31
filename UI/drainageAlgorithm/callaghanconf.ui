@@ -88,7 +88,7 @@
        <widget class="QDoubleSpinBox" name="delta_water"/>
       </item>
       <item>
-       <widget class="QPushButton" name="callaghan_button">
+       <widget class="QPushButton" name="delta_button">
         <property name="text">
          <string>Change</string>
         </property>
@@ -112,7 +112,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="line_button">
         <property name="text">
          <string>Change</string>
         </property>

@@ -5,12 +5,7 @@
 #include "drainageAlgorithms/drainagealgorithms.h"
 #include "shaders/shaderutils.h"
 #include "shaders/shaderterrain.h"
-#include "shaders/shaderdrainage.h"
-#include "shaders/shaderangleedge.h"
-#include "shaders/shadergradient.h"
-#include "shaders/shaderpatron.h"
 #include "patternsAlgorithms/arbol.h"
-
 #include "painters/glwidget.h"
 
 class PainterTerrain : public GLWidget {

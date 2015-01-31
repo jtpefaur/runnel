@@ -72,11 +72,9 @@ void PainterTerrain::paintGL(){
 
     shader_terrain->render(matrix_final, exag_z, ter->max_bounding.z, color_conf["shader_terrain_color"]);
     if( drainage_algorithm ){
-        drainage_algorithm->render(matrix_final, exag_z, color_conf["shader_callaghan_color"] );
-
+        drainage_algorithm->render(matrix_final, exag_z, color_conf["shader_callaghan_color"]);
     }
 
-    this->GLWidget::updateGL();
     OpenGLUtils::printOpenGLError();
 }
 
@@ -109,7 +107,7 @@ void PainterTerrain::changeModelTerrain(int index){
         default:
             break;
     }
-    this->GLWidget::updateGL();
+
 
 }
 

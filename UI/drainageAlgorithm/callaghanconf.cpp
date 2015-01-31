@@ -6,6 +6,7 @@ CallaghanConf::CallaghanConf(QWidget *parent) :
     ui(new Ui::CallaghanConf)
 {
     ui->setupUi(this);
+    QObject::connect(ui->delta_button, SIGNAL(clicked()), this, SIGNAL(changeAttr()));
 }
 
 CallaghanConf::~CallaghanConf()
@@ -20,3 +21,5 @@ float CallaghanConf::getWater(){
 float CallaghanConf::getLineWater(){
     return ui->line_water->value();
 }
+
+

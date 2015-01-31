@@ -15,7 +15,9 @@ GradientDrainageCallaghanMark::GradientDrainageCallaghanMark():
     w = 0;
     h = 0;
     shader_callaghan = 0;
-   }
+    max_water = 0;
+    QObject::connect(&conf, SIGNAL(changeAttr()), this, SLOT(changeAttr()));
+}
 
 GradientDrainageCallaghanMark::~GradientDrainageCallaghanMark(){
     if(shader_callaghan){
@@ -34,6 +36,7 @@ void GradientDrainageCallaghanMark::sortElement(std::vector<runnel::Point *> poi
 
 
 void GradientDrainageCallaghanMark::run(Terrain* ter){
+    ter = ter;
     w = ter->width;
     h = ter->height;
     GradientDrainageCallaghanMark::sortElement(ter->struct_point);
@@ -42,12 +45,13 @@ void GradientDrainageCallaghanMark::run(Terrain* ter){
         this->chooseMoreDepthPoint(ter->struct_point, pto);
     }
     ter->getMoreWaterPoint();
+    max_water = ter->max_value_water;
     shader_callaghan->fillPositionBuffer(ter->position_water_points, ter->count_water);
 
 }
 
 void GradientDrainageCallaghanMark::chooseMoreDepthPoint(std::vector<runnel::Point*>& points, runnel::Point *pto){
-    moreWater = conf.getWater();
+    moreWater = conf.getWater()/100.0f;
     float delta_water = moreWater;
     std::vector<int> position_neightbour;
     position_neightbour.push_back(pto->ident - this->w);
@@ -79,6 +83,7 @@ void GradientDrainageCallaghanMark::chooseMoreDepthPoint(std::vector<runnel::Poi
         points[id_max]->water_parent.push_back(points[pto->ident]);
         points[id_max]->water_value = points[id_max]->water_value + points[pto->ident]->water_value ;
     }
+
 }
 
 
@@ -87,13 +92,18 @@ void GradientDrainageCallaghanMark::glewReady(){
 }
 
 void GradientDrainageCallaghanMark::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
-
+    linewater = conf.getLineWater()/1000.0f;
+    std::cout << "line "<< linewater << std::endl;
     if (shader_callaghan){
-        shader_callaghan->render(matrix, exag_z, conf.getLineWater(), moreWater, color);
+        shader_callaghan->render(matrix, exag_z, linewater , max_water, color);
     }
 }
 
 QWidget* GradientDrainageCallaghanMark::getConf(){
 
     return &conf;
+}
+
+void GradientDrainageCallaghanMark::changeAttr(){
+    this->run(ter);
 }

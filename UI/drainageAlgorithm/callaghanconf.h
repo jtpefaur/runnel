@@ -17,6 +17,10 @@ class CallaghanConf : public QWidget
         float getWater();
         float getLineWater();
 
+    signals:
+        void changeAttr();
+
+
     private:
         Ui::CallaghanConf *ui;
 };
