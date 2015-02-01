@@ -8,9 +8,16 @@ struct customMore{
     }
 };
 
+struct customLess{
+    inline bool operator()(runnel::Point* p1, runnel::Point* p2){
+        return p1->coord.z > p2->coord.z;
+    }
+};
+
 buildTreeCallaghan::buildTreeCallaghan(){
     shader_build = 0;
     terr = 0;
+    max_water = 1/10000.0f;
     QObject::connect(&conf, SIGNAL(changeAttr()), this, SLOT(changeAttr()));
 
 }
@@ -25,10 +32,9 @@ std::vector<arbol*> buildTreeCallaghan::run(Terrain* ter){
     terr = ter;
     point_counter.clear();
     arbolitos.clear();
-    max_water = conf.getMaxWater()/100.0f;
-
+    max_water = conf.getMaxWater()/10000.0f;
     this->getPoints(ter->struct_point);
-    ter->getMoreWaterPoint();
+
     this->reviewPoints();
     std::vector<std::string> types;
     types.clear();
@@ -64,11 +70,13 @@ QWidget* buildTreeCallaghan::getConf(){
 void buildTreeCallaghan::getPoints(std::vector<runnel::Point*>& points)
 {
     points_order = points;
-    std::sort( points_order.begin(), points_order.end(), customMore());
+    std::sort( points_order.begin(), points_order.end(), customLess());
     for(runnel::Point* pto : points_order){
         this->chooseMoreDepthPoint(terr->struct_point, pto);
     }
-
+    terr->getMoreWaterPoint();
+    points_order = points;
+    std::sort( points_order.begin(), points_order.end(), customMore());
     for (runnel::Point* pto: points_order){
         if (pto->water_value > max_water*terr->max_value_water){
             point_counter[pto->ident] = 1;
