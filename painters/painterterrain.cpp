@@ -80,7 +80,7 @@ void PainterTerrain::paintGL(){
         drainage_algorithm->render(matrix_final, exag_z, color_conf["shader_callaghan_color"]);
     }
     if( build_network ){
-        build_network->render(matrix_final, exag_z, color_conf["shader_callaghan_color"]);
+        build_network->render(matrix_final, exag_z);
     }
 
     OpenGLUtils::printOpenGLError();

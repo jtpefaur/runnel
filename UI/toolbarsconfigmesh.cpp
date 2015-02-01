@@ -5,6 +5,7 @@
 
 #include "drainageAlgorithms/nonedrainagealgorithm.h"
 #include "buildNetwork/nonebuildnetwork.h"
+#include "buildNetwork/buildtreecallaghan.h"
 #include "patternsAlgorithms/nonepatronalgorithm.h"
 #include "waterPathAlgorithms/nonepathwateralgorithm.h"
 
@@ -17,6 +18,7 @@ ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     QObject::connect(ui->drainage_patron_button, SIGNAL(clicked()), this, SLOT(getPatron()));
     QObject::connect(ui->river_button, SIGNAL(clicked()), this, SLOT(getDrainage()));
     QObject::connect(ui->path_water_button, SIGNAL(clicked()), this, SLOT(getWater()));
+    QObject::connect(ui->network_button, SIGNAL(clicked()), this, SLOT(getNetwork()));
 
     this->drainageIncludeAlgorithms();
     this->pathWaterIncludeAlgorithms();
@@ -61,6 +63,7 @@ void ToolbarsConfigMesh::getDrainage(){
 
 void ToolbarsConfigMesh::networkIncludeAlgorithms(){
     network_algorithms.push_back(new NoneBuildNetwork());
+    network_algorithms.push_back(new buildTreeCallaghan());
     for( BuildNetwork* item : network_algorithms){
         ui->network_value->addItem(item->getName());
         if(item->getConf())
@@ -106,6 +109,15 @@ void ToolbarsConfigMesh::getWater(){
 
 void ToolbarsConfigMesh::glewIsReady(){
     for( DrainageAlgorithms* item : drainage_algorithms){
+        item->glewReady();
+    }
+    for( BuildNetwork* item : network_algorithms){
+        item->glewReady();
+    }
+    for( PathWaterAlgorithm* item : path_water_algorithms){
+        item->glewReady();
+    }
+    for( AlgorithmPatron* item : patron_algorithms){
         item->glewReady();
     }
 }

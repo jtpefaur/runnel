@@ -10,11 +10,13 @@ NoneBuildNetwork::~NoneBuildNetwork(){
 
 }
 
-void NoneBuildNetwork::run(Terrain*){
+std::vector<arbol*> NoneBuildNetwork::run(Terrain*){
+    std::vector<arbol*> empty;
+    return empty;
 
 }
 
-void NoneBuildNetwork::render(glm::mat4, float, glm::vec3){
+void NoneBuildNetwork::render(glm::mat4, float){
 
 }
 

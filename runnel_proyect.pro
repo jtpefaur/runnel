@@ -64,8 +64,6 @@ SOURCES += main.cpp\
 
 
 HEADERS  += UI/mainwindow.h \
-    UI/toolbarsconfigmesh.h \
-    UI/drainageAlgorithm/callaghanconf.h \
     runnelcontroller.h \
     inputData/googlemap.h \
     inputData/datacollector.h \
@@ -244,20 +242,22 @@ HEADERS  += UI/mainwindow.h \
     painters/shaders/shadercallaghan.h \
     painters/shaders/shaderpatron.h \
     painters/shaders/shadergradient.h \
-    UI/drainageAlgorithm/peuckerconf.h \
-    UI/waterAlgorithm/drainagehalfpointconf.h \
-    UI/drainageAlgorithm/anglediedralconf.h \
     drainageAlgorithms/drainagealgorithms.h \
-    UI/patronAlgorithm/zhangguilberconf.h \
     drainageAlgorithms/nonedrainagealgorithm.h \
     buildNetwork/buildnetwork.h \
     buildNetwork/nonebuildnetwork.h \
+    waterPathAlgorithms/pathwateralgorithm.h \
+    patternsAlgorithms/nonepatronalgorithm.h \
+    waterPathAlgorithms/nonepathwateralgorithm.h \
     UI/buildNetwork/peuckernetworkconf.h \
     UI/buildNetwork/callaghannetworkconf.h \
     UI/waterAlgorithm/callaghanwaterconf.h \
-    waterPathAlgorithms/pathwateralgorithm.h \
-    patternsAlgorithms/nonepatronalgorithm.h \
-    waterPathAlgorithms/nonepathwateralgorithm.h
+    UI/patronAlgorithm/zhangguilberconf.h \
+    UI/drainageAlgorithm/peuckerconf.h \
+    UI/waterAlgorithm/drainagehalfpointconf.h \
+    UI/drainageAlgorithm/anglediedralconf.h \
+    UI/toolbarsconfigmesh.h \
+    UI/drainageAlgorithm/callaghanconf.h
 
 
 FORMS    += UI/mainwindow.ui \

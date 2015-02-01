@@ -1,19 +1,39 @@
 #ifndef BUILDTREECALLAGHAN_H
 #define BUILDTREECALLAGHAN_H
+#include "buildnetwork.h"
 #include <unordered_map>
 #include "primitives/point.h"
+#include "UI/buildNetwork/callaghannetworkconf.h"
 #include "patternsAlgorithms/arbol.h"
+#include "painters/shaders/shaderpatron.h"
 
-class buildTreeCallaghan
+
+class buildTreeCallaghan : public BuildNetwork
 {
+       Q_OBJECT
     public:
+        buildTreeCallaghan();
+        virtual ~buildTreeCallaghan();
+        virtual std::vector<arbol*> run(Terrain* ter);
+        virtual void render(glm::mat4 matrix, float exag_z);
+        virtual void glewReady();
+        virtual QString getName();
+        virtual QWidget* getConf();
+    public slots:
+        void changeAttr();
+    private:
+        ShaderPatron* shader_build;
+        void getPoints(std::vector<runnel::Point*>& points);
+        void createTree(arbol* parent);
+        void reviewPoints();
+        std::unordered_map<int, int> point_counter;
         std::vector<runnel::Point*> points_order;
         float max_water;
-        buildTreeCallaghan(std::vector<runnel::Point*>& points, float water_max);
-        std::unordered_map<int, int> point_counter;
-        bool isAnyFatherUsed(runnel::Point* pto);
-        void createTree(arbol* parent);
-        std::vector<arbol*> reviewPoints();
+        Terrain* terr;
+        CallaghanNetworkConf conf;
+        std::vector<arbol*> arbolitos;
+        void chooseMoreDepthPoint(std::vector<runnel::Point*>& points, runnel::Point *pto);
+
 };
 
 #endif // BUILDTREECALLAGHAN_H

@@ -19,10 +19,10 @@ class GradientDrainageCallaghanMark : public DrainageAlgorithms
         virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color);
         virtual QString getName();
         virtual QWidget* getConf();
-        CallaghanConf conf;
+
 
     private:
-
+        CallaghanConf conf;
         void sortElement(std::vector<runnel::Point *> points);
         void chooseMoreDepthPoint(std::vector<runnel::Point*>& points, runnel::Point *pto);
         ShaderCallaghan* shader_callaghan;

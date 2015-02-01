@@ -6,9 +6,15 @@ CallaghanNetworkConf::CallaghanNetworkConf(QWidget *parent) :
     ui(new Ui::CallaghanNetworkConf)
 {
     ui->setupUi(this);
+    QObject::connect(ui->callaghan_network_button, SIGNAL(clicked()), this, SIGNAL(changeAttr()));
 }
 
 CallaghanNetworkConf::~CallaghanNetworkConf()
 {
     delete ui;
+}
+
+
+float CallaghanNetworkConf::getMaxWater(){
+    return ui->callaghan_network_value->value();
 }

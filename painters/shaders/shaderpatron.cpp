@@ -1,4 +1,5 @@
 #include "shaderpatron.h"
+#include <iostream>
 
 ShaderPatron::ShaderPatron():
     ShaderUtils()
@@ -12,9 +13,23 @@ ShaderPatron::ShaderPatron():
     buffer_position_arbolitos.clear();
     buffer_color_arbolitos.clear();
     tamano_arbol.clear();
+    std::cout << "Initialize ShaderPatron" << std::endl;
 }
 
 void ShaderPatron::fillPositionBuffer(std::vector<arbol*> arbolines, std::vector<std::string> names_type){
+    for (auto buf: buffer_position_arbolitos){
+        if(buf != 0){
+            glDeleteBuffers(1, &buf );
+            buf = 0;
+        }
+    }
+
+    for (auto buf: buffer_color_arbolitos){
+        if(buf != 0){
+            glDeleteBuffers(1, &buf );
+            buf = 0;
+        }
+    }
     buffer_position_arbolitos.clear();
     buffer_color_arbolitos.clear();
     tamano_arbol.clear();

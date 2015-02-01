@@ -14,6 +14,10 @@ class CallaghanNetworkConf : public QWidget
     public:
         explicit CallaghanNetworkConf(QWidget *parent = 0);
         ~CallaghanNetworkConf();
+        float getMaxWater();
+
+    signals:
+        void changeAttr();
 
     private:
         Ui::CallaghanNetworkConf *ui;
