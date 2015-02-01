@@ -2,8 +2,9 @@
 #include "ui_toolbarsconfigmesh.h"
 #include <iostream>
 #include "drainageAlgorithms/gradientdrainagecallaghanmark.h"
-
+#include "drainageAlgorithms/peuckerdrainagenetwork.h"
 #include "drainageAlgorithms/nonedrainagealgorithm.h"
+#include "drainageAlgorithms/diedralangledrainage.h"
 #include "buildNetwork/nonebuildnetwork.h"
 #include "buildNetwork/buildtreecallaghan.h"
 #include "patternsAlgorithms/nonepatronalgorithm.h"
@@ -47,6 +48,8 @@ ToolbarsConfigMesh::~ToolbarsConfigMesh()
 void ToolbarsConfigMesh::drainageIncludeAlgorithms(){
     //Add new gradient algorithms
     drainage_algorithms.push_back(new NoneDrainageAlgorithm());
+    drainage_algorithms.push_back(new PeuckerDrainageNetwork());
+    drainage_algorithms.push_back(new DiedralAngleDrainage());
     drainage_algorithms.push_back(new GradientDrainageCallaghanMark());
     for( DrainageAlgorithms* item : drainage_algorithms){
         ui->river_value->addItem(item->getName());

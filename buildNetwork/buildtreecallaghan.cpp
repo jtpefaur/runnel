@@ -30,6 +30,9 @@ buildTreeCallaghan::~buildTreeCallaghan(){
 
 std::vector<arbol*> buildTreeCallaghan::run(Terrain* ter){
     terr = ter;
+//    for(runnel::Point* pto: terr->struct_point){
+//        pto->water_value = 0;
+//    }
     point_counter.clear();
     arbolitos.clear();
     max_water = conf.getMaxWater()/10000.0f;
@@ -77,6 +80,7 @@ void buildTreeCallaghan::getPoints(std::vector<runnel::Point*>& points)
     terr->getMoreWaterPoint();
     points_order = points;
     std::sort( points_order.begin(), points_order.end(), customMore());
+    std::cout << terr->max_value_water << std::endl;
     for (runnel::Point* pto: points_order){
         if (pto->water_value > max_water*terr->max_value_water){
             point_counter[pto->ident] = 1;

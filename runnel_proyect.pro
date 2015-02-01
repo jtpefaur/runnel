@@ -33,7 +33,6 @@ SOURCES += main.cpp\
     painters/shaders/shaderutils.cpp \
     painters/openglutils.cpp \
     drainageAlgorithms/gradientdrainagecallaghanmark.cpp \
-    drainageAlgorithms/gradientdrainagehalfpointnetwork.cpp \
     drainageAlgorithms/peuckerdrainagenetwork.cpp \
     patternsAlgorithms/arbol.cpp \
     patternsAlgorithms/zhangguilbertalgorithm.cpp \
@@ -59,7 +58,8 @@ SOURCES += main.cpp\
     UI/waterAlgorithm/callaghanwaterconf.cpp \
     waterPathAlgorithms/pathwateralgorithm.cpp \
     patternsAlgorithms/nonepatronalgorithm.cpp \
-    waterPathAlgorithms/nonepathwateralgorithm.cpp
+    waterPathAlgorithms/nonepathwateralgorithm.cpp \
+    drainageAlgorithms/diedralangledrainage.cpp
 
 
 
@@ -81,7 +81,6 @@ HEADERS  += UI/mainwindow.h \
     painters/shaders/shaderutils.h \
     painters/openglutils.h \
     drainageAlgorithms/gradientdrainagecallaghanmark.h \
-    drainageAlgorithms/gradientdrainagehalfpointnetwork.h \
     drainageAlgorithms/peuckerdrainagenetwork.h \
     lib/glew/include/GL/glew.h \
     lib/glew/include/GL/glxew.h \
@@ -257,7 +256,8 @@ HEADERS  += UI/mainwindow.h \
     UI/waterAlgorithm/drainagehalfpointconf.h \
     UI/drainageAlgorithm/anglediedralconf.h \
     UI/toolbarsconfigmesh.h \
-    UI/drainageAlgorithm/callaghanconf.h
+    UI/drainageAlgorithm/callaghanconf.h \
+    drainageAlgorithms/diedralangledrainage.h
 
 
 FORMS    += UI/mainwindow.ui \

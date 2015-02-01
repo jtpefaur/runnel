@@ -3,6 +3,45 @@
 #include "primitives/point.h"
 #include <cmath>
 
+PeuckerDrainageNetwork::PeuckerDrainageNetwork():
+    DrainageAlgorithms()
+{
+    shader = 0;
+    terr = 0;
+
+}
+
+PeuckerDrainageNetwork::~PeuckerDrainageNetwork(){
+    if(shader){
+        delete shader;
+    }
+}
+
+void PeuckerDrainageNetwork::run(Terrain *ter){
+    terr = ter;
+    this->calculateGrid(ter);
+    std::vector<glm::vec3> color = ter->getDrainageColor();
+    std::vector<glm::vec3> position = ter->getPointsEdgeDrainage();
+    shader->fillPositionBuffer(position, color);
+}
+
+void PeuckerDrainageNetwork::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
+    if(shader){
+        shader->render(matrix, exag_z, color);
+    }
+}
+
+void PeuckerDrainageNetwork::glewReady(){
+    shader = new ShaderDrainage();
+}
+
+QString PeuckerDrainageNetwork::getName(){
+    return QString("Peucker");
+}
+
+QWidget* PeuckerDrainageNetwork::getConf(){
+    return &conf;
+}
 
 void PeuckerDrainageNetwork::calculateGrid(Terrain *ter){
     int width = ter->width;
