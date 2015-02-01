@@ -5,7 +5,10 @@
 #include "inputData/googlemap.h"
 #include "painters/painterterrain.h"
 #include "terrain.h"
-#include <drainageAlgorithms/drainagealgorithms.h>
+#include "drainageAlgorithms/drainagealgorithms.h"
+#include "waterPathAlgorithms/pathwateralgorithm.h"
+#include "patternsAlgorithms/algorithmpatron.h"
+#include "buildNetwork/buildnetwork.h"
 
 class RunnelController: public QObject
 {
@@ -25,16 +28,19 @@ class RunnelController: public QObject
         void changeColors(std::string name, glm::vec3 value);
         RunnelController();
         void obtainFileTerrain(QString name_file, std::string file_type);
+        glm::vec3 coords;
 
 
-
+    private:
+        std::vector<arbol*> drainage_network;
 
     public slots:
         void getTerrain();
         void getObtainTerrain();
         void changeSelectDrainage(DrainageAlgorithms* alg);
-        void changeSelectPatron(QString name);
-        void changeSelectWater(QString name);
+        void changeSelectPatron(AlgorithmPatron* alg);
+        void changeSelectWater(PathWaterAlgorithm* alg);
+        void changeSelectNetwork(BuildNetwork* alg);
 
 
     signals:

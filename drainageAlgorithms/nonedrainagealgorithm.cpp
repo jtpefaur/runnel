@@ -10,11 +10,11 @@ NoneDrainageAlgorithm::~NoneDrainageAlgorithm(){
 
 }
 
-void NoneDrainageAlgorithm::run(Terrain *ter){
+void NoneDrainageAlgorithm::run(Terrain *){
 
 }
 
-void NoneDrainageAlgorithm::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
+void NoneDrainageAlgorithm::render(glm::mat4, float, glm::vec3){
 
 }
 
@@ -27,6 +27,6 @@ QString NoneDrainageAlgorithm::getName(){
 }
 
 QWidget* NoneDrainageAlgorithm::getConf(){
-    return &conf;
+    return 0;
 }
 

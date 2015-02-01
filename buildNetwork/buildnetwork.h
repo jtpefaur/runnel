@@ -1,15 +1,15 @@
-#ifndef BUILDTREE_H
-#define BUILDTREE_H
+#ifndef BUILDNETWORK_H
+#define BUILDNETWORK_H
 #include <QString>
 #include <QWidget>
 #include "patternsAlgorithms/arbol.h"
 #include "terrain.h"
 
-class BuildTree
+class BuildNetwork
 {
     public:
-        BuildTree();
-        virtual ~BuildTree();
+        BuildNetwork();
+        virtual ~BuildNetwork();
         virtual void run(Terrain* ter) = 0;
         virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color) = 0;
         virtual void glewReady() = 0;
@@ -18,4 +18,4 @@ class BuildTree
 
 };
 
-#endif // BUILDTREE_H
+#endif // BUILDNETWORK_H

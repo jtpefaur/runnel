@@ -14,11 +14,16 @@ PainterTerrain::PainterTerrain():
     exag_z = 1.0f;
     this->initColorBuffer();
     drainage_algorithm = 0;
+    pattern_algorithm = 0;
+    water_algorithm = 0;
+    build_network = 0;
+    shader_terrain = 0;
     glew_initialized = false;
 }
 
 PainterTerrain::~PainterTerrain() {
-    delete shader_terrain;
+    if(shader_terrain)
+        delete shader_terrain;
 }
 
 
@@ -74,6 +79,9 @@ void PainterTerrain::paintGL(){
     if( drainage_algorithm ){
         drainage_algorithm->render(matrix_final, exag_z, color_conf["shader_callaghan_color"]);
     }
+    if( build_network ){
+        build_network->render(matrix_final, exag_z, color_conf["shader_callaghan_color"]);
+    }
 
     OpenGLUtils::printOpenGLError();
 }
@@ -119,6 +127,18 @@ void PainterTerrain::setDrainageAlgorithm(DrainageAlgorithms *da){
     drainage_algorithm = da;
 }
 
+void PainterTerrain::setPatternAlgorithm(AlgorithmPatron *da){
+    pattern_algorithm = da;
+}
+
+void PainterTerrain::setWaterAlgorithm(PathWaterAlgorithm *da){
+    water_algorithm = da;
+}
+
+void PainterTerrain::setNetworkAlgorithm(BuildNetwork* alg){
+    build_network = alg;
+}
+
 // TODO: Change the other file color configuration
 bool PainterTerrain::checkExists(std::string file)
 {
@@ -126,7 +146,6 @@ bool PainterTerrain::checkExists(std::string file)
     if(file_to_check.is_open())
       return true;
     return false;
-    file_to_check.close();
 }
 
 

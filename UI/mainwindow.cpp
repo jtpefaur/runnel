@@ -39,6 +39,8 @@ void MainWindow::connectGoogleMapWeb(){
 MainWindow::~MainWindow()
 {
     QWebSettings::clearMemoryCaches();
+    while(ui->malla_see->layout()->takeAt(0));
+    while(ui->mapa_google->layout()->takeAt(0));
     delete ui;
 }
 
@@ -47,8 +49,9 @@ void MainWindow::connectSignalForRunnel(){
     QObject::connect(ui->actionTIFF, SIGNAL(triggered()),this , SLOT(getTypeTIFFForObtainNameFile()));
     QObject::connect(ui->actionRunnel, SIGNAL(triggered()),this , SLOT(getTypeRunnelForObtainNameFile()));
     QObject::connect(&ui_toolbar, SIGNAL(selectDrainage(DrainageAlgorithms*)), &runnel_controller, SLOT(changeSelectDrainage(DrainageAlgorithms*)));
-    QObject::connect(&ui_toolbar, SIGNAL(selectPatron(QString)), &runnel_controller, SLOT(changeSelectPatron(QString)));
-    QObject::connect(&ui_toolbar, SIGNAL(selectWater(QString)), &runnel_controller, SLOT(changeSelectWater(QString)));
+    QObject::connect(&ui_toolbar, SIGNAL(selectPatron(AlgorithmPatron*)), &runnel_controller, SLOT(changeSelectPatron(AlgorithmPatron*)));
+    QObject::connect(&ui_toolbar, SIGNAL(selectWater(PathWaterAlgorithm*)), &runnel_controller, SLOT(changeSelectWater(PathWaterAlgorithm*)));
+    QObject::connect(&ui_toolbar, SIGNAL(selectNetwork(BuildNetwork*)), &runnel_controller, SLOT(changeSelectNetwork(BuildNetwork*)));
     QObject::connect(&runnel_controller, SIGNAL(glewIsReady()), &ui_toolbar, SLOT(glewIsReady()));
     this->connectColor();
 }

@@ -80,7 +80,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <property name="tabSpacing">
          <number>7</number>
@@ -91,7 +91,7 @@
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>592</height>
+           <height>561</height>
           </rect>
          </property>
          <property name="accessibleName">
@@ -177,19 +177,63 @@
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="network">
+         <attribute name="label">
+          <string>Network</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_15">
+          <item>
+           <widget class="QGroupBox" name="groupBox_2">
+            <property name="title">
+             <string/>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_14">
+             <item>
+              <widget class="QComboBox" name="network_value"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="network_button">
+               <property name="text">
+                <string>Run</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="network_conf" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout_13"/>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>419</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
         <widget class="QWidget" name="path_of_water">
          <property name="geometry">
           <rect>
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>592</height>
+           <height>561</height>
           </rect>
          </property>
          <attribute name="label">
           <string>Path of Water</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_9">
+         <layout class="QVBoxLayout" name="verticalLayout_16">
           <item>
            <widget class="QGroupBox" name="groupBox_4">
             <property name="sizePolicy">
@@ -228,26 +272,6 @@
                  <height>0</height>
                 </size>
                </property>
-               <item>
-                <property name="text">
-                 <string>Select Algorithm</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Callaghan</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Gradient</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Peucker</string>
-                </property>
-               </item>
               </widget>
              </item>
              <item>
@@ -298,6 +322,11 @@
            </widget>
           </item>
           <item>
+           <widget class="QWidget" name="path_conf" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout_9"/>
+           </widget>
+          </item>
+          <item>
            <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -318,13 +347,13 @@
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>592</height>
+           <height>561</height>
           </rect>
          </property>
          <attribute name="label">
           <string>Drainage Patron</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <layout class="QVBoxLayout" name="verticalLayout_17">
           <item>
            <widget class="QGroupBox" name="groupBox_6">
             <property name="sizePolicy">
@@ -363,16 +392,6 @@
                  <height>0</height>
                 </size>
                </property>
-               <item>
-                <property name="text">
-                 <string>Select Algorithm</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>ZhangGuilbert</string>
-                </property>
-               </item>
               </widget>
              </item>
              <item>
@@ -463,6 +482,11 @@
            </widget>
           </item>
           <item>
+           <widget class="QWidget" name="patron_conf" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout_2"/>
+           </widget>
+          </item>
+          <item>
            <spacer name="verticalSpacer_3">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -470,7 +494,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>371</height>
+              <height>311</height>
              </size>
             </property>
            </spacer>
@@ -483,7 +507,7 @@
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>592</height>
+           <height>561</height>
           </rect>
          </property>
          <attribute name="label">

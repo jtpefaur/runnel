@@ -18,6 +18,7 @@ RunnelController::RunnelController():
     QObject::connect(&pterrain, SIGNAL(glewIsReady()), this, SIGNAL(glewIsReady()));
 
     gm.runMap(information_map);
+    coords = glm::vec3(0,0,0);
     std::cout << "Start Runnel Controller..." << std::endl;
 
 }
@@ -85,32 +86,19 @@ void RunnelController::changeSelectDrainage(DrainageAlgorithms* alg){
 
 
 
-void RunnelController::changeSelectPatron(QString name){
-    std::string name_selected = name.toStdString();
-//    switch (name_selected) {
-//        case "ZhangGuilbert":
-//          // Code
-//          break;
-//        default:
-//          break;
-//   }
+void RunnelController::changeSelectPatron(AlgorithmPatron* alg){
+    alg->run(ter, drainage_network);
+    pterrain.setPatternAlgorithm(alg);
 }
 
 
 
-void RunnelController::changeSelectWater(QString name){
-    std::string name_selected = name.toStdString();
-//    switch (name_selected) {
-//        case "Peucker":
-//          // Code
-//          break;
-//        case "Callaghan":
-//          // Code
-//          break;
-//        case "Gradient":
-//          // Code
-//          break;
-//        default:
-//          break;
-//   }
+void RunnelController::changeSelectWater(PathWaterAlgorithm* alg){
+    alg->run(coords, ter);
+    pterrain.setWaterAlgorithm(alg);
+}
+
+void RunnelController::changeSelectNetwork(BuildNetwork* alg){
+    alg->run(ter);
+    pterrain.setNetworkAlgorithm(alg);
 }

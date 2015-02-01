@@ -3,6 +3,9 @@
 
 #include "terrain.h"
 #include "drainageAlgorithms/drainagealgorithms.h"
+#include "waterPathAlgorithms/pathwateralgorithm.h"
+#include "patternsAlgorithms/algorithmpatron.h"
+#include "buildNetwork/buildnetwork.h"
 #include "shaders/shaderutils.h"
 #include "shaders/shaderterrain.h"
 #include "patternsAlgorithms/arbol.h"
@@ -39,8 +42,14 @@ class PainterTerrain : public GLWidget {
         void ObtainPositionFromView(int x, int y, glm::mat4 view, glm::mat4 projection);
 
         void setDrainageAlgorithm(DrainageAlgorithms* alg);
+        void setPatternAlgorithm(AlgorithmPatron* alg);
+        void setWaterAlgorithm(PathWaterAlgorithm* alg);
+        void setNetworkAlgorithm(BuildNetwork* alg);
     private:
         DrainageAlgorithms* drainage_algorithm;
+        AlgorithmPatron* pattern_algorithm;
+        PathWaterAlgorithm* water_algorithm;
+        BuildNetwork* build_network;
         bool glew_initialized;
     public slots:
         void changeModelTerrain(int index);

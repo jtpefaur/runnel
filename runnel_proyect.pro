@@ -38,8 +38,8 @@ SOURCES += main.cpp\
     patternsAlgorithms/arbol.cpp \
     patternsAlgorithms/zhangguilbertalgorithm.cpp \
     patternsAlgorithms/algorithmpatron.cpp \
-    buildTree/buildtreecallaghan.cpp \
-    buildTree/buildtreepeucker.cpp \
+    buildNetwork/buildtreecallaghan.cpp \
+    buildNetwork/buildtreepeucker.cpp \
     painters/shaders/shaderterrain.cpp \
     painters/shaders/shaderdrainage.cpp \
     painters/shaders/shaderangleedge.cpp \
@@ -52,8 +52,14 @@ SOURCES += main.cpp\
     drainageAlgorithms/drainagealgorithms.cpp \
     UI/patronAlgorithm/zhangguilberconf.cpp \
     drainageAlgorithms/nonedrainagealgorithm.cpp \
-    UI/drainageAlgorithm/noneconf.cpp \
-    buildTree/buildtree.cpp
+    buildNetwork/buildnetwork.cpp \
+    buildNetwork/nonebuildnetwork.cpp \
+    UI/buildNetwork/peuckernetworkconf.cpp \
+    UI/buildNetwork/callaghannetworkconf.cpp \
+    UI/waterAlgorithm/callaghanwaterconf.cpp \
+    waterPathAlgorithms/pathwateralgorithm.cpp \
+    patternsAlgorithms/nonepatronalgorithm.cpp \
+    waterPathAlgorithms/nonepathwateralgorithm.cpp
 
 
 
@@ -230,8 +236,8 @@ HEADERS  += UI/mainwindow.h \
     patternsAlgorithms/arbol.h \
     patternsAlgorithms/algorithmpatron.h \
     patternsAlgorithms/zhangguilbertalgorithm.h \
-    buildTree/buildtreecallaghan.h \
-    buildTree/buildtreepeucker.h \
+    buildNetwork/buildtreecallaghan.h \
+    buildNetwork/buildtreepeucker.h \
     painters/shaders/shaderterrain.h \
     painters/shaders/shaderdrainage.h \
     painters/shaders/shaderangleedge.h \
@@ -244,8 +250,14 @@ HEADERS  += UI/mainwindow.h \
     drainageAlgorithms/drainagealgorithms.h \
     UI/patronAlgorithm/zhangguilberconf.h \
     drainageAlgorithms/nonedrainagealgorithm.h \
-    UI/drainageAlgorithm/noneconf.h \
-    buildTree/buildtree.h
+    buildNetwork/buildnetwork.h \
+    buildNetwork/nonebuildnetwork.h \
+    UI/buildNetwork/peuckernetworkconf.h \
+    UI/buildNetwork/callaghannetworkconf.h \
+    UI/waterAlgorithm/callaghanwaterconf.h \
+    waterPathAlgorithms/pathwateralgorithm.h \
+    patternsAlgorithms/nonepatronalgorithm.h \
+    waterPathAlgorithms/nonepathwateralgorithm.h
 
 
 FORMS    += UI/mainwindow.ui \
@@ -255,7 +267,9 @@ FORMS    += UI/mainwindow.ui \
     UI/waterAlgorithm/drainagehalfpointconf.ui \
     UI/drainageAlgorithm/anglediedralconf.ui \
     UI/patronAlgorithm/zhangguilberconf.ui \
-    UI/drainageAlgorithm/noneconf.ui
+    UI/buildNetwork/peuckernetworkconf.ui \
+    UI/buildNetwork/callaghannetworkconf.ui \
+    UI/waterAlgorithm/callaghanwaterconf.ui
 
 RESOURCES += \
     resources/shader.qrc \
