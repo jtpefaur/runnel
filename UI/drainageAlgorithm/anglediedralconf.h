@@ -15,6 +15,13 @@ class AngleDiedralConf : public QWidget
         explicit AngleDiedralConf(QWidget *parent = 0);
         ~AngleDiedralConf();
 
+        float getLineWidth();
+        float getMaxAngle();
+        float getMinAngle();
+
+    signals:
+        void changeAttr();
+
     private:
         Ui::AngleDiedralConf *ui;
 };

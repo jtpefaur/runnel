@@ -53,15 +53,18 @@ void ToolbarsConfigMesh::drainageIncludeAlgorithms(){
     drainage_algorithms.push_back(new GradientDrainageCallaghanMark());
     for( DrainageAlgorithms* item : drainage_algorithms){
         ui->river_value->addItem(item->getName());
-        if(item->getConf())
-            ui->river_conf->layout()->addWidget(item->getConf());
+
     }
 }
 
 void ToolbarsConfigMesh::getDrainage(){
     int number = ui->river_value->currentIndex();
-    DrainageAlgorithms* d = drainage_algorithms[number];
-    emit selectDrainage(d);
+    DrainageAlgorithms* item = drainage_algorithms[number];
+    if(item->getConf()){
+        ui->path_conf->layout()->takeAt(0);
+        ui->river_conf->layout()->addWidget(item->getConf());
+    }
+    emit selectDrainage(item);
 }
 
 void ToolbarsConfigMesh::networkIncludeAlgorithms(){

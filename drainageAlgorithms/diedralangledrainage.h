@@ -16,6 +16,9 @@ class DiedralAngleDrainage : public DrainageAlgorithms
         virtual QString getName();
         virtual QWidget* getConf();
 
+    public slots:
+        void changeAttr();
+
     private:
         ShaderAngleEdge* shader;
         Terrain* terr;
