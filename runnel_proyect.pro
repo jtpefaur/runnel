@@ -24,7 +24,6 @@ SOURCES += main.cpp\
     inputData/runneldata.cpp \
     inputData/binaryfile.cpp \
     builders/builderterrain.cpp \
-    terrain.cpp \
     primitives/point.cpp \
     primitives/triangle.cpp \
     primitives/edge.cpp \
@@ -59,6 +58,7 @@ SOURCES += main.cpp\
     waterPathAlgorithms/pathwateralgorithm.cpp \
     patternsAlgorithms/nonepatronalgorithm.cpp \
     waterPathAlgorithms/nonepathwateralgorithm.cpp \
+    terrain.cpp \
     drainageAlgorithms/diedralangledrainage.cpp
 
 

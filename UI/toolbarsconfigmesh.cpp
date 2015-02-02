@@ -7,6 +7,7 @@
 #include "drainageAlgorithms/diedralangledrainage.h"
 #include "buildNetwork/nonebuildnetwork.h"
 #include "buildNetwork/buildtreecallaghan.h"
+#include "buildNetwork/buildtreepeucker.h"
 #include "patternsAlgorithms/nonepatronalgorithm.h"
 #include "waterPathAlgorithms/nonepathwateralgorithm.h"
 
@@ -61,7 +62,7 @@ void ToolbarsConfigMesh::getDrainage(){
     int number = ui->river_value->currentIndex();
     DrainageAlgorithms* item = drainage_algorithms[number];
     if(item->getConf()){
-        ui->path_conf->layout()->takeAt(0);
+        ui->river_conf->layout()->takeAt(0);
         ui->river_conf->layout()->addWidget(item->getConf());
     }
     emit selectDrainage(item);
@@ -70,46 +71,53 @@ void ToolbarsConfigMesh::getDrainage(){
 void ToolbarsConfigMesh::networkIncludeAlgorithms(){
     network_algorithms.push_back(new NoneBuildNetwork());
     network_algorithms.push_back(new buildTreeCallaghan());
+    network_algorithms.push_back(new BuildTreePeucker());
     for( BuildNetwork* item : network_algorithms){
         ui->network_value->addItem(item->getName());
-        if(item->getConf())
-            ui->network_conf->layout()->addWidget(item->getConf());
     }
 }
 
 void ToolbarsConfigMesh::getNetwork(){
     int number = ui->network_value->currentIndex();
-    BuildNetwork* d = network_algorithms[number];
-    emit selectNetwork(d);
+    BuildNetwork* item = network_algorithms[number];
+    if(item->getConf()){
+        ui->network_conf->layout()->takeAt(0);
+        ui->network_conf->layout()->addWidget(item->getConf());
+    }
+    emit selectNetwork(item);
 }
 
 void ToolbarsConfigMesh::patronIncludeAlgorithms(){
     patron_algorithms.push_back(new NonePatronAlgorithm());
     for( AlgorithmPatron* item : patron_algorithms){
         ui->drainage_patron_value->addItem(item->getName());
-        if(item->getConf())
-            ui->patron_conf->layout()->addWidget(item->getConf());
     }
 }
 void ToolbarsConfigMesh::getPatron(){
     int number = ui->drainage_patron_value->currentIndex();
-    AlgorithmPatron* d = patron_algorithms[number];
-    emit selectPatron(d);
+    AlgorithmPatron* item = patron_algorithms[number];
+    if(item->getConf()){
+        ui->patron_conf->layout()->takeAt(0);
+        ui->patron_conf->layout()->addWidget(item->getConf());
+    }
+    emit selectPatron(item);
 }
 
 void ToolbarsConfigMesh::pathWaterIncludeAlgorithms(){
     path_water_algorithms.push_back(new NonePathWaterAlgorithm());
     for( PathWaterAlgorithm* item : path_water_algorithms){
         ui->path_water_value->addItem(item->getName());
-        if(item->getConf())
-            ui->path_conf->layout()->addWidget(item->getConf());
     }
 }
 
 void ToolbarsConfigMesh::getWater(){
     int number = ui->path_water_value->currentIndex();
-    PathWaterAlgorithm* d = path_water_algorithms[number];
-    emit selectWater(d);
+    PathWaterAlgorithm* item = path_water_algorithms[number];
+    if(item->getConf()){
+        ui->path_conf->layout()->takeAt(0);
+        ui->path_conf->layout()->addWidget(item->getConf());
+    }
+    emit selectWater(item);
 }
 
 

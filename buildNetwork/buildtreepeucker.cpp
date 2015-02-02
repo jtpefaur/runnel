@@ -8,12 +8,50 @@ struct customMorePeucker{
     }
 };
 
+BuildTreePeucker::BuildTreePeucker(){
+    shader = 0;
+}
 
+BuildTreePeucker::~BuildTreePeucker(){
+    if (shader){
+        delete shader;
+    }
 
-BuildTreePeucker::BuildTreePeucker(std::vector<runnel::Point*>& points, Terrain* ter)
+}
+
+std::vector<arbol*> BuildTreePeucker::run(Terrain* ter){
+    t = ter;
+    this->calculateGrid(ter);
+    this->createStructure(ter->struct_point, ter);
+    this->reviewPoints();
+    std::vector<std::string> types;
+    types.clear();
+    shader->fillPositionBuffer(arbolitos, types);
+    return arbolitos;
+
+}
+
+void BuildTreePeucker::render(glm::mat4 matrix, float exag_z){
+    if (shader){
+        shader->render(matrix, exag_z);
+    }
+}
+
+void BuildTreePeucker::glewReady(){
+    shader = new ShaderPatron();
+}
+
+QString BuildTreePeucker::getName(){
+    return QString("Peucker");
+}
+
+QWidget* BuildTreePeucker::getConf(){
+    return &conf;
+}
+
+void BuildTreePeucker::createStructure(std::vector<runnel::Point*>& points, Terrain* ter)
 {
     points_order = points;
-    t = ter;
     std::sort( points_order.begin(), points_order.end(), customMorePeucker());
     for (runnel::Point* pto: points_order){
          point_counter_peucker[pto->ident] = 0;
@@ -65,7 +103,7 @@ void BuildTreePeucker::createTree(arbol* ar){
 }
 
 std::vector<arbol*> BuildTreePeucker::reviewPoints(){
-    std::vector<arbol*> arbolitos;
+    arbolitos.clear();
     for(runnel::Point* pto: points_order){
 
         if(point_counter_peucker[pto->ident] == 1){ //ya fue utilizado
@@ -85,5 +123,45 @@ std::vector<arbol*> BuildTreePeucker::reviewPoints(){
         b->getNumberStrahlerHorton();
     }
 
-    return arbolitos;
+
+}
+
+void BuildTreePeucker::calculateGrid(Terrain *ter){
+    int width = ter->width;
+    int height = ter->height;
+
+    for(unsigned int i = 0; i < ter->struct_point.size() ; ++i){
+        int fila = i/width;
+
+        if ( (i+1) % width == 0){
+            continue;
+        }
+        if( fila == (height-1)){
+            break;
+        }
+        runnel::Point *points[4];
+        points[0] = ter->struct_point[i];
+        points[1] = ter->struct_point[i + 1];
+        points[2] = ter->struct_point[i + width];
+        points[3] = ter->struct_point[i + width + 1];
+
+        if(!points[0] || !points[1] || !points[2] || !points[3]){
+            continue;
+        }
+
+        runnel::Point *max_point = points[0];
+        for(runnel::Point* pto: points){
+            if(pto->coord.z > max_point->coord.z){
+                max_point = pto;
+            }
+        }
+
+        for(runnel::Point* pto: points){
+            if(pto->coord.z == max_point->coord.z){
+                max_point->setFlagsOn(runnel::Point::PEUCKER);
+            }
+        }
+
+
+    }
 }
