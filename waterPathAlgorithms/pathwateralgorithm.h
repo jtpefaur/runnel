@@ -16,8 +16,6 @@ class PathWaterAlgorithm
         virtual QString getName() = 0;
         virtual QWidget* getConf() = 0;
 
-    private:
-        virtual void getPointMinimum(glm::vec3 coords);
 };
 
 #endif // PATHWATERALGORITHM_H

@@ -105,6 +105,9 @@ void PainterTerrain::ObtainPositionFromView(int x, int y, glm::mat4 view, glm::m
     glm::vec4 viewport = glm::vec4(0, 0, window_width, window_height);
     glm::vec3 wincoord = glm::vec3(x, window_height - y - 1, depth);
     glm::vec3 objcoord = glm::unProject(wincoord, view, projection, viewport);
+    if( water_algorithm ){
+        water_algorithm->run(objcoord, this->ter);
+    }
 }
 
 void PainterTerrain::changeModelTerrain(int index){

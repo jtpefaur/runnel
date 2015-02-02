@@ -9,6 +9,3 @@ PathWaterAlgorithm::~PathWaterAlgorithm(){
 
 
 
-void PathWaterAlgorithm::getPointMinimum(glm::vec3 coords){
-
-}

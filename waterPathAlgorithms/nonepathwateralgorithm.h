@@ -13,7 +13,6 @@ class NonePathWaterAlgorithm : public PathWaterAlgorithm
         virtual QString getName();
         virtual QWidget* getConf();
 
-    private:
 };
 
 #endif // NONEPATHWATERALGORITHM_H

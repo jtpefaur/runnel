@@ -59,7 +59,9 @@ SOURCES += main.cpp\
     patternsAlgorithms/nonepatronalgorithm.cpp \
     waterPathAlgorithms/nonepathwateralgorithm.cpp \
     terrain.cpp \
-    drainageAlgorithms/diedralangledrainage.cpp
+    drainageAlgorithms/diedralangledrainage.cpp \
+    waterPathAlgorithms/pathwatercallaghanalgorithm.cpp \
+    waterPathAlgorithms/pathwatergradientalgorithm.cpp
 
 
 
@@ -257,7 +259,9 @@ HEADERS  += UI/mainwindow.h \
     UI/drainageAlgorithm/anglediedralconf.h \
     UI/toolbarsconfigmesh.h \
     UI/drainageAlgorithm/callaghanconf.h \
-    drainageAlgorithms/diedralangledrainage.h
+    drainageAlgorithms/diedralangledrainage.h \
+    waterPathAlgorithms/pathwatercallaghanalgorithm.h \
+    waterPathAlgorithms/pathwatergradientalgorithm.h
 
 
 FORMS    += UI/mainwindow.ui \
