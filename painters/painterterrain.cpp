@@ -82,6 +82,12 @@ void PainterTerrain::paintGL(){
     if( build_network ){
         build_network->render(matrix_final, exag_z);
     }
+    if( pattern_algorithm ){
+        pattern_algorithm->render(matrix_final, exag_z);
+    }
+    if( water_algorithm ){
+        water_algorithm->render(matrix_final, exag_z, color_conf["color_gradient_path"]);
+    }
 
     OpenGLUtils::printOpenGLError();
 }

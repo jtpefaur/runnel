@@ -8,7 +8,7 @@ class NonePatronAlgorithm : public AlgorithmPatron
         NonePatronAlgorithm();
         virtual ~NonePatronAlgorithm();
         virtual void run(Terrain *, std::vector<arbol*> &);
-        virtual void render(glm::mat4, float, glm::vec3);
+        virtual void render(glm::mat4, float);
         virtual void glewReady();
         virtual QString getName();
         virtual QWidget* getConf();

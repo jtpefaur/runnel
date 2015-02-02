@@ -9,6 +9,7 @@
 #include "buildNetwork/buildtreecallaghan.h"
 #include "buildNetwork/buildtreepeucker.h"
 #include "patternsAlgorithms/nonepatronalgorithm.h"
+#include "patternsAlgorithms/zhangguilbertalgorithm.h"
 #include "waterPathAlgorithms/nonepathwateralgorithm.h"
 
 
@@ -89,6 +90,7 @@ void ToolbarsConfigMesh::getNetwork(){
 
 void ToolbarsConfigMesh::patronIncludeAlgorithms(){
     patron_algorithms.push_back(new NonePatronAlgorithm());
+    patron_algorithms.push_back(new ZhangGuilbertAlgorithm());
     for( AlgorithmPatron* item : patron_algorithms){
         ui->drainage_patron_value->addItem(item->getName());
     }

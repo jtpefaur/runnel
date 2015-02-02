@@ -87,11 +87,13 @@ void RunnelController::changeSelectDrainage(DrainageAlgorithms* alg){
 
 
 void RunnelController::changeSelectPatron(AlgorithmPatron* alg){
-    alg->run(ter, drainage_network);
-    pterrain.setPatternAlgorithm(alg);
+    if (drainage_network.size() > 0){
+        alg->run(ter, drainage_network);
+        pterrain.setPatternAlgorithm(alg);
+    }else{
+        std::cout << "Network drainage dont have tree" << std::endl;
+    }
 }
-
-
 
 void RunnelController::changeSelectWater(PathWaterAlgorithm* alg){
     alg->run(coords, ter);
@@ -99,6 +101,6 @@ void RunnelController::changeSelectWater(PathWaterAlgorithm* alg){
 }
 
 void RunnelController::changeSelectNetwork(BuildNetwork* alg){
-    alg->run(ter);
+    drainage_network = alg->run(ter);
     pterrain.setNetworkAlgorithm(alg);
 }

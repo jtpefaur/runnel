@@ -3,11 +3,49 @@
 
 #define PI 3.14159265
 
+ZhangGuilbertAlgorithm::ZhangGuilbertAlgorithm():
+    AlgorithmPatron()
+{
+    shader = 0;
+}
+
+ZhangGuilbertAlgorithm::~ZhangGuilbertAlgorithm(){
+    if(shader){
+        delete shader;
+    }
+}
+
+void ZhangGuilbertAlgorithm::run(Terrain *ter, std::vector<arbol*> &drainage_tree){
+    terreno = ter;
+    drainage_trees = drainage_tree;
+    std::vector<std::string> result = this->runAlgoritm();
+    shader->fillPositionBuffer(drainage_trees, result);
+}
+
+void ZhangGuilbertAlgorithm::render(glm::mat4 matrix, float exag_z){
+    if(shader){
+        shader->render(matrix, exag_z);
+    }
+}
+
+void ZhangGuilbertAlgorithm::glewReady(){
+    shader = new ShaderPatron();
+}
+
+QString ZhangGuilbertAlgorithm::getName(){
+    return QString("Zhang Guilbert");
+}
+
+QWidget* ZhangGuilbertAlgorithm::getConf(){
+    return &conf;
+}
+
+
 std::vector<std::string> ZhangGuilbertAlgorithm::runAlgoritm(){
     std::vector<std::string> result;
     float delta = 10;
     float sinuodelta = 0.20;
-    std::cout << "entro al run " << std::endl;
+    std::cout << "cantidad de redes " << this->drainage_trees.size() << std::endl;
     for(arbol* ar: this->drainage_trees){
         if(ar->hijos.size() == 0){
             result.push_back("");
@@ -283,6 +321,4 @@ arbol* ZhangGuilbertAlgorithm::selectPrincipalStream(arbol* father){
     return main_path;
 }
 
-ZhangGuilbertAlgorithm::ZhangGuilbertAlgorithm():AlgorithmPatron(){
 
-}

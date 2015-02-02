@@ -13,7 +13,7 @@ void NonePatronAlgorithm::run(Terrain *, std::vector<arbol*> &){
 
 }
 
-void NonePatronAlgorithm::render(glm::mat4, float, glm::vec3){
+void NonePatronAlgorithm::render(glm::mat4, float){
 }
 
 void NonePatronAlgorithm::glewReady(){

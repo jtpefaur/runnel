@@ -11,6 +11,3 @@ AlgorithmPatron::~AlgorithmPatron(){
 
 }
 
-void AlgorithmPatron::setValues(){
-
-}
