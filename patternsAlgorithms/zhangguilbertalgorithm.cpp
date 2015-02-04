@@ -56,7 +56,7 @@ std::vector<std::string> ZhangGuilbertAlgorithm::runAlgoritm(){
         float lenght_ratio = this->lenghtRatio(ar);
         float catchment_elong = this->catchmentElongation(ar);
         std::cout << "=============="<<std::endl;
-        std::cout << "Arbol "<< (int)ar << " n hijos: "<<ar->hijos.size()<<std::endl;
+
         std::cout << "angle_union " << angle_union << std::endl;
         std::cout << "sinuo " << sinuo << std::endl;
         std::cout << "lenght_ratio " << lenght_ratio << std::endl;

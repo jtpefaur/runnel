@@ -209,12 +209,12 @@ HEADERS  += UI/mainwindow.h \
     lib/glm/gtx/vector_angle.hpp \
     lib/glm/gtx/vector_query.hpp \
     lib/glm/gtx/wrap.hpp \
+    lib/glm/glm.hpp \
     lib/glm/common.hpp \
     lib/glm/exponential.hpp \
     lib/glm/ext.hpp \
     lib/glm/fwd.hpp \
     lib/glm/geometric.hpp \
-    lib/glm/glm.hpp \
     lib/glm/integer.hpp \
     lib/glm/mat2x2.hpp \
     lib/glm/mat2x3.hpp \

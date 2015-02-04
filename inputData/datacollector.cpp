@@ -1,6 +1,6 @@
 #include "datacollector.h"
 #include <iostream>
-#include <lib/glm/gtc/constants.hpp>
+#include "lib/glm/gtc/constants.hpp"
 
 DataCollector::DataCollector():
     ter_data(0)
