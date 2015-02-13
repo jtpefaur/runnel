@@ -281,7 +281,7 @@ RESOURCES += \
 
 
 win32: LIBS += -lglew32
-unix: LIBS+= -LGLEW
+unix: LIBS+= -lGLEW -lGLU -lGL
 
 OTHER_FILES += \
     shaders/terrain.vert \
