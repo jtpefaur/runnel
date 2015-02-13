@@ -38,6 +38,8 @@ class ToolbarsConfigMesh : public QWidget
         void selectNetwork(BuildNetwork* value);
         void selectPatron(AlgorithmPatron* value);
         void selectWater(PathWaterAlgorithm* value);
+        void changeElevation(int value);
+        void changeLandForm(int value);
 
     public slots:
         void getDrainage();

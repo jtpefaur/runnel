@@ -16,8 +16,8 @@ class PainterTerrain : public GLWidget {
 
     public:
         static const int MALLA = 0;
-        static const int POLIGONO = 1;
-        static const int POINTS = 2;
+        static const int POLIGONO = 2;
+        static const int POINTS = 1;
         PainterTerrain();
         virtual ~PainterTerrain();
         Terrain* ter;

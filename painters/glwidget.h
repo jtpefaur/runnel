@@ -31,8 +31,8 @@ public:
     void glVersionPopup();
     void moveTranslate(glm::vec3 vec_move);
     int drawing_mode;
-    const int NUBE_PUNTOS = 0;
-    const int WIREFRAME = 1;
+    const int NUBE_PUNTOS = 1;
+    const int WIREFRAME = 0;
     const int FILL_POLYGONS = 2;
 
 public slots:

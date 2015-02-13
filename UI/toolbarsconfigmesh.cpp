@@ -22,7 +22,8 @@ ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     QObject::connect(ui->river_button, SIGNAL(clicked()), this, SLOT(getDrainage()));
     QObject::connect(ui->path_water_button, SIGNAL(clicked()), this, SLOT(getWater()));
     QObject::connect(ui->network_button, SIGNAL(clicked()), this, SLOT(getNetwork()));
-
+    QObject::connect(ui->exaggeration_terrain_value, SIGNAL(valueChanged(int)), this, SIGNAL(changeElevation(int)));
+    QObject::connect(ui->landform_value, SIGNAL(currentIndexChanged(int)), this, SIGNAL(changeLandForm(int)));
     this->drainageIncludeAlgorithms();
     this->pathWaterIncludeAlgorithms();
     this->networkIncludeAlgorithms();
