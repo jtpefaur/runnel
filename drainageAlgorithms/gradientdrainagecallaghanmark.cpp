@@ -36,9 +36,9 @@ void GradientDrainageCallaghanMark::sortElement(std::vector<runnel::Point *> poi
 
 
 void GradientDrainageCallaghanMark::run(Terrain* ter){
-    ter = ter;
-    w = ter->width;
-    h = ter->height;
+    this->ter = ter;
+    w = this->ter->width;
+    h = this->ter->height;
     GradientDrainageCallaghanMark::sortElement(ter->struct_point);
 
     for(runnel::Point* pto : points_terrain){

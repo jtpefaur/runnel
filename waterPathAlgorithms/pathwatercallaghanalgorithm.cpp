@@ -12,8 +12,7 @@ PathWaterCallaghanAlgorithm::~PathWaterCallaghanAlgorithm(){
 
 void PathWaterCallaghanAlgorithm::run(glm::vec3 coord, Terrain* ter){
     this->ter = ter;
-    this->delta = conf.getDelta()/100.0f;
-    std::cout << "water " << this->delta << std::endl;
+    this->delta = conf.getDelta()/1000.0f;
     coords_asked = coord;
     runnel::Point* point_in_terrain = this->getPointClosed(coord);
     std::unordered_map<int, int> id_used;
