@@ -12,3 +12,8 @@ CallaghanWaterConf::~CallaghanWaterConf()
 {
     delete ui;
 }
+
+
+float CallaghanWaterConf::getDelta(){
+    return ui->delta_value->value();
+}

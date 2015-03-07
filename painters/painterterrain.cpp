@@ -107,6 +107,7 @@ void PainterTerrain::ObtainPositionFromView(int x, int y, glm::mat4 view, glm::m
     glm::vec3 objcoord = glm::unProject(wincoord, view, projection, viewport);
     if( water_algorithm ){
         water_algorithm->run(objcoord, this->ter);
+        this->GLWidget::updateGL();
     }
 }
 
@@ -124,28 +125,33 @@ void PainterTerrain::changeModelTerrain(int index){
         default:
             break;
     }
-
+    this->GLWidget::updateGL();
 
 }
 
 void PainterTerrain::changeExag(int number){
     exag_z = number*1.0f;
+    this->GLWidget::updateGL();
 }
 
 void PainterTerrain::setDrainageAlgorithm(DrainageAlgorithms *da){
     drainage_algorithm = da;
+    this->GLWidget::updateGL();
 }
 
 void PainterTerrain::setPatternAlgorithm(AlgorithmPatron *da){
     pattern_algorithm = da;
+    this->GLWidget::updateGL();
 }
 
 void PainterTerrain::setWaterAlgorithm(PathWaterAlgorithm *da){
     water_algorithm = da;
+    this->GLWidget::updateGL();
 }
 
 void PainterTerrain::setNetworkAlgorithm(BuildNetwork* alg){
     build_network = alg;
+    this->GLWidget::updateGL();
 }
 
 // TODO: Change the other file color configuration

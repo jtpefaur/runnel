@@ -93,7 +93,6 @@ void GradientDrainageCallaghanMark::glewReady(){
 
 void GradientDrainageCallaghanMark::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
     linewater = conf.getLineWater()/1000.0f;
-    std::cout << "line "<< linewater << std::endl;
     if (shader_callaghan){
         shader_callaghan->render(matrix, exag_z, linewater , max_water, color);
     }

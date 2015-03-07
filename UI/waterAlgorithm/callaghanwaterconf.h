@@ -14,6 +14,7 @@ class CallaghanWaterConf : public QWidget
     public:
         explicit CallaghanWaterConf(QWidget *parent = 0);
         ~CallaghanWaterConf();
+        float getDelta();
 
     private:
         Ui::CallaghanWaterConf *ui;

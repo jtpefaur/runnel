@@ -11,6 +11,8 @@
 #include "patternsAlgorithms/nonepatronalgorithm.h"
 #include "patternsAlgorithms/zhangguilbertalgorithm.h"
 #include "waterPathAlgorithms/nonepathwateralgorithm.h"
+#include "waterPathAlgorithms/pathwatercallaghanalgorithm.h"
+
 
 
 ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
@@ -56,7 +58,6 @@ void ToolbarsConfigMesh::drainageIncludeAlgorithms(){
     drainage_algorithms.push_back(new GradientDrainageCallaghanMark());
     for( DrainageAlgorithms* item : drainage_algorithms){
         ui->river_value->addItem(item->getName());
-
     }
 }
 
@@ -108,6 +109,7 @@ void ToolbarsConfigMesh::getPatron(){
 
 void ToolbarsConfigMesh::pathWaterIncludeAlgorithms(){
     path_water_algorithms.push_back(new NonePathWaterAlgorithm());
+    path_water_algorithms.push_back(new PathWaterCallaghanAlgorithm());
     for( PathWaterAlgorithm* item : path_water_algorithms){
         ui->path_water_value->addItem(item->getName());
     }
