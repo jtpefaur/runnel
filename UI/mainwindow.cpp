@@ -54,6 +54,8 @@ void MainWindow::connectSignalForRunnel(){
     QObject::connect(&ui_toolbar, SIGNAL(selectNetwork(BuildNetwork*)), &runnel_controller, SLOT(changeSelectNetwork(BuildNetwork*)));
     QObject::connect(&ui_toolbar, SIGNAL(changeElevation(int)), &runnel_controller.getPainter(), SLOT(changeExag(int)));
     QObject::connect(&ui_toolbar, SIGNAL(changeLandForm(int)), &runnel_controller.getPainter(), SLOT(changeModelTerrain(int)));
+    QObject::connect(&ui_toolbar, SIGNAL(showGradientVector(bool)), &runnel_controller.getPainter(), SLOT(showRenderGradientVector(bool)));
+    QObject::connect(&ui_toolbar, SIGNAL(showNormalVector(bool)), &runnel_controller.getPainter(), SLOT(showRenderNormalVector(bool)));
     QObject::connect(&runnel_controller, SIGNAL(glewIsReady()), &ui_toolbar, SLOT(glewIsReady()));
     this->connectColor();
 }

@@ -21,9 +21,11 @@ void ShaderGradient::fillPositionBuffer(std::vector<glm::vec3>& data){
 }
 
 
-void ShaderGradient::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
+void ShaderGradient::render(glm::mat4 matrix, float exag_z, glm::vec3 color, bool disable_depth_test ){
     if (data_buffer_size > 0){
-        glDisable(GL_DEPTH_TEST);
+        if ( disable_depth_test ){
+            glDisable(GL_DEPTH_TEST);
+        }
         glLineWidth(3);
         glUseProgram(this->theProgram);
         this->setUniform("exag", exag_z);
@@ -32,6 +34,8 @@ void ShaderGradient::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
         this->linkBufferWithAttr(position_buffer, "position", 3);
         glDrawArrays(GL_LINES, 0, data_buffer_size);
         glLineWidth(1);
-        glEnable(GL_DEPTH_TEST);
+        if ( disable_depth_test ){
+            glEnable(GL_DEPTH_TEST);
+        }
     }
 }

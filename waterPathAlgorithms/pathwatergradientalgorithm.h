@@ -1,5 +1,6 @@
 #ifndef PATHWATERGRADIENTALGORITHM_H
 #define PATHWATERGRADIENTALGORITHM_H
+#include "terrain.h"
 #include "painters/shaders/shadergradient.h"
 #include "waterPathAlgorithms/pathwateralgorithm.h"
 
@@ -16,6 +17,12 @@ class PathWaterGradientAlgorithm : public PathWaterAlgorithm
 
    private:
         ShaderGradient* shader;
+        Terrain* ter;
+        runnel::Triangle* getTriangleOfPoint(glm::vec3 coords);
+        runnel::Triangle* getNextTriangle(runnel::Triangle* trian, glm::vec3 pto);
+        std::pair<runnel::Triangle*, glm::vec3> getEdgeInterseption(runnel::Triangle*trian, glm::vec3 vector_a, glm::vec3 pto);
+        bool isOnEdge(runnel::Point* p1, runnel::Point* p2, glm::vec3 pto);
+
 };
 
 #endif // PATHWATERGRADIENTALGORITHM_H

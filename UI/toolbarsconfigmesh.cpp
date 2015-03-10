@@ -26,6 +26,8 @@ ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     QObject::connect(ui->network_button, SIGNAL(clicked()), this, SLOT(getNetwork()));
     QObject::connect(ui->exaggeration_terrain_value, SIGNAL(valueChanged(int)), this, SIGNAL(changeElevation(int)));
     QObject::connect(ui->landform_value, SIGNAL(currentIndexChanged(int)), this, SIGNAL(changeLandForm(int)));
+    QObject::connect(ui->gradient_vector, SIGNAL(clicked(bool)), this, SIGNAL(showGradientVector(bool)));
+    QObject::connect(ui->normal_vector, SIGNAL(clicked(bool)), this, SIGNAL(showNormalVector(bool)));
     this->drainageIncludeAlgorithms();
     this->pathWaterIncludeAlgorithms();
     this->networkIncludeAlgorithms();
@@ -97,6 +99,7 @@ void ToolbarsConfigMesh::patronIncludeAlgorithms(){
         ui->drainage_patron_value->addItem(item->getName());
     }
 }
+
 void ToolbarsConfigMesh::getPatron(){
     int number = ui->drainage_patron_value->currentIndex();
     AlgorithmPatron* item = patron_algorithms[number];
@@ -124,7 +127,6 @@ void ToolbarsConfigMesh::getWater(){
     }
     emit selectWater(item);
 }
-
 
 void ToolbarsConfigMesh::glewIsReady(){
     for( DrainageAlgorithms* item : drainage_algorithms){

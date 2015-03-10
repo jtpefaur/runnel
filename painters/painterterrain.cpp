@@ -19,11 +19,17 @@ PainterTerrain::PainterTerrain():
     build_network = 0;
     shader_terrain = 0;
     glew_initialized = false;
+    render_normal = false;
+    render_gradient = false;
 }
 
 PainterTerrain::~PainterTerrain() {
     if(shader_terrain)
         delete shader_terrain;
+    if(shader_gradient)
+        delete shader_gradient;
+    if(shader_normal)
+        delete shader_normal;
 }
 
 
@@ -62,6 +68,8 @@ void PainterTerrain::setTerrain(Terrain* t)
 void PainterTerrain::InitializeVertexBuffer()
 {
     shader_terrain = new ShaderTerrain();
+    shader_gradient = new ShaderDrainage();
+    shader_normal = new ShaderGradient();
     std::vector<glm::vec3> vertex_position_terrain = ter->getVectorPoints();
     shader_terrain->fillPositionBuffer(vertex_position_terrain);
 }
@@ -87,6 +95,12 @@ void PainterTerrain::paintGL(){
     }
     if( water_algorithm ){
         water_algorithm->render(matrix_final, exag_z, color_conf["color_gradient_path"]);
+    }
+    if( render_normal ){
+        shader_normal->render(matrix_final, exag_z, color_conf["normal_color"], false);
+    }
+    if( render_gradient ){
+        shader_gradient->render(matrix_final, exag_z, color_conf["shader_drainage_color"]);
     }
 
     OpenGLUtils::printOpenGLError();
@@ -209,4 +223,24 @@ void PainterTerrain::initColorBuffer(){
 void PainterTerrain::changeAttrConf(std::string name, glm::vec3 value){
     color_conf[name] = value;
     this->changeConf();
+}
+
+
+void PainterTerrain::showRenderGradientVector(bool value){
+    render_gradient = value;
+    if (render_gradient){
+        std::vector<glm::vec3> vectors_gradient = ter->getGradientDirectionVector();
+        std::vector<glm::vec3> color_gradient = ter->vector_gradient_color;
+        shader_gradient->fillPositionBuffer(vectors_gradient, color_gradient);
+        this->GLWidget::updateGL();
+    }
+}
+
+void PainterTerrain::showRenderNormalVector(bool value){
+    render_normal = value;
+    if (render_normal){
+        std::vector<glm::vec3> normals = ter->getVectorNormals();
+        shader_normal->fillPositionBuffer(normals);
+        this->GLWidget::updateGL();
+    }
 }

@@ -73,22 +73,12 @@ glm::vec3 runnel::Triangle::calculateLineHorizontal(){
     return vector_horizontal;
 }
 
-//void runnel::Triangle::void calculateGradient();
+
 std::vector<glm::vec3> runnel::Triangle::calculate_orden(){
     std::vector<glm::vec3> result_point;
     result_point.push_back(points[2]->coord);
     result_point.push_back(points[0]->coord);
     result_point.push_back(points[1]->coord);
-
-//    for(unsigned int j = 0; j < 2 ;  ++j){
-//        for(unsigned int i = 0; i < 2 ; ++i){
-//            if(!(result_point[i].x > result_point[i+1].x)){
-//                glm::vec3 aux = result_point[i];
-//                result_point[i] = result_point[i+1];
-//                result_point[i+1] = aux;
-//            }
-//        }
-//    }
 
     for(unsigned int j = 1; j < 3 ;  ++j){
         if(points[j]->coord.z > result_point[1].z){

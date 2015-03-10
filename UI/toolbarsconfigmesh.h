@@ -40,6 +40,8 @@ class ToolbarsConfigMesh : public QWidget
         void selectWater(PathWaterAlgorithm* value);
         void changeElevation(int value);
         void changeLandForm(int value);
+        void showGradientVector(bool value);
+        void showNormalVector(bool value);
 
     public slots:
         void getDrainage();
