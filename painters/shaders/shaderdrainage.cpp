@@ -28,9 +28,9 @@ void ShaderDrainage::fillPositionBuffer(std::vector<glm::vec3>& data, std::vecto
     this->bufferCreate(color_buffer, color);
 }
 
-void ShaderDrainage::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
+void ShaderDrainage::render(glm::mat4 matrix, float exag_z, glm::vec3 color, int size_line){
     glDisable(GL_DEPTH_TEST);
-    glLineWidth(3);
+    glLineWidth(size_line);
     glUseProgram(this->theProgram);
     this->setUniform("exag", exag_z);
     this->setUniform("mvp", matrix);

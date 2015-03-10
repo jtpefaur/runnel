@@ -32,8 +32,7 @@ namespace runnel {
             void calculateHeight();
             std::vector<Triangle*> getNeighbours();
 
-            glm::vec3 calculateLineHorizontal();
-            std::vector<glm::vec3> calculate_orden();
+            void calculateLineHorizontal();
     };
 }
 #endif // TRIANGLE_H

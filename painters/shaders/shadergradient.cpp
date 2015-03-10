@@ -25,8 +25,9 @@ void ShaderGradient::render(glm::mat4 matrix, float exag_z, glm::vec3 color, boo
     if (data_buffer_size > 0){
         if ( disable_depth_test ){
             glDisable(GL_DEPTH_TEST);
+            glLineWidth(3);
         }
-        glLineWidth(3);
+
         glUseProgram(this->theProgram);
         this->setUniform("exag", exag_z);
         this->setUniform("mvp", matrix);

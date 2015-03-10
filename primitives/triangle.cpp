@@ -54,41 +54,16 @@ void runnel::Triangle::calculateHeight(){
     height.z = 2*std::sqrt(s*(s - sides.x)*(s - sides.y)*(s - sides.z))/sides.z;
 
 }
-glm::vec3 runnel::Triangle::calculateLineHorizontal(){
-    glm::vec3 point_4 = glm::vec3(0,0,0);
-    std::vector<glm::vec3> point_orden = this->calculate_orden();
-    float alpha = (point_orden[0].z - point_orden[1].z)/(point_orden[2].z - point_orden[1].z);
-    point_4.x = point_orden[1].x + (point_orden[2].x - point_orden[1].x)*alpha;
-    point_4.y = point_orden[1].y + (point_orden[2].y - point_orden[1].y)*alpha;
-    point_4.z = point_orden[0].z;
-    glm::vec3 vector_horizontal = point_4 - point_orden[0];
-    float pdte = (point_4.y - point_orden[0].y)/(point_4.x - point_orden[0].x);
-    float cte = point_4.y - point_4.x*pdte;
-
-    float lambda = glm::dot(glm::normalize(point_4 - point_orden[0]), point_orden[1] - point_orden[0]);
-    glm::vec3 point_5 = point_orden[0] + lambda*(glm::normalize(point_4 - point_orden[0]));
-    gradient.push_back(point_orden[1]);
-    gradient.push_back(point_5);
-    gradient_vector = point_5 - point_orden[1];
-    return vector_horizontal;
-}
-
-
-std::vector<glm::vec3> runnel::Triangle::calculate_orden(){
-    std::vector<glm::vec3> result_point;
-    result_point.push_back(points[2]->coord);
-    result_point.push_back(points[0]->coord);
-    result_point.push_back(points[1]->coord);
-
-    for(unsigned int j = 1; j < 3 ;  ++j){
-        if(points[j]->coord.z > result_point[1].z){
-           result_point[1] = points[j]->coord;
-           result_point[0] = points[j-1]->coord;
-           result_point[2] = points[(j+1)%3]->coord;
-        }
+void runnel::Triangle::calculateLineHorizontal(){
+    glm::vec3 vector_z = glm::vec3(0,0,-1);
+    glm::vec3 vector_b = glm::dot(this->normal, vector_z)*this->normal;
+    glm::vec3 vector_a = glm::normalize(vector_z - vector_b);
+    float value = 0;
+    for(runnel::Edge*ed : this->edges){
+        value += std::sqrt(glm::dot(ed->edge_vector,ed->edge_vector));
     }
-
-    return result_point;
+    vector_a = vector_a*value/3.0f;
+    gradient.push_back(this->incentro);
+    gradient.push_back(this->incentro + vector_a);
+    gradient_vector = vector_a;
 }
-
-

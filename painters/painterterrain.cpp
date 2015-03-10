@@ -100,7 +100,7 @@ void PainterTerrain::paintGL(){
         shader_normal->render(matrix_final, exag_z, color_conf["normal_color"], false);
     }
     if( render_gradient ){
-        shader_gradient->render(matrix_final, exag_z, color_conf["shader_drainage_color"]);
+        shader_gradient->render(matrix_final, exag_z, color_conf["color_gradient_path"], 1);
     }
 
     OpenGLUtils::printOpenGLError();
@@ -214,7 +214,7 @@ void PainterTerrain::initColorBuffer(){
         color_conf["shader_point_color"] = glm::vec3(0,0,0.8);
         color_conf["normal_color"] = glm::vec3(0.0f, 0.0f, 0.0f);
         color_conf["shader_terrain_color"] = glm::vec3(1.0f,1.0f,1.0f);
-        color_conf["color_gradient_path"] = glm::vec3(0.0f,0.3f,0.0f);
+        color_conf["color_gradient_path"] = glm::vec3(1.0f,1.0f,1.0f);
         color_conf["shader_drainage_color"] = glm::vec3(0.0f,0.3f,0.0f);
         color_conf["shader_drainage_color_peucker"] = glm::vec3(0.0f,0.3f,0.0f);
     }

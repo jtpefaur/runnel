@@ -205,9 +205,9 @@ std::vector<glm::vec3> Terrain::getGradientDirectionVector(){
     for (runnel::Triangle* trian : this->struct_triangle){
         trian->calculateLineHorizontal();
         vector_gradient.push_back(trian->gradient[0]);
-        vector_gradient_color.push_back(glm::vec3(1.0f,1.0f, 1.0f));
+        vector_gradient_color.push_back(glm::vec3(1.0f,0.0f, 1.0f));
         vector_gradient.push_back(trian->gradient[1]);
-        vector_gradient_color.push_back(glm::vec3(0.0f, 0.0f, 0.5f));
+        vector_gradient_color.push_back(glm::vec3(0.0f, 1.0f, 1.0f));
     }
     return vector_gradient;
 }

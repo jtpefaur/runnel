@@ -10,7 +10,7 @@ class ShaderDrainage : public ShaderUtils
         GLuint position_buffer;
         GLuint color_buffer;
         void fillPositionBuffer(std::vector<glm::vec3>& data, std::vector<glm::vec3>& color);
-        void render(glm::mat4 matrix, float exag_z, glm::vec3 color);
+        void render(glm::mat4 matrix, float exag_z, glm::vec3 color, int size_line=3);
 };
 
 #endif // SHADERDRAINAGE_H
