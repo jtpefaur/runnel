@@ -15,6 +15,11 @@ class GoogleMap : public QWebView {
 
     private:
         WebPage page;
+        QWebFrame *frame_page;
+
+    public slots:
+        void drawPolylines();
+        void drawGoogleEarth(std::vector<glm::vec3> values);
 
 };
 

@@ -69,6 +69,8 @@
                 data_mapa(North, South, West, East, cant_ptos, type_data);           
             }
 
+            data_map.somethingChanged.connect("set_polylines");
+
             function data_mapa(N, S, W, E, cant_ptos, type_data){ 
                // console.log("Norte " + N + ",Sur " + S + ", Oeste "+ W +", Este "+ E);
                 var group_of_count = 100;
@@ -121,6 +123,10 @@
             
 			function get_uniform_coordenadas(position){
                 return uniform_coord[position];
+            }
+
+            function set_polylines(data){
+                alert("lala");
             }
         </script>
     </head>

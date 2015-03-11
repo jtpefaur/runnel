@@ -225,3 +225,21 @@ void Terrain::getMoreWaterPoint(){
         position_water_points.push_back(this->struct_point[edge->id2]->coord);
     }
 }
+
+std::vector< glm::vec3 > Terrain::getCoordinateAxis(){
+    std::vector< glm::vec3 > position_coordinates;
+    std::cout << min_bounding.x << " " << min_bounding.y << " "<< min_bounding.z << " "<< std::endl;
+    std::cout << max_bounding.x << " " << max_bounding.y << " "<< max_bounding.z << " "<< std::endl;
+    glm::vec3 diff = (max_bounding - min_bounding)*0.1f;
+    float size = std::max(diff.x, diff.y);
+
+    glm::vec3 init_base = min_bounding;
+    init_base.y = max_bounding.y;
+    position_coordinates.push_back(init_base);
+    position_coordinates.push_back(init_base + glm::vec3(1,0,0)*size);
+    position_coordinates.push_back(init_base);
+    position_coordinates.push_back(init_base - glm::vec3(0,1,0)*size);
+    position_coordinates.push_back(init_base);
+    position_coordinates.push_back(init_base + glm::vec3(0,0,1)*size);
+    return position_coordinates;
+}

@@ -16,7 +16,7 @@ RunnelController::RunnelController():
     QObject::connect(this, SIGNAL(setTerrainDataCollector(Terrain*)), &information_map, SLOT(getTerrainStruct(Terrain*)));
     QObject::connect(&information_map, SIGNAL(finishTerrain()), this, SLOT(getObtainTerrain()));
     QObject::connect(&pterrain, SIGNAL(glewIsReady()), this, SIGNAL(glewIsReady()));
-
+    QObject::connect(&pterrain, SIGNAL(drawGoogleEarth(std::vector<glm::vec3>, bool)), &gm, SLOT(drawGoogleEarth(std::vector<glm::vec3>, bool)));
     gm.runMap(information_map);
     coords = glm::vec3(0,0,0);
     std::cout << "Start Runnel Controller..." << std::endl;
@@ -83,8 +83,6 @@ void RunnelController::changeSelectDrainage(DrainageAlgorithms* alg){
     alg->run(ter);
     pterrain.setDrainageAlgorithm(alg);
 }
-
-
 
 void RunnelController::changeSelectPatron(AlgorithmPatron* alg){
     if (drainage_network.size() > 0){

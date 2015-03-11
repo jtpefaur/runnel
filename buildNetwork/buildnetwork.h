@@ -12,6 +12,7 @@ class BuildNetwork : public QObject
         BuildNetwork();
         virtual ~BuildNetwork();
         virtual std::vector<arbol*> run(Terrain* ter) = 0;
+        virtual std::vector<arbol*> getData() = 0;
         virtual void render(glm::mat4 matrix, float exag_z) = 0;
         virtual void glewReady() = 0;
         virtual QString getName() = 0;

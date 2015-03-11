@@ -60,7 +60,9 @@ void BuildTreePeucker::createStructure(std::vector<runnel::Point*>& points, Terr
 
 }
 
-
+std::vector<arbol*> BuildTreePeucker::getData(){
+    return arbolitos;
+}
 
 void BuildTreePeucker::createTree(arbol* ar){
     runnel::Point* pto = ar->pto;

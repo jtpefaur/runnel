@@ -42,6 +42,7 @@ class ToolbarsConfigMesh : public QWidget
         void changeLandForm(int value);
         void showGradientVector(bool value);
         void showNormalVector(bool value);
+        void showCoordinateAxis(bool value);
 
     public slots:
         void getDrainage();

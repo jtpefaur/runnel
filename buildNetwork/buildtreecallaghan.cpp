@@ -46,8 +46,11 @@ std::vector<arbol*> buildTreeCallaghan::run(Terrain* ter){
     return arbolitos;
 }
 
-void buildTreeCallaghan::render(glm::mat4 matrix, float exag_z){
+std::vector<arbol*> buildTreeCallaghan::getData(){
+    return arbolitos;
+}
 
+void buildTreeCallaghan::render(glm::mat4 matrix, float exag_z){
     if (shader_build){
         shader_build->render(matrix, exag_z);
     }

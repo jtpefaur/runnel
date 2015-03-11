@@ -47,6 +47,7 @@ class RunnelController: public QObject
         void setTerrainDataCollector(Terrain* ter);
         void glewIsReady();
 
+
 };
 
 #endif // RUNNELCONTROLLER_H

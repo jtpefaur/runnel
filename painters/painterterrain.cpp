@@ -18,9 +18,13 @@ PainterTerrain::PainterTerrain():
     water_algorithm = 0;
     build_network = 0;
     shader_terrain = 0;
+    shader_axis = 0;
+    shader_gradient = 0;
+    shader_normal = 0;
     glew_initialized = false;
     render_normal = false;
     render_gradient = false;
+    render_axis = false;
 }
 
 PainterTerrain::~PainterTerrain() {
@@ -30,6 +34,8 @@ PainterTerrain::~PainterTerrain() {
         delete shader_gradient;
     if(shader_normal)
         delete shader_normal;
+    if(shader_axis)
+        delete shader_axis;
 }
 
 
@@ -70,6 +76,7 @@ void PainterTerrain::InitializeVertexBuffer()
     shader_terrain = new ShaderTerrain();
     shader_gradient = new ShaderDrainage();
     shader_normal = new ShaderGradient();
+    shader_axis = new ShaderGradient();
     std::vector<glm::vec3> vertex_position_terrain = ter->getVectorPoints();
     shader_terrain->fillPositionBuffer(vertex_position_terrain);
 }
@@ -102,7 +109,9 @@ void PainterTerrain::paintGL(){
     if( render_gradient ){
         shader_gradient->render(matrix_final, exag_z, color_conf["color_gradient_path"], 1);
     }
-
+    if( render_axis ){
+        shader_axis->render(matrix_final, exag_z, color_conf["shader_callaghan_color"]);
+    }
     OpenGLUtils::printOpenGLError();
 }
 
@@ -150,6 +159,7 @@ void PainterTerrain::changeExag(int number){
 
 void PainterTerrain::setDrainageAlgorithm(DrainageAlgorithms *da){
     drainage_algorithm = da;
+
     this->GLWidget::updateGL();
 }
 
@@ -165,6 +175,7 @@ void PainterTerrain::setWaterAlgorithm(PathWaterAlgorithm *da){
 
 void PainterTerrain::setNetworkAlgorithm(BuildNetwork* alg){
     build_network = alg;
+   // emit drawGoogleEarth(axis);
     this->GLWidget::updateGL();
 }
 
@@ -232,8 +243,9 @@ void PainterTerrain::showRenderGradientVector(bool value){
         std::vector<glm::vec3> vectors_gradient = ter->getGradientDirectionVector();
         std::vector<glm::vec3> color_gradient = ter->vector_gradient_color;
         shader_gradient->fillPositionBuffer(vectors_gradient, color_gradient);
-        this->GLWidget::updateGL();
+        emit drawGoogleEarth(vectors_gradient, false);
     }
+    this->GLWidget::updateGL();
 }
 
 void PainterTerrain::showRenderNormalVector(bool value){
@@ -241,6 +253,17 @@ void PainterTerrain::showRenderNormalVector(bool value){
     if (render_normal){
         std::vector<glm::vec3> normals = ter->getVectorNormals();
         shader_normal->fillPositionBuffer(normals);
-        this->GLWidget::updateGL();
+        emit drawGoogleEarth(normals, false);
     }
+    this->GLWidget::updateGL();
+}
+
+void PainterTerrain::showRenderCoordinateAxis(bool value){
+    render_axis = value;
+    if (render_axis){
+        std::vector<glm::vec3> axis = ter->getCoordinateAxis();
+        shader_axis->fillPositionBuffer(axis);
+        emit drawGoogleEarth(axis, false);
+    }
+    this->GLWidget::updateGL();
 }

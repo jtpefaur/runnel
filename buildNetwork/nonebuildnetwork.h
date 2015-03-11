@@ -9,6 +9,7 @@ class NoneBuildNetwork : public BuildNetwork
         virtual ~NoneBuildNetwork();
         virtual std::vector<arbol*> run(Terrain*);
         virtual void render(glm::mat4 matrix, float exag_z);
+        virtual std::vector<arbol*> getData();
         virtual void glewReady();
         virtual QString getName();
         virtual QWidget* getConf();

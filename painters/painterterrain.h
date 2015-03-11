@@ -25,9 +25,7 @@ class PainterTerrain : public GLWidget {
         Terrain* ter;
         float exag_z;
         std::unordered_map<std::string, glm::vec3> color_conf;
-        ShaderTerrain* shader_terrain;
-        ShaderGradient* shader_normal;
-        ShaderDrainage* shader_gradient;
+
         glm::mat4 ortho_matrix;
         glm::mat4 matrix_final;
         std::unordered_map<std::string, GLuint> attr_buffer;
@@ -54,16 +52,23 @@ class PainterTerrain : public GLWidget {
         AlgorithmPatron* pattern_algorithm;
         PathWaterAlgorithm* water_algorithm;
         BuildNetwork* build_network;
+        ShaderTerrain* shader_terrain;
+        ShaderGradient* shader_normal;
+        ShaderDrainage* shader_gradient;
+        ShaderGradient* shader_axis;
         bool glew_initialized;
         bool render_normal;
         bool render_gradient;
+        bool render_axis;
     public slots:
         void changeModelTerrain(int index);
         void changeExag(int number);
         void showRenderGradientVector(bool value);
         void showRenderNormalVector(bool value);
+        void showRenderCoordinateAxis(bool value);
     signals:
         void glewIsReady();
+        void drawGoogleEarth(std::vector<glm::vec3> values, bool next);
 
 };
 

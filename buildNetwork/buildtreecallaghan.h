@@ -16,6 +16,7 @@ class buildTreeCallaghan : public BuildNetwork
         virtual ~buildTreeCallaghan();
         virtual std::vector<arbol*> run(Terrain* ter);
         virtual void render(glm::mat4 matrix, float exag_z);
+        virtual std::vector<arbol*> getData();
         virtual void glewReady();
         virtual QString getName();
         virtual QWidget* getConf();

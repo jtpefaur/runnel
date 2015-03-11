@@ -51,6 +51,7 @@ class Terrain
         std::vector<glm::vec3> getDrainageColor();
         std::vector<glm::vec3> getPointsEdgeDrainage();
         std::vector<glm::vec3> getGradientDirectionVector();
+        std::vector< glm::vec3 > getCoordinateAxis();
         void getMoreWaterPoint();
         void setMapPixel(int ancho_pix, int largo_pix);
 

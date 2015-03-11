@@ -28,6 +28,7 @@ ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     QObject::connect(ui->landform_value, SIGNAL(currentIndexChanged(int)), this, SIGNAL(changeLandForm(int)));
     QObject::connect(ui->gradient_vector, SIGNAL(clicked(bool)), this, SIGNAL(showGradientVector(bool)));
     QObject::connect(ui->normal_vector, SIGNAL(clicked(bool)), this, SIGNAL(showNormalVector(bool)));
+    QObject::connect(ui->coordinate_axis, SIGNAL(clicked(bool)), this, SIGNAL(showCoordinateAxis(bool)));
     this->drainageIncludeAlgorithms();
     this->pathWaterIncludeAlgorithms();
     this->networkIncludeAlgorithms();
