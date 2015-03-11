@@ -36,4 +36,5 @@ void GoogleMap::drawPolylines(){
 
 void GoogleMap::drawGoogleEarth(std::vector<glm::vec3> values, bool next){
     std::cout << "dibujando en google maps" << std::endl;
+    emit somethingChanged();
 }

@@ -21,6 +21,9 @@ class GoogleMap : public QWebView {
         void drawPolylines();
         void drawGoogleEarth(std::vector<glm::vec3> values, bool next);
 
+    signals:
+        void somethingChanged();
+
 };
 
 #endif // GOOGLEMAP_H

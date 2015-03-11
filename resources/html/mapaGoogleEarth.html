@@ -5,6 +5,8 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"> </script>
         <script type="text/javascript">
             var ge;
+            var lat;
+            var lng;
             google.load("earth", "1", {"language":"en", "other_params":"sensor=false"});
             
 			function init() {
@@ -33,6 +35,8 @@
                 lookAt.setLongitude(-71);
                 lookAt.setRange(20000);
                 ge.getView().setAbstractView(lookAt);
+                var lat = lookAt.getLatitude();
+                var lng = lookAt.getLongitude();
             }
 
             google.setOnLoadCallback(init);
@@ -125,9 +129,24 @@
                 return uniform_coord[position];
             }
 
-            function set_polylines(data){
+function addToLineString(lineString, lat, lng, latOffset, lngOffset) {
+  var altitude = 1.0; // give it some altitude
+  lineString.getCoordinates().
+    pushLatLngAlt(lat + latOffset, lng + lngOffset, altitude);
+}
+
+
+
+
+            function set_polylines(){
+          
                 alert("lala");
             }
+
+
+
+
+
         </script>
     </head>
     <style>
