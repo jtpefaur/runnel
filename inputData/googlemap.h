@@ -19,7 +19,7 @@ class GoogleMap : public QWebView {
 
     public slots:
         void drawPolylines();
-        void drawGoogleEarth(std::vector<glm::vec3> values);
+        void drawGoogleEarth(std::vector<glm::vec3> values, bool next);
 
 };
 
