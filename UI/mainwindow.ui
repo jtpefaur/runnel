@@ -500,24 +500,7 @@
     <addaction name="menuOpen_File"/>
     <addaction name="actionSave_File"/>
    </widget>
-   <widget class="QMenu" name="menuAction">
-    <property name="title">
-     <string>Actions</string>
-    </property>
-    <widget class="QMenu" name="menuFind_Rivers">
-     <property name="title">
-      <string>Find Rivers</string>
-     </property>
-     <addaction name="actionPeucker_Algoritms"/>
-     <addaction name="actionGradient_Algoritms"/>
-    </widget>
-    <addaction name="menuFind_Rivers"/>
-    <addaction name="actionFind_Drainage_Patron"/>
-    <addaction name="actionExageration_x1"/>
-    <addaction name="actionExageration_x3"/>
-   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuAction"/>
   </widget>
   <action name="actionSave_File">
    <property name="text">
