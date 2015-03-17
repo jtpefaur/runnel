@@ -15,7 +15,7 @@ void DiedralAngleDrainage::run(Terrain *ter){
     terr = ter;
     std::vector<glm::vec3> angle_value_edge = ter->calculateNeightbourByEdges();
     std::vector<glm::vec3> height = ter->calculateHeigtArray();
-    std::vector<glm::vec3> position_terrain = ter->getVectorPoints();
+    position_terrain = ter->getVectorPoints();
     shader->fillPositionBuffer(position_terrain, angle_value_edge, height );
 }
 
@@ -44,4 +44,8 @@ QWidget* DiedralAngleDrainage::getConf(){
 
 void DiedralAngleDrainage::changeAttr(){
     this->run(terr);
+}
+
+std::vector<glm::vec3> DiedralAngleDrainage::getPathTree(){
+    return position_terrain;
 }

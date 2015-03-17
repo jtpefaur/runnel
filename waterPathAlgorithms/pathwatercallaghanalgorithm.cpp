@@ -105,3 +105,7 @@ runnel::Point* PathWaterCallaghanAlgorithm::getPointClosed(glm::vec3 coords){
 void PathWaterCallaghanAlgorithm::changeAttr(){
     this->run(coords_asked, ter);
 }
+
+std::vector<glm::vec3> PathWaterCallaghanAlgorithm::getPathWater(){
+    return this->edge_water;
+}

@@ -106,3 +106,15 @@ QWidget* GradientDrainageCallaghanMark::getConf(){
 void GradientDrainageCallaghanMark::changeAttr(){
     this->run(ter);
 }
+
+std::vector<glm::vec3> GradientDrainageCallaghanMark::getPathTree(){
+    std::vector<glm::vec3> points_path;
+    std::vector<glm::vec3> position_water = ter->position_water_points;
+    int i = 0;
+    while(i< position_water.size()){
+        if (ter->count_water[i]/max_water > linewater){
+            points_path.push_back(position_water[i]);
+        }
+    }
+    return points_path;
+}

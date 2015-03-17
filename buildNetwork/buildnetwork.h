@@ -17,6 +17,7 @@ class BuildNetwork : public QObject
         virtual void glewReady() = 0;
         virtual QString getName() = 0;
         virtual QWidget* getConf() = 0;
+        virtual std::vector<glm::vec3> getPathTree() = 0;
 
 };
 

@@ -17,6 +17,7 @@ RunnelController::RunnelController():
     QObject::connect(&information_map, SIGNAL(finishTerrain()), this, SLOT(getObtainTerrain()));
     QObject::connect(&pterrain, SIGNAL(glewIsReady()), this, SIGNAL(glewIsReady()));
     QObject::connect(&pterrain, SIGNAL(drawGoogleEarth(std::vector<glm::vec3>, bool)), &gm, SLOT(drawGoogleEarth(std::vector<glm::vec3>, bool)));
+    QObject::connect(this, SIGNAL(drawGoogleEarth(std::vector<glm::vec3>, bool)), &gm, SLOT(drawGoogleEarth(std::vector<glm::vec3>, bool)));
     gm.runMap(information_map);
     coords = glm::vec3(0,0,0);
     std::cout << "Start Runnel Controller..." << std::endl;
@@ -82,12 +83,14 @@ void RunnelController::buildTerrain(){
 void RunnelController::changeSelectDrainage(DrainageAlgorithms* alg){
     alg->run(ter);
     pterrain.setDrainageAlgorithm(alg);
+    emit drawGoogleEarth(alg->getPathTree(), false);
 }
 
 void RunnelController::changeSelectPatron(AlgorithmPatron* alg){
     if (drainage_network.size() > 0){
         alg->run(ter, drainage_network);
         pterrain.setPatternAlgorithm(alg);
+        emit drawGoogleEarth(alg->getPathTree(), false);
     }else{
         std::cout << "Network drainage dont have tree" << std::endl;
     }
@@ -101,4 +104,5 @@ void RunnelController::changeSelectWater(PathWaterAlgorithm* alg){
 void RunnelController::changeSelectNetwork(BuildNetwork* alg){
     drainage_network = alg->run(ter);
     pterrain.setNetworkAlgorithm(alg);
+    emit drawGoogleEarth(alg->getPathTree(), false);
 }

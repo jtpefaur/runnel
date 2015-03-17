@@ -19,6 +19,7 @@ class GradientDrainageCallaghanMark : public DrainageAlgorithms
         virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color);
         virtual QString getName();
         virtual QWidget* getConf();
+        virtual std::vector<glm::vec3> getPathTree();
 
 
     private:

@@ -82,3 +82,7 @@ void PeuckerDrainageNetwork::calculateGrid(Terrain *ter){
 
     }
 }
+
+std::vector<glm::vec3> PeuckerDrainageNetwork::getPathTree(){
+    return terr->getPointsEdgeDrainage();
+}

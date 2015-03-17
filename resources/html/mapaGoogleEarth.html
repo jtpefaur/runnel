@@ -8,6 +8,9 @@
             var lat;
             var lng;
             google.load("earth", "1", {"language":"en", "other_params":"sensor=false"});
+       
+
+
             
 			function init() {
                 google.earth.createInstance('map3d', initCB, failureCB);
@@ -28,15 +31,16 @@
             function failureCB(errorCode) {
                 console.log("Fail with the BDD");
             }
-
+            var lat;
+            var lng;
             function sideDatabaseSuccess() {
                 var lookAt = ge.createLookAt('');
                 lookAt.setLatitude(-32.25);
                 lookAt.setLongitude(-71);
                 lookAt.setRange(20000);
                 ge.getView().setAbstractView(lookAt);
-                var lat = lookAt.getLatitude();
-                var lng = lookAt.getLongitude();
+                lat = lookAt.getLatitude();
+                lng = lookAt.getLongitude();
             }
 
             google.setOnLoadCallback(init);
@@ -73,7 +77,6 @@
                 data_mapa(North, South, West, East, cant_ptos, type_data);           
             }
 
-            data_map.somethingChanged.connect("set_polylines");
 
             function data_mapa(N, S, W, E, cant_ptos, type_data){ 
                // console.log("Norte " + N + ",Sur " + S + ", Oeste "+ W +", Este "+ E);
@@ -129,22 +132,35 @@
                 return uniform_coord[position];
             }
 
-function addToLineString(lineString, lat, lng, latOffset, lngOffset) {
-  var altitude = 1.0; // give it some altitude
-  lineString.getCoordinates().
-    pushLatLngAlt(lat + latOffset, lng + lngOffset, altitude);
-}
+            function set_polylines(value){
+                clean_features();
+                if (!positions.lines_array.buffer){
+                    return;
+                }
 
+                var array_data = new Float32Array(positions.lines_array.buffer);
+                var lineStringPlacemark = ge.createPlacemark('');
 
-
-
-            function set_polylines(){
-          
-                alert("lala");
+                // Create the LineString
+                var multiGeometry = ge.createMultiGeometry('');
+                for (var i = 0; i < array_data.length; i=i+6){
+                    var lineString = ge.createLineString('');
+                    lineString.getCoordinates().pushLatLngAlt(array_data[i], array_data[i+1], array_data[i+2]);
+                    lineString.getCoordinates().pushLatLngAlt(array_data[i+3], array_data[i+4], array_data[i+5]);
+                    lineString.setTessellate(true);
+                    multiGeometry.getGeometries().appendChild(lineString);
+                }
+                lineStringPlacemark.setGeometry(multiGeometry);
+                ge.getFeatures().appendChild(lineStringPlacemark);
             }
 
+            data_map.somethingChanged.connect(set_polylines);
 
-
+            function clean_features(){
+                var features = ge.getFeatures();
+                while (features.getFirstChild())
+                    features.removeChild(features.getFirstChild());
+           }
 
 
         </script>

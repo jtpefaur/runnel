@@ -12,6 +12,7 @@ PathWaterGradientAlgorithm::~PathWaterGradientAlgorithm(){
 
 void PathWaterGradientAlgorithm::run(glm::vec3 point, Terrain *terr){
     this->ter = terr;
+    edge_path.clear();
 
 }
 
@@ -73,4 +74,8 @@ bool PathWaterGradientAlgorithm::isOnEdge(runnel::Point* p1, runnel::Point* p2, 
         return true;
     }
     return isOn;
+}
+
+std::vector<glm::vec3> PathWaterGradientAlgorithm::getPathWater(){
+    return edge_path;
 }

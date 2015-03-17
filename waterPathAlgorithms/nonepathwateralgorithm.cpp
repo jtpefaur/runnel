@@ -28,3 +28,8 @@ QString NonePathWaterAlgorithm::getName(){
 QWidget* NonePathWaterAlgorithm::getConf(){
     return 0;
 }
+
+std::vector<glm::vec3> NonePathWaterAlgorithm::getPathWater(){
+    std::vector<glm::vec3> empty;
+    return empty;
+}

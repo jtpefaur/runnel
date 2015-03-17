@@ -36,3 +36,9 @@ QString NoneBuildNetwork::getName(){
 QWidget* NoneBuildNetwork::getConf(){
     return 0;
 }
+
+std::vector<glm::vec3> NoneBuildNetwork::getPathTree(){
+    std::vector<glm::vec3> path;
+    path.clear();
+    return path;
+}

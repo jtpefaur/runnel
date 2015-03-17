@@ -45,6 +45,7 @@ class RunnelController: public QObject
 
     signals:
         void setTerrainDataCollector(Terrain* ter);
+        void drawGoogleEarth(std::vector<glm::vec3>, bool);
         void glewIsReady();
 
 

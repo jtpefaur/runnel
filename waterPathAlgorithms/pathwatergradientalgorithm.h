@@ -14,6 +14,7 @@ class PathWaterGradientAlgorithm : public PathWaterAlgorithm
         virtual void glewReady();
         virtual QString getName();
         virtual QWidget* getConf();
+        virtual std::vector<glm::vec3> getPathWater();
 
    private:
         ShaderGradient* shader;
@@ -22,7 +23,7 @@ class PathWaterGradientAlgorithm : public PathWaterAlgorithm
         runnel::Triangle* getNextTriangle(runnel::Triangle* trian, glm::vec3 pto);
         std::pair<runnel::Triangle*, glm::vec3> getEdgeInterseption(runnel::Triangle*trian, glm::vec3 vector_a, glm::vec3 pto);
         bool isOnEdge(runnel::Point* p1, runnel::Point* p2, glm::vec3 pto);
-
+        std::vector<glm::vec3> edge_path;
 };
 
 #endif // PATHWATERGRADIENTALGORITHM_H

@@ -16,13 +16,13 @@ class GoogleMap : public QWebView {
     private:
         WebPage page;
         QWebFrame *frame_page;
+        void convertCoordinatesToLongLat(std::vector<glm::vec3>& values);
 
     public slots:
-        void drawPolylines();
         void drawGoogleEarth(std::vector<glm::vec3> values, bool next);
 
     signals:
-        void somethingChanged();
+        void somethingChanged(bool next);
 
 };
 

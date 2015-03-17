@@ -15,11 +15,13 @@ class DiedralAngleDrainage : public DrainageAlgorithms
         virtual void glewReady();
         virtual QString getName();
         virtual QWidget* getConf();
+        virtual std::vector<glm::vec3> getPathTree();
 
     public slots:
         void changeAttr();
 
     private:
+        std::vector<glm::vec3> position_terrain;
         ShaderAngleEdge* shader;
         Terrain* terr;
         AngleDiedralConf conf;

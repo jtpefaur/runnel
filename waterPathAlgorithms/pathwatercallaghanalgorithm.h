@@ -15,6 +15,7 @@ class PathWaterCallaghanAlgorithm : public PathWaterAlgorithm
         virtual void glewReady();
         virtual QString getName();
         virtual QWidget* getConf();
+        virtual std::vector<glm::vec3> getPathWater();
 
     private:
         std::vector<int> getPointsNeigthbour(runnel::Point* pto);

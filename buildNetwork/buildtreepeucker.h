@@ -21,6 +21,7 @@ class BuildTreePeucker : public BuildNetwork
         virtual void glewReady();
         virtual QString getName();
         virtual QWidget* getConf();
+        virtual std::vector<glm::vec3> getPathTree();
 
     private:
         void createStructure(std::vector<runnel::Point*>& points, Terrain* ter);

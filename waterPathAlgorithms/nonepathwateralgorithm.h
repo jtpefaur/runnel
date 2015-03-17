@@ -12,6 +12,7 @@ class NonePathWaterAlgorithm : public PathWaterAlgorithm
         virtual void glewReady();
         virtual QString getName();
         virtual QWidget* getConf();
+        virtual std::vector<glm::vec3> getPathWater();
 
 };
 

@@ -167,3 +167,11 @@ void buildTreeCallaghan::changeAttr(){
     this->run(terr);
 }
 
+std::vector<glm::vec3> buildTreeCallaghan::getPathTree(){
+    std::vector<glm::vec3> path;
+    path.clear();
+    for( arbol* ar: arbolitos){
+        ar->getArbolEdges(path);
+    }
+    return path;
+}

@@ -167,3 +167,14 @@ void BuildTreePeucker::calculateGrid(Terrain *ter){
 
     }
 }
+
+
+std::vector<glm::vec3> BuildTreePeucker::getPathTree(){
+    std::vector<glm::vec3> path;
+    path.clear();
+    for( arbol* ar: arbolitos){
+        ar->getArbolEdges(path);
+
+    }
+    return path;
+}

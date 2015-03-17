@@ -119,7 +119,6 @@ void PainterTerrain::mouseDoubleClickEvent(QMouseEvent * event){
     this->ObtainPositionFromView(event->x(), event->y(),this->GLWidget::model_view_matrix, ortho_matrix);
 }
 
-
 void PainterTerrain::ObtainPositionFromView(int x, int y, glm::mat4 view, glm::mat4 projection){
     int window_width = this->width();
     int window_height = this->height();
@@ -130,6 +129,7 @@ void PainterTerrain::ObtainPositionFromView(int x, int y, glm::mat4 view, glm::m
     glm::vec3 objcoord = glm::unProject(wincoord, view, projection, viewport);
     if( water_algorithm ){
         water_algorithm->run(objcoord, this->ter);
+        emit drawGoogleEarth(water_algorithm->getPathWater(), true);
         this->GLWidget::updateGL();
     }
 }
@@ -175,7 +175,6 @@ void PainterTerrain::setWaterAlgorithm(PathWaterAlgorithm *da){
 
 void PainterTerrain::setNetworkAlgorithm(BuildNetwork* alg){
     build_network = alg;
-   // emit drawGoogleEarth(axis);
     this->GLWidget::updateGL();
 }
 

@@ -13,6 +13,7 @@ class NoneBuildNetwork : public BuildNetwork
         virtual void glewReady();
         virtual QString getName();
         virtual QWidget* getConf();
+        virtual std::vector<glm::vec3> getPathTree();
 
     private:
 

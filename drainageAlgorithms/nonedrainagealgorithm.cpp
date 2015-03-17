@@ -30,3 +30,7 @@ QWidget* NoneDrainageAlgorithm::getConf(){
     return 0;
 }
 
+std::vector<glm::vec3> NoneDrainageAlgorithm::getPathTree(){
+    std::vector<glm::vec3> path;
+    return path;
+}

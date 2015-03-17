@@ -13,20 +13,12 @@ void DataCollector::getCoord(QByteArray list_coord)
 {
     char* puntero = list_coord.data();
     float* punteroDOuble = (float*) puntero;
-//   std::cout << "Latitud" << " " << "Longitud" << " " << "Altura" << std::endl;
     for(unsigned int i = 0;i<list_coord.size()/sizeof(float);){
-//        float x = *(punteroDOuble++);
-//        float y = *(punteroDOuble++);
-//        float z = *(punteroDOuble++);
-//        glm::vec3 coords = calculateUTM( x, y, z);
-//        std::cout << counter << " " << coords.x << " " << coords.y << " " << coords.z << std::endl;
         float x = this->conversionToUTM( *(punteroDOuble++))*31.1120;
         float y = -1*this->conversionToUTM( *(punteroDOuble++))*11.1320;
         float z = this->conversionToUTM( *(punteroDOuble++))/10000;
-     //   std::cout << x << " " << y << " " << z << std::endl;
         glm::vec3 coords = glm::vec3(x,y,z);
         ter_data->setBoundingBox(coords);
-     //   std::cout << "coordenadas " << coords.x << " " << coords.y << " " << coords.z << std::endl;
         runnel::Point *point_new = new runnel::Point(coords, counter);
         ter_data->addPoint(point_new);
         ++counter;
