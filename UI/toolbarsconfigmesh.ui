@@ -83,7 +83,7 @@
          <number>1</number>
         </property>
         <property name="tabSpacing">
-         <number>7</number>
+         <number>6</number>
         </property>
         <widget class="QWidget" name="river">
          <property name="geometry">
@@ -183,7 +183,7 @@
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>561</height>
+           <height>542</height>
           </rect>
          </property>
          <attribute name="label">
@@ -336,7 +336,7 @@
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>561</height>
+           <height>542</height>
           </rect>
          </property>
          <attribute name="label">
@@ -484,6 +484,55 @@
            </spacer>
           </item>
          </layout>
+        </widget>
+        <widget class="QWidget" name="fluvial_terrace">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>180</width>
+           <height>542</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>Fluvial Terraces</string>
+         </attribute>
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>30</y>
+            <width>120</width>
+            <height>80</height>
+           </rect>
+          </property>
+          <property name="title">
+           <string>Angle Threshold</string>
+          </property>
+          <widget class="QSpinBox" name="spinBox">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>20</y>
+             <width>111</width>
+             <height>25</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButton">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>50</y>
+             <width>111</width>
+             <height>26</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Run</string>
+           </property>
+          </widget>
+         </widget>
         </widget>
         <widget class="QWidget" name="other_conf">
          <property name="geometry">
