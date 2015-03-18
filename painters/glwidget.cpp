@@ -3,7 +3,7 @@
 #include <iostream>
 #include <QMessageBox>
 #include "lib/glm/gtc/matrix_transform.hpp"
-#include <QQuickWindow>
+
 
 
 void printMat(glm::mat4  mat){
