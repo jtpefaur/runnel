@@ -50,6 +50,7 @@ class ToolbarsConfigMesh : public QWidget
         void getWater();
         void getNetwork();
         void glewIsReady();
+        void showPatternsInformation();
 
 };
 

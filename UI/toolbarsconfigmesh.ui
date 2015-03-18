@@ -80,7 +80,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>3</number>
         </property>
         <property name="tabSpacing">
          <number>7</number>
@@ -330,7 +330,7 @@
          <attribute name="label">
           <string>Drainage Patron</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_17">
+         <layout class="QVBoxLayout" name="verticalLayout_12">
           <item>
            <widget class="QGroupBox" name="groupBox_6">
             <property name="sizePolicy">
@@ -386,19 +386,7 @@
             <property name="title">
              <string>Leyend Colors</string>
             </property>
-            <layout class="QFormLayout" name="formLayout_2">
-             <property name="leftMargin">
-              <number>5</number>
-             </property>
-             <property name="topMargin">
-              <number>5</number>
-             </property>
-             <property name="rightMargin">
-              <number>5</number>
-             </property>
-             <property name="bottomMargin">
-              <number>5</number>
-             </property>
+            <layout class="QFormLayout" name="formLayout">
              <item row="0" column="0">
               <widget class="QLabel" name="label_4">
                <property name="text">
@@ -417,6 +405,13 @@
               <widget class="QLabel" name="label_5">
                <property name="text">
                 <string>Parallel</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QWidget" name="widget_3" native="true">
+               <property name="styleSheet">
+                <string notr="true">background:rgb(0, 0, 255)</string>
                </property>
               </widget>
              </item>
@@ -441,17 +436,17 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
-              <widget class="QWidget" name="widget_3" native="true">
-               <property name="styleSheet">
-                <string notr="true">background:rgb(0, 0, 255)</string>
-               </property>
-              </widget>
-             </item>
              <item row="3" column="1">
               <widget class="QWidget" name="widget_4" native="true">
                <property name="styleSheet">
                 <string notr="true">background:rgb(255, 0, 0)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="2">
+              <widget class="QPushButton" name="patterns_information">
+               <property name="text">
+                <string>Patterns information</string>
                </property>
               </widget>
              </item>

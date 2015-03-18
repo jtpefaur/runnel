@@ -1,6 +1,7 @@
 #include "toolbarsconfigmesh.h"
 #include "ui_toolbarsconfigmesh.h"
 #include <iostream>
+#include <QMessageBox>
 #include "drainageAlgorithms/gradientdrainagecallaghanmark.h"
 #include "drainageAlgorithms/peuckerdrainagenetwork.h"
 #include "drainageAlgorithms/nonedrainagealgorithm.h"
@@ -29,6 +30,7 @@ ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     QObject::connect(ui->gradient_vector, SIGNAL(clicked(bool)), this, SIGNAL(showGradientVector(bool)));
     QObject::connect(ui->normal_vector, SIGNAL(clicked(bool)), this, SIGNAL(showNormalVector(bool)));
     QObject::connect(ui->coordinate_axis, SIGNAL(clicked(bool)), this, SIGNAL(showCoordinateAxis(bool)));
+    QObject::connect(ui->patterns_information, SIGNAL(clicked()), this, SLOT(showPatternsInformation()));
     this->drainageIncludeAlgorithms();
     this->pathWaterIncludeAlgorithms();
     this->networkIncludeAlgorithms();
@@ -142,4 +144,14 @@ void ToolbarsConfigMesh::glewIsReady(){
     for( AlgorithmPatron* item : patron_algorithms){
         item->glewReady();
     }
+}
+
+void ToolbarsConfigMesh::showPatternsInformation(){
+
+    QMessageBox s;
+    QString title = "Patterns Information";
+    s.setWindowTitle(title);
+    QString message = "prueba";
+    s.setText(message);
+    s.exec();;
 }
