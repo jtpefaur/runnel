@@ -10,8 +10,7 @@ class RunnelData
         RunnelData();
         bool openFile(QString name);
         void getDataTerrain(Terrain* ter);
-        bool writeFile();
-        bool createFile();
+        bool writeFile(QString fileName, Terrain* ter);
         ~RunnelData();
 };
 

@@ -20,19 +20,20 @@ class RunnelController: public QObject
         PainterTerrain pterrain;
         DataCollector information_map;
         Terrain* ter;
+        glm::vec3 coords;
 
+        RunnelController();
         void buildTerrain();
+        void saveData(QString fileName);
+        void changeColors(std::string name, glm::vec3 value);
+        void obtainFileTerrain(QString name_file, std::string file_type);
         GoogleMap& getGoogleMap();
         PainterTerrain& getPainter();
         std::unordered_map<std::string, glm::vec3> getColorConf();
-        void changeColors(std::string name, glm::vec3 value);
-        RunnelController();
-        void obtainFileTerrain(QString name_file, std::string file_type);
-        glm::vec3 coords;
-
 
     private:
         std::vector<arbol*> drainage_network;
+
 
     public slots:
         void getTerrain();

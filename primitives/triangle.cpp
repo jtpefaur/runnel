@@ -67,3 +67,17 @@ void runnel::Triangle::calculateLineHorizontal(){
     gradient.push_back(this->incentro + vector_a);
     gradient_vector = vector_a;
 }
+
+
+std::vector<runnel::Triangle*> runnel::Triangle::getNeighbours(){
+    std::vector<Triangle*> neighbour;
+    for (runnel::Edge* ed: this->edges){
+        runnel::Triangle* trian_first = ed->neighbour_triangle[0];
+        if ( trian_first->ident == this->ident ){
+            neighbour.push_back(trian_first);
+        }else{
+            neighbour.push_back(ed->neighbour_triangle[1]);
+        }
+    }
+    return neighbour;
+}

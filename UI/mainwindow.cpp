@@ -48,6 +48,7 @@ void MainWindow::connectSignalForRunnel(){
 
     QObject::connect(ui->actionTIFF, SIGNAL(triggered()),this , SLOT(getTypeTIFFForObtainNameFile()));
     QObject::connect(ui->actionRunnel, SIGNAL(triggered()),this , SLOT(getTypeRunnelForObtainNameFile()));
+    QObject::connect(ui->actionSave_File, SIGNAL(triggered()), this, SLOT(saveDataFile()));
     QObject::connect(&ui_toolbar, SIGNAL(selectDrainage(DrainageAlgorithms*)), &runnel_controller, SLOT(changeSelectDrainage(DrainageAlgorithms*)));
     QObject::connect(&ui_toolbar, SIGNAL(selectPatron(AlgorithmPatron*)), &runnel_controller, SLOT(changeSelectPatron(AlgorithmPatron*)));
     QObject::connect(&ui_toolbar, SIGNAL(selectWater(PathWaterAlgorithm*)), &runnel_controller, SLOT(changeSelectWater(PathWaterAlgorithm*)));
@@ -95,6 +96,21 @@ void MainWindow::getObtainNameFile(QString extension_name, std::string type_file
 
 }
 
+void MainWindow::saveDataFile(){
+    QString extension_runnel = "All Files (*);;Runnel(*.runnel)";
+    QString fileName = QFileDialog::getSaveFileName(this,
+           tr("Save File"), "",
+           tr( "Runnel(*.runnel)"));
+
+    if (fileName.size() == 0){
+        return;
+    }
+    std::cout << "name of file is " << fileName.toStdString() << std::endl;
+    runnel_controller.saveData(fileName);
+
+}
+
+
 void MainWindow::confColorRunnel(){
 
     ui->color_peucker->setStyleSheet(getColor(conf["shader_drainage_color_peucker"]));
@@ -125,6 +141,11 @@ void MainWindow::changeColor(std::string name){
     }
     this->confColorRunnel();
 }
+
+
+
+
+
 void MainWindow::changeColor1(){
     std::string name = "shader_drainage_color_peucker";
     this->changeColor(name);

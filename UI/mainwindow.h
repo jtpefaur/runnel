@@ -34,6 +34,8 @@ class MainWindow : public QMainWindow
         void getObtainNameFile(QString extension_name, std::string type_file);
         void getTypeRunnelForObtainNameFile();
         void getTypeTIFFForObtainNameFile();
+        void saveDataFile();
+
         void changeColor1();
         void changeColor2();
         void changeColor3();

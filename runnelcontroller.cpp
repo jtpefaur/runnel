@@ -70,6 +70,13 @@ void RunnelController::obtainFileTerrain(QString name_file, std::string file_typ
     this->buildTerrain();
 }
 
+void RunnelController::saveData(QString fileName){
+    RunnelData rundata;
+    if(!rundata.writeFile(fileName, ter)){
+        std::cout << "Could not write to file" << std::endl;
+    }
+}
+
 void RunnelController::buildTerrain(){
     pterrain.initGL();
     BuilderTerrain bt;
