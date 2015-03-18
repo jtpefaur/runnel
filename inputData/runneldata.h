@@ -3,6 +3,7 @@
 
 #include "terrain.h"
 #include "QString"
+#include "QFile"
 
 class RunnelData
 {
@@ -12,6 +13,9 @@ class RunnelData
         void getDataTerrain(Terrain* ter);
         bool writeFile(QString fileName, Terrain* ter);
         ~RunnelData();
+
+    private:
+        QFile file;
 };
 
 #endif // RUNNELDATA_H

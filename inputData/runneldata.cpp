@@ -9,11 +9,35 @@ RunnelData::RunnelData()
 }
 
 bool RunnelData::openFile(QString name){
+    std::cout << "data archivo " << name.toStdString() << std::endl;
 
+    file.setFileName(name);
+    if(!file.open(QIODevice::ReadOnly)) {
+        std::cout << "error with open file" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 void RunnelData::getDataTerrain(Terrain* ter){
+    QTextStream stream(&file);
+    QString line = stream.readLine();
+    QStringList fields = line.split(" ");
+    int number_points = fields[0].toInt();
+    ter->width = fields[1].toInt();
+    ter->height = fields[2].toInt();
 
+    std::cout << number_points << " " << ter->width << " " << ter->height << std::endl;
+    for (int i = 0; i < number_points; ++i){
+        QString line = stream.readLine();
+        QStringList fields = line.split(" ");
+        glm::vec3 coords = glm::vec3(fields[1].toFloat(),fields[2].toFloat(),fields[3].toFloat());
+        ter->setBoundingBox(coords);
+        runnel::Point *point_new = new runnel::Point(coords, fields[1].toInt());
+        ter->addPoint(point_new);
+    }
+
+    file.close();
 }
 
 
@@ -30,7 +54,7 @@ bool RunnelData::writeFile(QString fileName, Terrain* ter){
 
     /* Write the line to the file */
     //writes points
-    outStream << ter->struct_point.size() << endl;
+    outStream << ter->struct_point.size() << " " << ter->width << " " << ter->height << endl;
     for(runnel::Point *pto : ter->struct_point){
         outStream << pto->ident << " " << pto->coord.x << " " << pto->coord.y << " " << pto->coord.z << endl;
     }
@@ -49,7 +73,7 @@ bool RunnelData::writeFile(QString fileName, Terrain* ter){
         if ( neighbour.size() == 2 )
             outStream << neighbour[0]->ident << " " << neighbour[1]->ident << " " << -1 << endl;
 
-        if ( neighbour.size() == 2 )
+        if ( neighbour.size() == 1 )
             outStream << neighbour[0]->ident << " " << -1 << " " << -1 << endl;
     }
 

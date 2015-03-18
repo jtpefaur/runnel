@@ -97,10 +97,9 @@ void MainWindow::getObtainNameFile(QString extension_name, std::string type_file
 }
 
 void MainWindow::saveDataFile(){
-    QString extension_runnel = "All Files (*);;Runnel(*.runnel)";
     QString fileName = QFileDialog::getSaveFileName(this,
            tr("Save File"), "",
-           tr( "Runnel(*.runnel)"));
+           tr("Runnel(*.runnel)"));
 
     if (fileName.size() == 0){
         return;

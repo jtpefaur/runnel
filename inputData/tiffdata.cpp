@@ -17,7 +17,6 @@ bool TiffData::openFile(QString name){
     }
     std::cout << "arch return is false" << std::endl;
     return false;
-
 }
 
 void TiffData::getDataTerrain(Terrain* ter){
@@ -55,7 +54,6 @@ void TiffData::getDataTerrain(Terrain* ter){
                     ter->addPoint(point_new);
                     ++counter;
                 }
-
             }
         }else{
             std::cout << "Error abriendo imagen :(" << std::endl;
