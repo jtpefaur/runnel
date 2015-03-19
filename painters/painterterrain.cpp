@@ -245,6 +245,8 @@ void PainterTerrain::initColorBuffer(){
         color_conf["color_gradient_path"] = glm::vec3(1.0f,1.0f,1.0f);
         color_conf["shader_drainage_color"] = glm::vec3(0.0f,0.3f,0.0f);
         color_conf["shader_drainage_color_peucker"] = glm::vec3(0.0f,0.3f,0.0f);
+        color_conf["selected_triangle_color"] = glm::vec3(0.0f, 1.0f, 1.0f);
+        color_conf["fluvial_terrace_color"] = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 }
 
