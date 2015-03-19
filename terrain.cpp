@@ -214,3 +214,16 @@ std::vector< glm::vec3 > Terrain::getCoordinateAxis(){
     position_coordinates.push_back(init_base + glm::vec3(0,0,1)*size);
     return position_coordinates;
 }
+
+runnel::Triangle* Terrain::getClosestTriangle(glm::vec3 point){
+    float min_distance = glm::distance(struct_triangle[0]->incentro, point);
+    runnel::Triangle* closest_triangle = struct_triangle[0];
+    for(runnel::Triangle* t : struct_triangle){
+        float distance = glm::distance(t->incentro, point);
+        if( distance < min_distance ){
+            closest_triangle = t;
+            min_distance = distance;
+        }
+    }
+    return closest_triangle;
+}
