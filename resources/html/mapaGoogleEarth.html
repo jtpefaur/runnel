@@ -67,8 +67,10 @@
 				var dist_pto = Math.sqrt(cant_ptos) -1;
 				var pixel_width  = document.getElementById("map3d").offsetWidth;
 				var pixel_height = document.getElementById("map3d").offsetHeight;
+                var pto0_lat = (South - North)/2 + North;
+                var pto0_lng = (West - East)/2 + East; 
 
-				information_map.setCantPoints(cant_ptos, dist_pto+1, dist_pto+1,pixel_width , pixel_height); 
+				information_map.setCantPoints(cant_ptos, dist_pto+1, dist_pto+1,pixel_width , pixel_height, pto0_lat, pto0_lng); 
                 if (type_data == uniform){
                     form_uniform_coordenadas(dist_pto, North, South, West, East);
                 }

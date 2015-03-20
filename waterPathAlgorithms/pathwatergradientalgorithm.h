@@ -20,10 +20,11 @@ class PathWaterGradientAlgorithm : public PathWaterAlgorithm
         ShaderGradient* shader;
         Terrain* ter;
         runnel::Triangle* getTriangleOfPoint(glm::vec3 coords);
-        runnel::Triangle* getNextTriangle(runnel::Triangle* trian, glm::vec3 pto);
+        void getNextTriangle(runnel::Triangle* trian);
         std::pair<runnel::Triangle*, glm::vec3> getEdgeInterseption(runnel::Triangle*trian, glm::vec3 vector_a, glm::vec3 pto);
-        bool isOnEdge(runnel::Point* p1, runnel::Point* p2, glm::vec3 pto);
+        runnel::Triangle* calculateOtherTriangleInEdge(runnel::Triangle* trian_initial, runnel::Edge* ed);
         std::vector<glm::vec3> edge_path;
+        std::unordered_map<int, int> triangles_id;
 };
 
 #endif // PATHWATERGRADIENTALGORITHM_H

@@ -13,12 +13,15 @@ PathWaterGradientAlgorithm::~PathWaterGradientAlgorithm(){
 void PathWaterGradientAlgorithm::run(glm::vec3 point, Terrain *terr){
     this->ter = terr;
     edge_path.clear();
-
+    triangles_id.clear();
+    runnel::Triangle*trian = this->getTriangleOfPoint(point);
+    this->getNextTriangle(trian);
+    shader->fillPositionBuffer(edge_path);
 }
 
 void PathWaterGradientAlgorithm::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
     if(shader){
-
+        shader->render(matrix, exag_z, color);
     }
 }
 
@@ -47,34 +50,61 @@ runnel::Triangle* PathWaterGradientAlgorithm::getTriangleOfPoint(glm::vec3 coord
     return triangle_minimum_distance;
 }
 
-runnel::Triangle* PathWaterGradientAlgorithm::getNextTriangle(runnel::Triangle* trian, glm::vec3 pto){
+void PathWaterGradientAlgorithm::getNextTriangle(runnel::Triangle* trian){
     glm::vec3 vector_z = glm::vec3(0, 0, -1);
-    glm::vec3 vector_b = glm::dot(trian->normal, -vector_z)*trian->normal;
-    glm::vec3 vector_a = - vector_z - vector_b;
-    std::pair<runnel::Triangle*, glm::vec3> value = this->getEdgeInterseption(trian, vector_a, pto);
+    runnel::Triangle* trian_ant = 0;
+    while(1){
+        glm::vec3 vector_b = glm::dot(trian->normal, -vector_z)*trian->normal;
+        glm::vec3 vector_a = - vector_z - vector_b;
 
-    return this->getNextTriangle(value.first, value.second);
+        if(triangles_id[trian->ident]){
+            return;
+        }
+        float maximun_angle = -100;
+        runnel::Edge* interception_edge = 0;
+        runnel::Edge* interception_edge_old = 0;
+        for(runnel::Edge* ed : trian->edges){
+            runnel::Triangle* trian_other = this->calculateOtherTriangleInEdge(trian, ed);
+            if(trian_other == 0){
+                continue;
+            }
 
-}
+            float value = glm::dot(glm::vec2(glm::normalize(trian_other->incentro - trian->incentro)), glm::vec2( vector_a));
 
-std::pair<runnel::Triangle*, glm::vec3> PathWaterGradientAlgorithm::getEdgeInterseption(runnel::Triangle*trian, glm::vec3 vector_a, glm::vec3 pto){
-    for(runnel::Edge* ed: trian->edges){
-//         if (! isOnEdge(points[ed->id1], points[ed->id2], pto_interception)){
+            if(value > maximun_angle){
+                interception_edge_old = interception_edge;
+                interception_edge = ed;
+                maximun_angle = value;
+            }
+        }
+        if(!interception_edge){
+    //        std::cout<<"Interception edge no encontrada"<<std::endl;
+            return;
+        }
+        runnel::Triangle* next_triangle = calculateOtherTriangleInEdge(trian, interception_edge);
+        if(!next_triangle)
+            return;
+        if(trian_ant == next_triangle){
 
-//         }
+            next_triangle = calculateOtherTriangleInEdge(trian, interception_edge_old);
+        }
+        edge_path.push_back(trian->incentro);
+        edge_path.push_back(next_triangle->incentro);
+        triangles_id[trian->ident] = 1;
+        trian = next_triangle;
     }
+
 }
 
-bool PathWaterGradientAlgorithm::isOnEdge(runnel::Point* p1, runnel::Point* p2, glm::vec3 pto){
-    bool isOn = false;
-    glm::vec3 min_edge = glm::min(p1->coord, p2->coord);
-    glm::vec3 max_edge = glm::max(p1->coord, p2->coord);
-
-    if(glm::all(glm::lessThanEqual(min_edge, pto)) && glm::all(glm::greaterThanEqual(max_edge, pto)) ){
-        return true;
+runnel::Triangle* PathWaterGradientAlgorithm::calculateOtherTriangleInEdge(runnel::Triangle* trian_initial, runnel::Edge* ed){
+    for(runnel::Triangle* trian: ed->neighbour_triangle){
+        if(!(trian->ident == trian_initial->ident)){
+            return trian;
+        }
     }
-    return isOn;
+    return (runnel::Triangle*)0;
 }
+
 
 std::vector<glm::vec3> PathWaterGradientAlgorithm::getPathWater(){
     return edge_path;

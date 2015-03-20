@@ -20,6 +20,11 @@ class PainterTerrain : public GLWidget {
         static const int MALLA = 0;
         static const int POLIGONO = 2;
         static const int POINTS = 1;
+        static const int render_drainage = 1;
+        static const int render_network = 2;
+        static const int render_patterns = 3;
+        static const int render_water = 4;
+        int render_tab;
         PainterTerrain();
         virtual ~PainterTerrain();
         Terrain* ter;

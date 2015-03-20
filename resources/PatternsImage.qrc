@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>patterns_image/anastomotico.png</file>
+        <file>patterns_image/angular.png</file>
+        <file>patterns_image/anular.png</file>
+        <file>patterns_image/asimetrico.png</file>
+        <file>patterns_image/colineal.png</file>
+        <file>patterns_image/contorneado.png</file>
+        <file>patterns_image/desordenado.png</file>
+        <file>patterns_image/dicotomico.png</file>
+        <file>patterns_image/enrejado.png</file>
+        <file>patterns_image/ovalado.png</file>
+        <file>patterns_image/paralelo.png</file>
+        <file>patterns_image/pinado.png</file>
+        <file>patterns_image/radial.png</file>
+        <file>patterns_image/rectangular.png</file>
+        <file>patterns_image/rectilineo.png</file>
+        <file>patterns_image/subdentritico.png</file>
+        <file>patterns_image/subparalelo.png</file>
+        <file>patterns_image/dendritico.png</file>
+    </qresource>
+</RCC>

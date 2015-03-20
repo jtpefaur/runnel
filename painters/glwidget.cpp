@@ -169,7 +169,7 @@ void GLWidget::paintGL(){
     matrix_glwidget = glm::mat4();
     matrix_glwidget = glm::rotate(matrix_glwidget, rot.x / 16.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     matrix_glwidget = glm::rotate(matrix_glwidget, rot.y / 16.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-    matrix_glwidget = glm::rotate(matrix_glwidget, rot.z / 16.0f +90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+    matrix_glwidget = glm::rotate(matrix_glwidget, rot.z / 16.0f, glm::vec3(0.0f, 0.0f, 1.0f));
 //    std::cout << "Matrix deps de la rotacion " << std::endl;
 //    printMat(matrix_glwidget);
     float paso = 20;

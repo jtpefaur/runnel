@@ -25,6 +25,7 @@ PainterTerrain::PainterTerrain():
     render_normal = false;
     render_gradient = false;
     render_axis = false;
+    render_tab = -1;
 }
 
 PainterTerrain::~PainterTerrain() {
@@ -91,18 +92,26 @@ void PainterTerrain::paintGL(){
     matrix_final = ortho_matrix*this->GLWidget::model_view_matrix;
 
     shader_terrain->render(matrix_final, exag_z, ter->max_bounding.z, color_conf["shader_terrain_color"]);
-    if( drainage_algorithm ){
-        drainage_algorithm->render(matrix_final, exag_z, color_conf["shader_callaghan_color"]);
+    switch( render_tab )
+    {
+        case render_drainage:
+            if( drainage_algorithm )
+                drainage_algorithm->render(matrix_final, exag_z, color_conf["shader_callaghan_color"]);
+            break;
+
+        case render_network:
+            if( build_network )
+                build_network->render(matrix_final, exag_z);
+            break;
+        case render_patterns:
+            if( pattern_algorithm )
+                pattern_algorithm->render(matrix_final, exag_z);
+            break;
+        case render_water:
+            if( water_algorithm )
+                water_algorithm->render(matrix_final, exag_z, color_conf["color_gradient_path"]);
     }
-    if( build_network ){
-        build_network->render(matrix_final, exag_z);
-    }
-    if( pattern_algorithm ){
-        pattern_algorithm->render(matrix_final, exag_z);
-    }
-    if( water_algorithm ){
-        water_algorithm->render(matrix_final, exag_z, color_conf["color_gradient_path"]);
-    }
+
     if( render_normal ){
         shader_normal->render(matrix_final, exag_z, color_conf["normal_color"], false);
     }
@@ -159,22 +168,25 @@ void PainterTerrain::changeExag(int number){
 
 void PainterTerrain::setDrainageAlgorithm(DrainageAlgorithms *da){
     drainage_algorithm = da;
-
+    render_tab = render_drainage;
     this->GLWidget::updateGL();
 }
 
 void PainterTerrain::setPatternAlgorithm(AlgorithmPatron *da){
     pattern_algorithm = da;
+    render_tab = render_patterns;
     this->GLWidget::updateGL();
 }
 
 void PainterTerrain::setWaterAlgorithm(PathWaterAlgorithm *da){
     water_algorithm = da;
+    render_tab = render_water;
     this->GLWidget::updateGL();
 }
 
 void PainterTerrain::setNetworkAlgorithm(BuildNetwork* alg){
     build_network = alg;
+    render_tab = render_network;
     this->GLWidget::updateGL();
 }
 

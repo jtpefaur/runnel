@@ -2,6 +2,7 @@
 #include "ui_toolbarsconfigmesh.h"
 #include <iostream>
 #include <QMessageBox>
+#include "patternsdata.h"
 #include "drainageAlgorithms/gradientdrainagecallaghanmark.h"
 #include "drainageAlgorithms/peuckerdrainagenetwork.h"
 #include "drainageAlgorithms/nonedrainagealgorithm.h"
@@ -13,6 +14,7 @@
 #include "patternsAlgorithms/zhangguilbertalgorithm.h"
 #include "waterPathAlgorithms/nonepathwateralgorithm.h"
 #include "waterPathAlgorithms/pathwatercallaghanalgorithm.h"
+#include "waterPathAlgorithms/pathwatergradientalgorithm.h"
 
 
 
@@ -116,6 +118,7 @@ void ToolbarsConfigMesh::getPatron(){
 void ToolbarsConfigMesh::pathWaterIncludeAlgorithms(){
     path_water_algorithms.push_back(new NonePathWaterAlgorithm());
     path_water_algorithms.push_back(new PathWaterCallaghanAlgorithm());
+    path_water_algorithms.push_back(new PathWaterGradientAlgorithm());
     for( PathWaterAlgorithm* item : path_water_algorithms){
         ui->path_water_value->addItem(item->getName());
     }
@@ -150,8 +153,21 @@ void ToolbarsConfigMesh::showPatternsInformation(){
 
     QMessageBox s;
     QString title = "Patterns Information";
-    s.setWindowTitle(title);
-    QString message = "prueba";
-    s.setText(message);
-    s.exec();;
+    QString information;
+    for( int i = 0; i < PatternsData::names_patterns.size(); ++i){
+        information+= "<div>";
+        information+= "<div style=\"display:inline-block;\">";
+        information+= "<img src=\"" + PatternsData::images[i] +"\" >";
+        information+= "</div>";
+        information+= "<div style=\"display:inline-block;\">";
+        information+= "<b>" + PatternsData::names_patterns[i] + "</b>";
+        information+= "<br>";
+        information+= PatternsData::descriptions[i];
+        information+= "<br><br>";
+        information+= "</div>";
+        information+= "</div>";
+
+
+    }
+    s.about(this, title, information);
 }

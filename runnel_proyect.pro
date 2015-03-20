@@ -61,7 +61,10 @@ SOURCES += main.cpp\
     terrain.cpp \
     drainageAlgorithms/diedralangledrainage.cpp \
     waterPathAlgorithms/pathwatercallaghanalgorithm.cpp \
-    waterPathAlgorithms/pathwatergradientalgorithm.cpp
+    waterPathAlgorithms/pathwatergradientalgorithm.cpp \
+    inputData/utmconverter.cpp \
+    inputData/elipsoidetype.cpp \
+    UI/patternsdata.cpp
 
 
 
@@ -261,7 +264,10 @@ HEADERS  += UI/mainwindow.h \
     UI/drainageAlgorithm/callaghanconf.h \
     drainageAlgorithms/diedralangledrainage.h \
     waterPathAlgorithms/pathwatercallaghanalgorithm.h \
-    waterPathAlgorithms/pathwatergradientalgorithm.h
+    waterPathAlgorithms/pathwatergradientalgorithm.h \
+    inputData/utmconverter.h \
+    inputData/elipsoidetype.h \
+    UI/patternsdata.h
 
 
 FORMS    += UI/mainwindow.ui \
@@ -277,7 +283,8 @@ FORMS    += UI/mainwindow.ui \
 
 RESOURCES += \
     resources/shader.qrc \
-    resources/RunnelWeb.qrc
+    resources/RunnelWeb.qrc \
+    resources/PatternsImage.qrc
 
 
 win32: LIBS += -lglew32
