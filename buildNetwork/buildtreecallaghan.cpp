@@ -17,7 +17,7 @@ struct customLess{
 buildTreeCallaghan::buildTreeCallaghan(){
     shader_build = 0;
     terr = 0;
-    max_water = 1/10000.0f;
+    max_water = 1/100000.0f;
     QObject::connect(&conf, SIGNAL(changeAttr()), this, SLOT(changeAttr()));
 
 }
@@ -30,12 +30,15 @@ buildTreeCallaghan::~buildTreeCallaghan(){
 
 std::vector<arbol*> buildTreeCallaghan::run(Terrain* ter){
     terr = ter;
-//    for(runnel::Point* pto: terr->struct_point){
-//        pto->water_value = 0;
-//    }
+    max_value_water = 0;
+    for(runnel::Point* pto: terr->struct_point){
+        pto->water_value = 1;
+        pto->water_parent.clear();
+    }
     point_counter.clear();
     arbolitos.clear();
-    max_water = conf.getMaxWater()/10000.0f;
+    max_water = conf.getMaxWater()/100.0f;
+
     this->getPoints(ter->struct_point);
 
     this->reviewPoints();
@@ -80,12 +83,12 @@ void buildTreeCallaghan::getPoints(std::vector<runnel::Point*>& points)
     for(runnel::Point* pto : points_order){
         this->chooseMoreDepthPoint(terr->struct_point, pto);
     }
-    terr->getMoreWaterPoint();
+    this->getMoreWaterPoint();
     points_order = points;
     std::sort( points_order.begin(), points_order.end(), customMore());
-    std::cout << terr->max_value_water << std::endl;
+    std::cout << max_value_water << std::endl;
     for (runnel::Point* pto: points_order){
-        if (pto->water_value > max_water*terr->max_value_water){
+        if (pto->water_value > max_water*max_value_water){
             point_counter[pto->ident] = 1;
         }else{
             //point was used
@@ -99,6 +102,7 @@ void buildTreeCallaghan::chooseMoreDepthPoint(std::vector<runnel::Point*>& point
     int w = terr->width;
     float delta_water = 0;
     std::vector<int> position_neightbour;
+
     position_neightbour.push_back(pto->ident - w);
     position_neightbour.push_back(pto->ident + w);
     if(pto->ident%w > 0){
@@ -111,6 +115,7 @@ void buildTreeCallaghan::chooseMoreDepthPoint(std::vector<runnel::Point*>& point
         position_neightbour.push_back(pto->ident - w + 1);
         position_neightbour.push_back(pto->ident + w + 1);
     }
+
     float max_z = -1;
     int id_max = -1;
     for (int id : position_neightbour){
@@ -133,7 +138,6 @@ void buildTreeCallaghan::chooseMoreDepthPoint(std::vector<runnel::Point*>& point
 
 void buildTreeCallaghan::reviewPoints(){
     for(runnel::Point* pto: points_order){
-       // std::cout << "first point "<< pto->ident << " mi altura es " << pto->coord.z << std::endl;
         if(point_counter[pto->ident] == 0){ //ya fue utilizado
             continue;
         }else{
@@ -165,6 +169,7 @@ void buildTreeCallaghan::createTree(arbol* parent){
 
 void buildTreeCallaghan::changeAttr(){
     this->run(terr);
+    emit reload();
 }
 
 std::vector<glm::vec3> buildTreeCallaghan::getPathTree(){
@@ -174,4 +179,14 @@ std::vector<glm::vec3> buildTreeCallaghan::getPathTree(){
         ar->getArbolEdges(path);
     }
     return path;
+}
+
+void buildTreeCallaghan::getMoreWaterPoint(){
+
+    for (runnel::Edge* edge: this->terr->struct_edge){
+        float water_1 = this->terr->struct_point[edge->id1]->water_value;
+        float water_2 = this->terr->struct_point[edge->id2]->water_value;
+        float value_water =  std::max(water_1, water_2);
+        max_value_water = std::max(max_value_water,value_water);
+    }
 }

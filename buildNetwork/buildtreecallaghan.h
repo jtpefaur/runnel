@@ -28,9 +28,11 @@ class buildTreeCallaghan : public BuildNetwork
         void getPoints(std::vector<runnel::Point*>& points);
         void createTree(arbol* parent);
         void reviewPoints();
+        void getMoreWaterPoint();
         std::unordered_map<int, int> point_counter;
         std::vector<runnel::Point*> points_order;
         float max_water;
+        float max_value_water;
         Terrain* terr;
         CallaghanNetworkConf conf;
         std::vector<arbol*> arbolitos;

@@ -26,10 +26,14 @@ class GradientDrainageCallaghanMark : public DrainageAlgorithms
         CallaghanConf conf;
         void sortElement(std::vector<runnel::Point *> points);
         void chooseMoreDepthPoint(std::vector<runnel::Point*>& points, runnel::Point *pto);
+        void getMoreWaterPoint();
         ShaderCallaghan* shader_callaghan;
         int w;
         int h;
         Terrain* ter;
+        std::vector<float> count_water;
+        float max_value_water;
+        std::vector<glm::vec3> position_water_points;
         float moreWater;
         float max_water;
         float linewater;

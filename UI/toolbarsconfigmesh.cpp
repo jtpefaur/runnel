@@ -155,11 +155,11 @@ void ToolbarsConfigMesh::showPatternsInformation(){
     QString title = "Patterns Information";
     QString information;
     for( int i = 0; i < PatternsData::names_patterns.size(); ++i){
-        information+= "<div>";
-        information+= "<div style=\"display:inline-block;\">";
+        information+= "<div style=\"width:400px\">";
+        information+= "<div style=\"display:inline-block;width:20%;\">";
         information+= "<img src=\"" + PatternsData::images[i] +"\" >";
         information+= "</div>";
-        information+= "<div style=\"display:inline-block;\">";
+        information+= "<div style=\"display:inline-block;width:80%;\">";
         information+= "<b>" + PatternsData::names_patterns[i] + "</b>";
         information+= "<br>";
         information+= PatternsData::descriptions[i];

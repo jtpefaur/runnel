@@ -20,9 +20,9 @@ PeuckerDrainageNetwork::~PeuckerDrainageNetwork(){
 void PeuckerDrainageNetwork::run(Terrain *ter){
     terr = ter;
     this->calculateGrid(ter);
-    std::vector<glm::vec3> color = ter->getDrainageColor();
-    std::vector<glm::vec3> position = ter->getPointsEdgeDrainage();
-    shader->fillPositionBuffer(position, color);
+    points_edge.clear();
+    std::vector<glm::vec3> color = this->getDrainageColor();
+    shader->fillPositionBuffer(points_edge, color);
 }
 
 void PeuckerDrainageNetwork::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
@@ -84,5 +84,24 @@ void PeuckerDrainageNetwork::calculateGrid(Terrain *ter){
 }
 
 std::vector<glm::vec3> PeuckerDrainageNetwork::getPathTree(){
-    return terr->getPointsEdgeDrainage();
+    return points_edge;
+}
+
+
+std::vector<glm::vec3> PeuckerDrainageNetwork::getDrainageColor(){
+    std::vector<glm::vec3> color;
+    for( runnel::Edge* ed : terr->struct_edge){
+
+        runnel::Point* p1 = terr->struct_point[ed->id1];
+        runnel::Point* p2 = terr->struct_point[ed->id2];
+        float color_p1 = (p1->isFlagsOn(p1->PEUCKER))? 1.0f : 0.0f;
+        float color_p2 = (p2->isFlagsOn(p2->PEUCKER))? 1.0f : 0.0f;
+        if((color_p1==0.0f && color_p2==0.0f) ){
+            color.push_back(glm::vec3(1,0,0));
+            color.push_back(glm::vec3(1,0,0));
+            points_edge.push_back(p1->coord);
+            points_edge.push_back(p2->coord);
+        }
+    }
+    return color;
 }

@@ -13,7 +13,7 @@ Terrain::Terrain():
     min_bounding = maximo*glm::vec3(1.0f,1.0f,1.0f);
     sigma = glm::vec3(0.0f,0.0f,0.0f);
     media = glm::vec3(0.0f,0.0f,0.0f);
-    max_value_water = 0;
+
 }
 
 void Terrain::addPoint(runnel::Point* p){
@@ -159,7 +159,6 @@ std::vector<glm::vec3> Terrain::calculateHeigtArray(){
         heig.push_back(glm::vec3(0, t->height.y, 0));
         heig.push_back(glm::vec3(0, 0, t->height.z));
         heig.push_back(glm::vec3(t->height.x, 0, 0));
-        //std::cout << "height "<< t->height.x << " " << t->height.y << " " << t->height.z << std::endl;
     }
     return heig;
 }
@@ -175,30 +174,6 @@ void Terrain::addEdge(runnel::Edge* ed){
     struct_edge.push_back(ed);
 }
 
-
-std::vector<glm::vec3> Terrain::getDrainageColor(){
-    std::vector<glm::vec3> color;
-    for( runnel::Edge* ed : struct_edge){
-
-        runnel::Point* p1 = this->struct_point[ed->id1];
-        runnel::Point* p2 = this->struct_point[ed->id2];
-        float color_p1 = (p1->isFlagsOn(p1->PEUCKER))? 1.0f : 0.0f;
-        float color_p2 = (p2->isFlagsOn(p2->PEUCKER))? 1.0f : 0.0f;
-        if((color_p1==0.0f && color_p2==0.0f) ){
-            color.push_back(glm::vec3(1,0,0));
-            color.push_back(glm::vec3(1,0,0));
-            points_edge.push_back(p1->coord);
-            points_edge.push_back(p2->coord);
-        }
-    }
-    return color;
-}
-
-std::vector<glm::vec3> Terrain::getPointsEdgeDrainage(){
-    return points_edge;
-}
-
-
 std::vector<glm::vec3> Terrain::getGradientDirectionVector(){
     std::vector<glm::vec3> vector_gradient;
 
@@ -212,19 +187,7 @@ std::vector<glm::vec3> Terrain::getGradientDirectionVector(){
     return vector_gradient;
 }
 
-void Terrain::getMoreWaterPoint(){
 
-    for (runnel::Edge* edge: this->struct_edge){
-        float water_1 = this->struct_point[edge->id1]->water_value;
-        float water_2 = this->struct_point[edge->id2]->water_value;
-        float value_water =  std::max(water_1, water_2);
-        max_value_water = std::max(max_value_water,value_water);
-        count_water.push_back(value_water);
-        count_water.push_back(value_water);
-        position_water_points.push_back(this->struct_point[edge->id1]->coord);
-        position_water_points.push_back(this->struct_point[edge->id2]->coord);
-    }
-}
 
 std::vector< glm::vec3 > Terrain::getCoordinateAxis(){
     std::vector< glm::vec3 > position_coordinates;

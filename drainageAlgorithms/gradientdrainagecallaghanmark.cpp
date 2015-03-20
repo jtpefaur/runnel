@@ -37,16 +37,21 @@ void GradientDrainageCallaghanMark::sortElement(std::vector<runnel::Point *> poi
 
 void GradientDrainageCallaghanMark::run(Terrain* ter){
     this->ter = ter;
+    count_water.clear();
+    position_water_points.clear();
     w = this->ter->width;
     h = this->ter->height;
+    max_value_water = 0;
+
+
     GradientDrainageCallaghanMark::sortElement(ter->struct_point);
 
     for(runnel::Point* pto : points_terrain){
         this->chooseMoreDepthPoint(ter->struct_point, pto);
     }
-    ter->getMoreWaterPoint();
-    max_water = ter->max_value_water;
-    shader_callaghan->fillPositionBuffer(ter->position_water_points, ter->count_water);
+    this->getMoreWaterPoint();
+    max_water = max_value_water;
+    shader_callaghan->fillPositionBuffer(position_water_points, count_water);
 
 }
 
@@ -109,12 +114,27 @@ void GradientDrainageCallaghanMark::changeAttr(){
 
 std::vector<glm::vec3> GradientDrainageCallaghanMark::getPathTree(){
     std::vector<glm::vec3> points_path;
-    std::vector<glm::vec3> position_water = ter->position_water_points;
+    std::vector<glm::vec3> position_water = position_water_points;
     int i = 0;
     while(i< position_water.size()){
-        if (ter->count_water[i]/max_water > linewater){
+        if (count_water[i]/max_water > linewater){
             points_path.push_back(position_water[i]);
         }
     }
     return points_path;
+}
+
+
+void GradientDrainageCallaghanMark::getMoreWaterPoint(){
+
+    for (runnel::Edge* edge: this->ter->struct_edge){
+        float water_1 = this->ter->struct_point[edge->id1]->water_value;
+        float water_2 = this->ter->struct_point[edge->id2]->water_value;
+        float value_water =  std::max(water_1, water_2);
+        max_value_water = std::max(max_value_water,value_water);
+        count_water.push_back(value_water);
+        count_water.push_back(value_water);
+        position_water_points.push_back(this->ter->struct_point[edge->id1]->coord);
+        position_water_points.push_back(this->ter->struct_point[edge->id2]->coord);
+    }
 }

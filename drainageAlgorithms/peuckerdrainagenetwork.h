@@ -20,6 +20,8 @@ class PeuckerDrainageNetwork : public DrainageAlgorithms
 
     private:
        static void calculateGrid(Terrain *ter);
+       std::vector<glm::vec3> getDrainageColor();
+       std::vector<glm::vec3> points_edge;
        PeuckerConf conf;
        Terrain* terr;
        ShaderDrainage* shader;

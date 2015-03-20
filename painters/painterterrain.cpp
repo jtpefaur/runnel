@@ -187,6 +187,7 @@ void PainterTerrain::setWaterAlgorithm(PathWaterAlgorithm *da){
 void PainterTerrain::setNetworkAlgorithm(BuildNetwork* alg){
     build_network = alg;
     render_tab = render_network;
+    QObject::connect(build_network, SIGNAL(reload()), this, SLOT(updateGL()));
     this->GLWidget::updateGL();
 }
 

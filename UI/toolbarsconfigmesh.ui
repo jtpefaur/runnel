@@ -80,7 +80,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>1</number>
         </property>
         <property name="tabSpacing">
          <number>7</number>
@@ -90,8 +90,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>180</width>
-           <height>561</height>
+           <width>154</width>
+           <height>127</height>
           </rect>
          </property>
          <property name="accessibleName">
@@ -192,6 +192,12 @@
          <layout class="QVBoxLayout" name="verticalLayout_15">
           <item>
            <widget class="QGroupBox" name="groupBox_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="title">
              <string/>
             </property>
@@ -211,6 +217,12 @@
           </item>
           <item>
            <widget class="QWidget" name="network_conf" native="true">
+            <property name="maximumSize">
+             <size>
+              <width>158</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <layout class="QVBoxLayout" name="verticalLayout_13"/>
            </widget>
           </item>
@@ -234,8 +246,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>180</width>
-           <height>561</height>
+           <width>166</width>
+           <height>139</height>
           </rect>
          </property>
          <attribute name="label">
@@ -478,8 +490,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>180</width>
-           <height>561</height>
+           <width>167</width>
+           <height>295</height>
           </rect>
          </property>
          <attribute name="label">

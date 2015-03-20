@@ -28,9 +28,7 @@ class Terrain
         std::vector<glm::vec3> points_edge;
         std::vector<glm::vec3> vector_gradient_color;
         std::unordered_map< int, std::vector< runnel::Triangle* > > neigh;
-        std::vector<float> count_water;
-        float max_value_water;
-        std::vector<glm::vec3> position_water_points;
+
 
         void addPoint(runnel::Point* p);
         void addTriangle(runnel::Triangle* t);
@@ -51,7 +49,7 @@ class Terrain
         std::vector<glm::vec3> getDrainageColor();
         std::vector<glm::vec3> getPointsEdgeDrainage();
         std::vector<glm::vec3> getGradientDirectionVector();
-        std::vector< glm::vec3 > getCoordinateAxis();
+        std::vector<glm::vec3> getCoordinateAxis();
         void getMoreWaterPoint();
         void setMapPixel(int ancho_pix, int largo_pix);
 
