@@ -6,8 +6,10 @@
 #include "terrain.h"
 #include "patternsAlgorithms/arbol.h"
 
-class AlgorithmPatron
+class AlgorithmPatron : public QObject
 {
+        Q_OBJECT
+
     public:
         AlgorithmPatron();
         virtual ~AlgorithmPatron();
@@ -17,6 +19,9 @@ class AlgorithmPatron
         virtual QString getName() = 0;
         virtual QWidget* getConf() = 0;
         virtual std::vector<glm::vec3> getPathTree() = 0;
+
+    signals:
+       void reload();
 
     protected:
         Terrain *terreno;

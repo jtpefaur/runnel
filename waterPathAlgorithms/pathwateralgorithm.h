@@ -5,8 +5,10 @@
 #include "lib/glm/glm.hpp"
 
 
-class PathWaterAlgorithm
+class PathWaterAlgorithm : public QObject
 {
+        Q_OBJECT
+
     public:
         PathWaterAlgorithm();
         virtual ~PathWaterAlgorithm();
@@ -16,6 +18,9 @@ class PathWaterAlgorithm
         virtual QString getName() = 0;
         virtual QWidget* getConf() = 0;
         virtual std::vector<glm::vec3> getPathWater() = 0;
+
+    signals:
+       void reload();
 
 };
 

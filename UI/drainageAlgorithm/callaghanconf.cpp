@@ -7,6 +7,7 @@ CallaghanConf::CallaghanConf(QWidget *parent) :
 {
     ui->setupUi(this);
     QObject::connect(ui->delta_button, SIGNAL(clicked()), this, SIGNAL(changeAttr()));
+    QObject::connect(ui->line_button, SIGNAL(clicked()), this, SIGNAL(changeAttr()));
 }
 
 CallaghanConf::~CallaghanConf()

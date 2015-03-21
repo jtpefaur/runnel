@@ -62,7 +62,7 @@ void runnel::Triangle::calculateLineHorizontal(){
     for(runnel::Edge*ed : this->edges){
         value += std::sqrt(glm::dot(ed->edge_vector,ed->edge_vector));
     }
-    vector_a = vector_a*value/3.0f;
+    vector_a = -vector_a*value/3.0f;
     gradient.push_back(this->incentro);
     gradient.push_back(this->incentro + vector_a);
     gradient_vector = vector_a;

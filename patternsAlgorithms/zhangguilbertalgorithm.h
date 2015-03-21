@@ -6,6 +6,7 @@
 
 class ZhangGuilbertAlgorithm : public AlgorithmPatron
 {
+        Q_OBJECT
     public:
         ZhangGuilbertAlgorithm();
         virtual ~ZhangGuilbertAlgorithm();

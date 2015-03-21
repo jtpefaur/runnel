@@ -169,18 +169,21 @@ void PainterTerrain::changeExag(int number){
 void PainterTerrain::setDrainageAlgorithm(DrainageAlgorithms *da){
     drainage_algorithm = da;
     render_tab = render_drainage;
+    QObject::connect(drainage_algorithm, SIGNAL(reload()), this, SLOT(updateGL()));
     this->GLWidget::updateGL();
 }
 
 void PainterTerrain::setPatternAlgorithm(AlgorithmPatron *da){
     pattern_algorithm = da;
     render_tab = render_patterns;
+    QObject::connect(pattern_algorithm, SIGNAL(reload()), this, SLOT(updateGL()));
     this->GLWidget::updateGL();
 }
 
 void PainterTerrain::setWaterAlgorithm(PathWaterAlgorithm *da){
     water_algorithm = da;
     render_tab = render_water;
+    QObject::connect(water_algorithm, SIGNAL(reload()), this, SLOT(updateGL()));
     this->GLWidget::updateGL();
 }
 

@@ -17,7 +17,8 @@ class DrainageAlgorithms : public QObject
         virtual QWidget* getConf() = 0;
         virtual std::vector<glm::vec3> getPathTree() = 0;
 
-
+    signals:
+       void reload();
 
 
 

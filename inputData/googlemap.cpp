@@ -3,6 +3,7 @@
 #include <QByteArray>
 #include <QWebFrame>
 #include <iostream>
+#include "utmconverter.h"
 
 
 
@@ -43,15 +44,9 @@ void GoogleMap::drawGoogleEarth(std::vector<glm::vec3> values, bool next){
 }
 
 void GoogleMap::convertCoordinatesToLongLat(std::vector<glm::vec3>& values){
-    float x_value = 1.0/31.1120;
-    float y_value = -1.0/11.1320;
-    float z_value = 10000.0;
-
     for (int i=0; i< values.size(); ++i){
-        values[i].x = values[i].x*x_value;
-        values[i].y = values[i].y*y_value;
-        values[i].z = values[i].z*z_value;
-
+        values[i] = UTMConverter::convertToLatLong(values[i]);
+        std::cout << " coord " << values[i].x << " " << values[i].y << " " << values[i].z << std::endl;
     }
 }
 

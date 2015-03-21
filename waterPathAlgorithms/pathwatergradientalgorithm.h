@@ -6,6 +6,7 @@
 
 class PathWaterGradientAlgorithm : public PathWaterAlgorithm
 {
+        Q_OBJECT
     public:
         PathWaterGradientAlgorithm();
         virtual ~PathWaterGradientAlgorithm();

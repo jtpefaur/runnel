@@ -43,7 +43,10 @@ void GradientDrainageCallaghanMark::run(Terrain* ter){
     h = this->ter->height;
     max_value_water = 0;
 
-
+    for(runnel::Point* pto: this->ter->struct_point){
+        pto->water_value = 1;
+        pto->water_parent.clear();
+    }
     GradientDrainageCallaghanMark::sortElement(ter->struct_point);
 
     for(runnel::Point* pto : points_terrain){
@@ -110,6 +113,7 @@ QWidget* GradientDrainageCallaghanMark::getConf(){
 
 void GradientDrainageCallaghanMark::changeAttr(){
     this->run(ter);
+    emit reload();
 }
 
 std::vector<glm::vec3> GradientDrainageCallaghanMark::getPathTree(){
@@ -120,6 +124,7 @@ std::vector<glm::vec3> GradientDrainageCallaghanMark::getPathTree(){
         if (count_water[i]/max_water > linewater){
             points_path.push_back(position_water[i]);
         }
+        ++i;
     }
     return points_path;
 }

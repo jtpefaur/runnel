@@ -44,6 +44,7 @@ QWidget* DiedralAngleDrainage::getConf(){
 
 void DiedralAngleDrainage::changeAttr(){
     this->run(terr);
+    emit reload();
 }
 
 std::vector<glm::vec3> DiedralAngleDrainage::getPathTree(){

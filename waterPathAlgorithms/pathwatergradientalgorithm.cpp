@@ -55,7 +55,7 @@ void PathWaterGradientAlgorithm::getNextTriangle(runnel::Triangle* trian){
     runnel::Triangle* trian_ant = 0;
     while(1){
         glm::vec3 vector_b = glm::dot(trian->normal, -vector_z)*trian->normal;
-        glm::vec3 vector_a = - vector_z - vector_b;
+        glm::vec3 vector_a =  vector_z + vector_b;
 
         if(triangles_id[trian->ident]){
             return;

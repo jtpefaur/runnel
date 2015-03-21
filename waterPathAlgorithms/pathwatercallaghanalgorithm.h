@@ -7,6 +7,8 @@
 
 class PathWaterCallaghanAlgorithm : public PathWaterAlgorithm
 {
+        Q_OBJECT
+
     public:
         PathWaterCallaghanAlgorithm();
         virtual ~PathWaterCallaghanAlgorithm();
