@@ -17,6 +17,9 @@ class Terrain
         int height;
         float menor_menor;
         float mayor_mayor;
+        bool signalPaintGoogle;
+        float lat0;
+        float lng0;
         glm::mat4 matrix_esc;
         glm::vec3 max_bounding;
         glm::vec3 min_bounding;

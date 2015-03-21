@@ -21,7 +21,6 @@ class RunnelController: public QObject
         DataCollector information_map;
         Terrain* ter;
         glm::vec3 coords;
-
         RunnelController();
         void buildTerrain();
         void saveData(QString fileName);
@@ -46,7 +45,7 @@ class RunnelController: public QObject
 
     signals:
         void setTerrainDataCollector(Terrain* ter);
-        void drawGoogleEarth(std::vector<glm::vec3>, bool);
+        void drawGoogleEarth(std::vector<glm::vec3>);
         void glewIsReady();
 
 

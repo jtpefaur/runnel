@@ -32,7 +32,7 @@ void printArrayPosition(std::vector<glm::vec3> values){
         std::cout << " pto " << values[i].x << " " << values[i].y << " " << values[i].z << " end" << std::endl;
     }
 }
-void GoogleMap::drawGoogleEarth(std::vector<glm::vec3> values, bool next){
+void GoogleMap::drawGoogleEarth(std::vector<glm::vec3> values){
     std::cout << "Drawing in Google Earth" << std::endl;
     this->convertCoordinatesToLongLat(values);
     const char* ptr = (const char*)values.data();
@@ -40,7 +40,7 @@ void GoogleMap::drawGoogleEarth(std::vector<glm::vec3> values, bool next){
     QObject ob;
     ob.setProperty("lines_array", lines_array);
     page.mainFrame()->addToJavaScriptWindowObject("positions", (QObject*)&ob);
-    emit somethingChanged(next);
+    emit somethingChanged();
 }
 
 void GoogleMap::convertCoordinatesToLongLat(std::vector<glm::vec3>& values){

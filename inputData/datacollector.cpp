@@ -8,6 +8,8 @@ DataCollector::DataCollector():
 {
       number_points = 0;
       counter = 0;
+      lat0 = 0;
+      lng0 = 0;
 }
 
 void DataCollector::getCoord(QByteArray list_coord)
@@ -39,6 +41,8 @@ void DataCollector::setCantPoints(int num, int anch, int alt, int ancho_pixel, i
     ancho_pix = ancho_pixel;
     largo_pix = height_pixel;
     number_points = num;
+    this->lat0 = lat0;
+    this->lng0 = lng0;
     UTMConverter::setZeroPosition(lat0, lng0);
     emit changeTerrain();
 }
@@ -49,6 +53,9 @@ void DataCollector::finishInformation()
     ter_data->width = anch;
     ter_data->height = alt;
     ter_data->setMapPixel(ancho_pix, largo_pix);
+    ter_data->signalPaintGoogle = true;
+    ter_data->lat0 = this->lat0;
+    ter_data->lng0 = this->lng0;
     emit finishTerrain();
 }
 

@@ -19,10 +19,10 @@ class GoogleMap : public QWebView {
         void convertCoordinatesToLongLat(std::vector<glm::vec3>& values);
 
     public slots:
-        void drawGoogleEarth(std::vector<glm::vec3> values, bool next);
+        void drawGoogleEarth(std::vector<glm::vec3> values);
 
     signals:
-        void somethingChanged(bool next);
+        void somethingChanged();
 
 };
 

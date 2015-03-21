@@ -13,6 +13,9 @@ Terrain::Terrain():
     min_bounding = maximo*glm::vec3(1.0f,1.0f,1.0f);
     sigma = glm::vec3(0.0f,0.0f,0.0f);
     media = glm::vec3(0.0f,0.0f,0.0f);
+    signalPaintGoogle = false;
+    lat0 = 0;
+    lng0 = 0;
 
 }
 

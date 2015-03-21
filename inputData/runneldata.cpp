@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <iostream>
+#include "utmconverter.h"
 
 RunnelData::RunnelData()
 {
@@ -26,16 +27,19 @@ void RunnelData::getDataTerrain(Terrain* ter){
     int number_points = fields[0].toInt();
     ter->width = fields[1].toInt();
     ter->height = fields[2].toInt();
-
+    float lat0 = fields[3].toInt();
+    float lng0 = fields[4].toInt();
     std::cout << number_points << " " << ter->width << " " << ter->height << std::endl;
     for (int i = 0; i < number_points; ++i){
         QString line = stream.readLine();
         QStringList fields = line.split(" ");
         glm::vec3 coords = glm::vec3(fields[1].toFloat(),fields[2].toFloat(),fields[3].toFloat());
         ter->setBoundingBox(coords);
-        runnel::Point *point_new = new runnel::Point(coords, fields[1].toInt());
+        runnel::Point *point_new = new runnel::Point(coords, fields[0].toInt());
         ter->addPoint(point_new);
     }
+
+    UTMConverter::setZeroPosition(lat0, lng0);
 
     file.close();
 }
@@ -54,7 +58,9 @@ bool RunnelData::writeFile(QString fileName, Terrain* ter){
 
     /* Write the line to the file */
     //writes points
-    outStream << ter->struct_point.size() << " " << ter->width << " " << ter->height << endl;
+    float lat0 = ter->lat0;
+    float lng0 = ter->lng0;
+    outStream << ter->struct_point.size() << " " << ter->width << " " << ter->height << " " << lat0 << " " << lng0 << endl;
     for(runnel::Point *pto : ter->struct_point){
         outStream << pto->ident << " " << pto->coord.x << " " << pto->coord.y << " " << pto->coord.z << endl;
     }

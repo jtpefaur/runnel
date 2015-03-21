@@ -8,24 +8,24 @@
             var lat;
             var lng;
             google.load("earth", "1", {"language":"en", "other_params":"sensor=false"});
-       
 
 
-            
-			function init() {
+
+
+                        function init() {
                 google.earth.createInstance('map3d', initCB, failureCB);
                 document.getElementById("map3d").style.width = document.getElementById("container").style.width;
                 document.getElementById("map3d").style.height = document.getElementById("container").style.height;
             }
-			
+
             function initCB(instance) {
                 ge = instance;
-				ge.getWindow().setVisibility(true);
-				ge.getOptions().setStatusBarVisibility(true);
-				ge.getOptions().setScaleLegendVisibility(true);
-				ge.getNavigationControl().setVisibility(ge.VISIBILITY_AUTO);
-				ge.getLayerRoot().enableLayerById(ge.LAYER_BORDERS, true);
-                sideDatabaseSuccess();   
+                                ge.getWindow().setVisibility(true);
+                                ge.getOptions().setStatusBarVisibility(true);
+                                ge.getOptions().setScaleLegendVisibility(true);
+                                ge.getNavigationControl().setVisibility(ge.VISIBILITY_AUTO);
+                                ge.getLayerRoot().enableLayerById(ge.LAYER_BORDERS, true);
+                sideDatabaseSuccess();
             }
 
             function failureCB(errorCode) {
@@ -47,8 +47,8 @@
             var random = "random";
             var uniform = "uniform";
             var uniform_coord = [];
-            
-			function obtainDataRandom(){
+
+                        function obtainDataRandom(){
                 obtainData(random);
             }
 
@@ -57,30 +57,30 @@
             }
 
             function obtainData(type_data){
-				uniform_coord = [];
+                                uniform_coord = [];
                 var cant_ptos = parseInt(document.getElementById("count_points").value);
                 var globeBounds = ge.getView().getViewportGlobeBounds();
                 var North = globeBounds.getNorth();
                 var South = globeBounds.getSouth();
                 var West = globeBounds.getWest();
                 var East = globeBounds.getEast();
-				var dist_pto = Math.sqrt(cant_ptos) -1;
-				var pixel_width  = document.getElementById("map3d").offsetWidth;
-				var pixel_height = document.getElementById("map3d").offsetHeight;
+                                var dist_pto = Math.sqrt(cant_ptos) -1;
+                                var pixel_width  = document.getElementById("map3d").offsetWidth;
+                                var pixel_height = document.getElementById("map3d").offsetHeight;
                 var pto0_lat = (South - North)/2 + North;
-                var pto0_lng = (West - East)/2 + East; 
+                var pto0_lng = (West - East)/2 + East;
 
-				information_map.setCantPoints(cant_ptos, dist_pto+1, dist_pto+1,pixel_width , pixel_height, pto0_lat, pto0_lng); 
+                                information_map.setCantPoints(cant_ptos, dist_pto+1, dist_pto+1,pixel_width , pixel_height, pto0_lat, pto0_lng);
                 if (type_data == uniform){
                     form_uniform_coordenadas(dist_pto, North, South, West, East);
                 }
-				
-				
-                data_mapa(North, South, West, East, cant_ptos, type_data);           
+
+
+                data_mapa(North, South, West, East, cant_ptos, type_data);
             }
 
 
-            function data_mapa(N, S, W, E, cant_ptos, type_data){ 
+            function data_mapa(N, S, W, E, cant_ptos, type_data){
                // console.log("Norte " + N + ",Sur " + S + ", Oeste "+ W +", Este "+ E);
                 var group_of_count = 100;
                 for (var j_of_data = 0; j_of_data < cant_ptos;){
@@ -101,40 +101,40 @@
                         write_point.push(array_coord_random[1]);
                         write_point.push(array_coord_random[2]);
                     }
-  
-                    var floatBuffer = new Float32Array(write_point.length);           
+
+                    var floatBuffer = new Float32Array(write_point.length);
                     floatBuffer.set(write_point);
                     var bytesArray = new Uint8ClampedArray(floatBuffer.buffer);
                     information_map.getCoord(bytesArray);
                     j_of_data = i;
                 }
-				information_map.finishInformation();
+                                information_map.finishInformation();
             }
-            
-			function random_coordenadas(Lat_min,Lat_max, Long_min, Long_max){
+
+                        function random_coordenadas(Lat_min,Lat_max, Long_min, Long_max){
                 coord_x =  Math.random()*(Lat_max-Lat_min)+Lat_min;
                 coord_y = Math.random()*(Long_max-Long_min)+Long_min;
                 return [coord_x, coord_y, 0];
             }
-            
-			function form_uniform_coordenadas(dist_pto, North, South, West, East){
+
+                        function form_uniform_coordenadas(dist_pto, North, South, West, East){
                 var value_horin = -1*(West - East)/dist_pto;
-                var value_vert = -1*(South - North)/dist_pto;	
+                var value_vert = -1*(South - North)/dist_pto;
                 for( var i = 0; i < (dist_pto + 1) ; i++){
-					var current_south = South + i*value_vert;
+                                        var current_south = South + i*value_vert;
                     for(var j = 0; j < (dist_pto + 1); j++){
-						var current_west = West + j*value_horin;      
+                                                var current_west = West + j*value_horin;
                         uniform_coord.push([current_south, current_west, 0]);
                     }
                 }
-				
+
             }
-            
-			function get_uniform_coordenadas(position){
+
+                        function get_uniform_coordenadas(position){
                 return uniform_coord[position];
             }
 
-            function set_polylines(value){
+            function set_polylines(){
                 clean_features();
                 if (!positions.lines_array.buffer){
                     return;
@@ -185,23 +185,23 @@
                         <option value="100000000">
                             100.000.000
                         </option>
-        				<option value="1000000">
+                                        <option value="1000000">
                             1.000.000
                         </option>
-						<option value="100000">
+                                                <option value="100000">
                             100.000
                         </option>
-        				<option selected="selected" value="10000">
+                                        <option selected="selected" value="10000">
                             10.000
                         </option>
-        				<option value="100">
+                                        <option value="100">
                             100
                         </option>
                     </select>
                 </div>
                 <div>
                     <button type="button" id="obtain_points" value="add_point" onclick="obtainDataUniform()">
-                        Obtain Uniform Data 
+                        Obtain Uniform Data
                     </button>
                 <div>
             </div>

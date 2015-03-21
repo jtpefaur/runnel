@@ -73,7 +73,7 @@ class PainterTerrain : public GLWidget {
         void showRenderCoordinateAxis(bool value);
     signals:
         void glewIsReady();
-        void drawGoogleEarth(std::vector<glm::vec3> values, bool next);
+        void drawGoogleEarth(std::vector<glm::vec3> values);
 
 };
 

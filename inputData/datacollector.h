@@ -21,6 +21,8 @@ class DataCollector : public QObject
         int anch;
         int ancho_pix;
         int largo_pix;
+        float lng0;
+        float lat0;
 
     public slots:
         Q_INVOKABLE

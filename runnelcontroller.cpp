@@ -16,8 +16,8 @@ RunnelController::RunnelController():
     QObject::connect(this, SIGNAL(setTerrainDataCollector(Terrain*)), &information_map, SLOT(getTerrainStruct(Terrain*)));
     QObject::connect(&information_map, SIGNAL(finishTerrain()), this, SLOT(getObtainTerrain()));
     QObject::connect(&pterrain, SIGNAL(glewIsReady()), this, SIGNAL(glewIsReady()));
-    QObject::connect(&pterrain, SIGNAL(drawGoogleEarth(std::vector<glm::vec3>, bool)), &gm, SLOT(drawGoogleEarth(std::vector<glm::vec3>, bool)));
-    QObject::connect(this, SIGNAL(drawGoogleEarth(std::vector<glm::vec3>, bool)), &gm, SLOT(drawGoogleEarth(std::vector<glm::vec3>, bool)));
+    QObject::connect(&pterrain, SIGNAL(drawGoogleEarth(std::vector<glm::vec3>)), &gm, SLOT(drawGoogleEarth(std::vector<glm::vec3>)));
+    QObject::connect(this, SIGNAL(drawGoogleEarth(std::vector<glm::vec3>)), &gm, SLOT(drawGoogleEarth(std::vector<glm::vec3>)));
     gm.runMap(information_map);
     coords = glm::vec3(0,0,0);
     std::cout << "Start Runnel Controller..." << std::endl;
@@ -42,6 +42,7 @@ PainterTerrain& RunnelController::getPainter(){
 
 void RunnelController::getTerrain(){
     ter = new Terrain();
+
     emit setTerrainDataCollector(ter);
 }
 
@@ -63,6 +64,7 @@ void RunnelController::obtainFileTerrain(QString name_file, std::string file_typ
         RunnelData rundata;
         rundata.openFile(name_file);
         rundata.getDataTerrain(ter);
+        ter->signalPaintGoogle = true;
     }
 
     std::cout << "Finish Obtain Data..." << std::endl;
@@ -90,14 +92,18 @@ void RunnelController::buildTerrain(){
 void RunnelController::changeSelectDrainage(DrainageAlgorithms* alg){
     alg->run(ter);
     pterrain.setDrainageAlgorithm(alg);
-    emit drawGoogleEarth(alg->getPathTree(), false);
+    if ( this->ter->signalPaintGoogle ){
+        emit drawGoogleEarth(alg->getPathTree());
+    }
 }
 
 void RunnelController::changeSelectPatron(AlgorithmPatron* alg){
     if (drainage_network.size() > 0){
         alg->run(ter, drainage_network);
         pterrain.setPatternAlgorithm(alg);
-        emit drawGoogleEarth(alg->getPathTree(), false);
+        if ( this->ter->signalPaintGoogle ){
+            emit drawGoogleEarth(alg->getPathTree());
+        }
     }else{
         std::cout << "Network drainage dont have tree" << std::endl;
     }
@@ -111,5 +117,7 @@ void RunnelController::changeSelectWater(PathWaterAlgorithm* alg){
 void RunnelController::changeSelectNetwork(BuildNetwork* alg){
     drainage_network = alg->run(ter);
     pterrain.setNetworkAlgorithm(alg);
-    emit drawGoogleEarth(alg->getPathTree(), false);
+    if ( this->ter->signalPaintGoogle ){
+        emit drawGoogleEarth(alg->getPathTree());
+    }
 }
