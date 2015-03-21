@@ -43,6 +43,7 @@ class Terrain
         void addNeighbourPoint( std::unordered_map< int, std::vector< runnel::Triangle* > > n);
         float minumum(std::vector<runnel::Triangle *> list_triangle, runnel::Triangle* trian);
 
+
         glm::vec3 getMedia();
         glm::vec3 getSigma();
         std::vector<runnel::Point*> getPoints();
@@ -57,7 +58,7 @@ class Terrain
         void getMoreWaterPoint();
         void setMapPixel(int ancho_pix, int largo_pix);
         void setRatio();
-
+        runnel::Triangle* getClosestTriangle(glm::vec3 p);
 };
 
 #endif // TERRAIN_H
