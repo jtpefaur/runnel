@@ -82,12 +82,12 @@ glm::vec3 UTMConverter::convertToLatLong(glm::vec3 utm){
     y = UTMNorthing;
 
     zoneNumber = strtoul(UTMZone, &zoneLetter, 10);
-    std::cout << zoneNumber << std::endl;
+
     if((*zoneLetter - 'N') < 0)
         y -= 10000000.0;//remove 10,000,000 meter offset used for southern hemisphere
 
     longOrigin = (zoneNumber - 1)*6 - 180 +3;  //+3 puts origin in middle of zone
-    std::cout << longOrigin << std::endl;
+
     eccPrimeSquared = (eccSquared)/(1-eccSquared);
 
     M = y / k0;

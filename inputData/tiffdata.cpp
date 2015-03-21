@@ -47,7 +47,7 @@ void TiffData::getDataTerrain(Terrain* ter){
                     float z22 = 1.0*(raster[(int)(w_ceil +width*h_ceil)]);
                     float zw1 = glm::mix(z11, z12, final_w-w_floor);
                     float zw2 = glm::mix(z21, z22, final_w-w_floor);
-                    float z = glm::mix(zw1, zw2, final_h - h_floor);
+                    float z = glm::mix(zw1, zw2, final_h - h_floor)/2;
                     glm::vec3 coords = glm::vec3(final_w,final_h,z);
                     ter->setBoundingBox(coords);
                     runnel::Point *point_new = new runnel::Point(coords, counter);

@@ -154,20 +154,23 @@ void ToolbarsConfigMesh::showPatternsInformation(){
     QMessageBox s;
     QString title = "Patterns Information";
     QString information;
+    information+="<table>";
     for( int i = 0; i < PatternsData::names_patterns.size(); ++i){
-        information+= "<div style=\"width:400px\">";
-        information+= "<div style=\"display:inline-block;width:20%;\">";
+        information+= "<tr>";
+
+        information+= "<td valign=\"middle\" >";
         information+= "<img src=\"" + PatternsData::images[i] +"\" >";
-        information+= "</div>";
-        information+= "<div style=\"display:inline-block;width:80%;\">";
+        information+= "</td>";
+
+        information+= "<td valign=\"middle\" >";
         information+= "<b>" + PatternsData::names_patterns[i] + "</b>";
         information+= "<br>";
         information+= PatternsData::descriptions[i];
-        information+= "<br><br>";
-        information+= "</div>";
-        information+= "</div>";
+        information+= "<br>";
+        information+= "</td>";
 
-
+        information+= "</tr>";
     }
+    information+="</table>";
     s.about(this, title, information);
 }
