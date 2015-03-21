@@ -20,6 +20,7 @@ class Terrain
         bool signalPaintGoogle;
         float lat0;
         float lng0;
+        float ratio;
         glm::mat4 matrix_esc;
         glm::vec3 max_bounding;
         glm::vec3 min_bounding;
@@ -55,6 +56,7 @@ class Terrain
         std::vector<glm::vec3> getCoordinateAxis();
         void getMoreWaterPoint();
         void setMapPixel(int ancho_pix, int largo_pix);
+        void setRatio();
 
 };
 

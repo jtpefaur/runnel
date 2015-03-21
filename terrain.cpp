@@ -16,6 +16,7 @@ Terrain::Terrain():
     signalPaintGoogle = false;
     lat0 = 0;
     lng0 = 0;
+    ratio = 1;
 
 }
 
@@ -67,8 +68,12 @@ std::vector<glm::vec3> Terrain::getVectorNormals(){
 
 void Terrain::setMapPixel(int ancho_pix, int largo_pix){
     // calcular la matrix magica
-    float ratio = 1.0f*ancho_pix/largo_pix;
+    ratio = 1.0f*ancho_pix/largo_pix;
     std::cout << "Ratio: "<<ratio<<std::endl;
+    matrix_esc[1][1] = ratio;
+}
+
+void Terrain::setRatio(){
     matrix_esc[1][1] = ratio;
 }
 

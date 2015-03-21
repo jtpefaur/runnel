@@ -27,8 +27,9 @@ void RunnelData::getDataTerrain(Terrain* ter){
     int number_points = fields[0].toInt();
     ter->width = fields[1].toInt();
     ter->height = fields[2].toInt();
-    float lat0 = fields[3].toInt();
-    float lng0 = fields[4].toInt();
+    float lat0 = fields[3].toFloat();
+    float lng0 = fields[4].toFloat();
+    float ratio = fields[5].toFloat();
     std::cout << number_points << " " << ter->width << " " << ter->height << std::endl;
     for (int i = 0; i < number_points; ++i){
         QString line = stream.readLine();
@@ -38,7 +39,8 @@ void RunnelData::getDataTerrain(Terrain* ter){
         runnel::Point *point_new = new runnel::Point(coords, fields[0].toInt());
         ter->addPoint(point_new);
     }
-
+    ter->ratio = ratio;
+    ter->setRatio();
     UTMConverter::setZeroPosition(lat0, lng0);
 
     file.close();
@@ -60,7 +62,7 @@ bool RunnelData::writeFile(QString fileName, Terrain* ter){
     //writes points
     float lat0 = ter->lat0;
     float lng0 = ter->lng0;
-    outStream << ter->struct_point.size() << " " << ter->width << " " << ter->height << " " << lat0 << " " << lng0 << endl;
+    outStream << ter->struct_point.size() << " " << ter->width << " " << ter->height << " " << lat0 << " " << lng0 << " " << ter->ratio << endl;
     for(runnel::Point *pto : ter->struct_point){
         outStream << pto->ident << " " << pto->coord.x << " " << pto->coord.y << " " << pto->coord.z << endl;
     }
