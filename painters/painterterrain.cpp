@@ -111,7 +111,9 @@ void PainterTerrain::paintGL(){
             if( water_algorithm )
                 water_algorithm->render(matrix_final, exag_z, color_conf["color_gradient_path"]);
     }
-
+    if( fluvial_terrace_algorithm ){
+        fluvial_terrace_algorithm->render(matrix_final, exag_z, color_conf["fluvial_terrace_color"]);
+    }
     if( render_normal ){
         shader_normal->render(matrix_final, exag_z, color_conf["normal_color"], false);
     }
@@ -143,6 +145,7 @@ void PainterTerrain::ObtainPositionFromView(int x, int y, glm::mat4 view, glm::m
         }
         this->GLWidget::updateGL();
     }
+    // TODO: If not running a water path algorithm, select and paint the triangle instead
 }
 
 void PainterTerrain::changeModelTerrain(int index){
@@ -193,6 +196,11 @@ void PainterTerrain::setNetworkAlgorithm(BuildNetwork* alg){
     build_network = alg;
     render_tab = render_network;
     QObject::connect(build_network, SIGNAL(reload()), this, SLOT(updateGL()));
+    this->GLWidget::updateGL();
+}
+
+void PainterTerrain::setFluvialTerraceAlgorithm(FluvialTerraceAlgorithm* alg){
+    fluvial_terrace_algorithm = alg;
     this->GLWidget::updateGL();
 }
 

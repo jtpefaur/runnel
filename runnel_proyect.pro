@@ -62,11 +62,11 @@ SOURCES += main.cpp\
     drainageAlgorithms/diedralangledrainage.cpp \
     waterPathAlgorithms/pathwatercallaghanalgorithm.cpp \
     waterPathAlgorithms/pathwatergradientalgorithm.cpp \
+    fluvialTerraceAlgorithms/fluvialterracealgorithm.cpp \
+    fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.cpp
     inputData/utmconverter.cpp \
     inputData/elipsoidetype.cpp \
     UI/patternsdata.cpp
-
-
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -265,10 +265,11 @@ HEADERS  += UI/mainwindow.h \
     drainageAlgorithms/diedralangledrainage.h \
     waterPathAlgorithms/pathwatercallaghanalgorithm.h \
     waterPathAlgorithms/pathwatergradientalgorithm.h \
+    fluvialTerraceAlgorithms/fluvialterracealgorithm.h \
+    fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.h
     inputData/utmconverter.h \
     inputData/elipsoidetype.h \
     UI/patternsdata.h
-
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \

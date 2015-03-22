@@ -121,3 +121,8 @@ void RunnelController::changeSelectNetwork(BuildNetwork* alg){
         emit drawGoogleEarth(alg->getPathTree());
     }
 }
+
+void RunnelController::changeSelectFluvialTerrace(FluvialTerraceAlgorithm* alg){
+    alg->run(ter);
+    pterrain.setFluvialTerraceAlgorithm(alg);
+}

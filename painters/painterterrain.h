@@ -6,6 +6,7 @@
 #include "waterPathAlgorithms/pathwateralgorithm.h"
 #include "patternsAlgorithms/algorithmpatron.h"
 #include "buildNetwork/buildnetwork.h"
+#include "fluvialTerraceAlgorithms/fluvialterracealgorithm.h"
 #include "shaders/shaderutils.h"
 #include "shaders/shaderterrain.h"
 #include "shaders/shadergradient.h"
@@ -52,11 +53,13 @@ class PainterTerrain : public GLWidget {
         void setPatternAlgorithm(AlgorithmPatron* alg);
         void setWaterAlgorithm(PathWaterAlgorithm* alg);
         void setNetworkAlgorithm(BuildNetwork* alg);
+        void setFluvialTerraceAlgorithm(FluvialTerraceAlgorithm* alg);
     private:
         DrainageAlgorithms* drainage_algorithm;
         AlgorithmPatron* pattern_algorithm;
         PathWaterAlgorithm* water_algorithm;
         BuildNetwork* build_network;
+        FluvialTerraceAlgorithm* fluvial_terrace_algorithm;
         ShaderTerrain* shader_terrain;
         ShaderGradient* shader_normal;
         ShaderDrainage* shader_gradient;

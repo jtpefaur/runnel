@@ -509,7 +509,7 @@
           <property name="title">
            <string>Angle Threshold</string>
           </property>
-          <widget class="QSpinBox" name="spinBox">
+          <widget class="QSpinBox" name="fluvial_terrace_value">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -519,7 +519,7 @@
             </rect>
            </property>
           </widget>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="fluvial_terrace_button">
            <property name="geometry">
             <rect>
              <x>0</x>

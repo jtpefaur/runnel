@@ -27,6 +27,7 @@ ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     QObject::connect(ui->river_button, SIGNAL(clicked()), this, SLOT(getDrainage()));
     QObject::connect(ui->path_water_button, SIGNAL(clicked()), this, SLOT(getWater()));
     QObject::connect(ui->network_button, SIGNAL(clicked()), this, SLOT(getNetwork()));
+    QObject::connect(ui->fluvial_terrace_button, SIGNAL(clicked()), this, SLOT(getFluvialTerrace()));
     QObject::connect(ui->exaggeration_terrain_value, SIGNAL(valueChanged(int)), this, SIGNAL(changeElevation(int)));
     QObject::connect(ui->landform_value, SIGNAL(currentIndexChanged(int)), this, SIGNAL(changeLandForm(int)));
     QObject::connect(ui->gradient_vector, SIGNAL(clicked(bool)), this, SIGNAL(showGradientVector(bool)));
@@ -37,6 +38,7 @@ ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     this->pathWaterIncludeAlgorithms();
     this->networkIncludeAlgorithms();
     this->patronIncludeAlgorithms();
+    this->fluvialTerraceIncludeAlgorithms();
 }
 
 ToolbarsConfigMesh::~ToolbarsConfigMesh()
@@ -53,6 +55,8 @@ ToolbarsConfigMesh::~ToolbarsConfigMesh()
     for(auto alg: patron_algorithms)
         delete alg;
     for(auto alg: network_algorithms)
+        delete alg;
+    for(auto alg: fluvial_terrace_algorithms)
         delete alg;
     delete ui;
 }
@@ -134,6 +138,15 @@ void ToolbarsConfigMesh::getWater(){
     emit selectWater(item);
 }
 
+void ToolbarsConfigMesh::fluvialTerraceIncludeAlgorithms(){
+    fluvial_terrace_algorithms.push_back(new NormalVectorSimilarityAlgorithm());
+}
+
+void ToolbarsConfigMesh::getFluvialTerrace(){
+    FluvialTerraceAlgorithm* item = fluvial_terrace_algorithms[0];
+    emit selectFluvialTerrace(item);
+}
+
 void ToolbarsConfigMesh::glewIsReady(){
     for( DrainageAlgorithms* item : drainage_algorithms){
         item->glewReady();
@@ -145,6 +158,9 @@ void ToolbarsConfigMesh::glewIsReady(){
         item->glewReady();
     }
     for( AlgorithmPatron* item : patron_algorithms){
+        item->glewReady();
+    }
+    for( FluvialTerraceAlgorithm* item : fluvial_terrace_algorithms){
         item->glewReady();
     }
 }

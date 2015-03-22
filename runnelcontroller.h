@@ -9,6 +9,7 @@
 #include "waterPathAlgorithms/pathwateralgorithm.h"
 #include "patternsAlgorithms/algorithmpatron.h"
 #include "buildNetwork/buildnetwork.h"
+#include "fluvialTerraceAlgorithms/fluvialterracealgorithm.h"
 
 class RunnelController: public QObject
 {
@@ -41,7 +42,7 @@ class RunnelController: public QObject
         void changeSelectPatron(AlgorithmPatron* alg);
         void changeSelectWater(PathWaterAlgorithm* alg);
         void changeSelectNetwork(BuildNetwork* alg);
-
+        void changeSelectFluvialTerrace(FluvialTerraceAlgorithm* alg);
 
     signals:
         void setTerrainDataCollector(Terrain* ter);

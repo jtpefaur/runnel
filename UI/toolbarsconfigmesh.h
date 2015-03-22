@@ -6,6 +6,7 @@
 #include "buildNetwork/buildnetwork.h"
 #include "patternsAlgorithms/algorithmpatron.h"
 #include "waterPathAlgorithms/pathwateralgorithm.h"
+#include "fluvialTerraceAlgorithms/fluvialterracealgorithm.h"
 
 namespace Ui {
     class ToolbarsConfigMesh;
@@ -23,8 +24,7 @@ class ToolbarsConfigMesh : public QWidget
         std::vector<BuildNetwork*> network_algorithms;
         std::vector<AlgorithmPatron*> patron_algorithms;
         std::vector<PathWaterAlgorithm*> path_water_algorithms;
-
-
+        std::vector<FluvialTerraceAlgorithm*> fluvial_terrace_algorithms;
 
     private:
         Ui::ToolbarsConfigMesh *ui;
@@ -32,12 +32,14 @@ class ToolbarsConfigMesh : public QWidget
         void networkIncludeAlgorithms();
         void patronIncludeAlgorithms();
         void pathWaterIncludeAlgorithms();
+        void fluvialTerraceIncludeAlgorithms();
 
     signals:
         void selectDrainage(DrainageAlgorithms* value);
         void selectNetwork(BuildNetwork* value);
         void selectPatron(AlgorithmPatron* value);
         void selectWater(PathWaterAlgorithm* value);
+        void selectFluvialTerrace(FluvialTerraceAlgorithm* value);
         void changeElevation(int value);
         void changeLandForm(int value);
         void showGradientVector(bool value);
@@ -49,6 +51,7 @@ class ToolbarsConfigMesh : public QWidget
         void getPatron();
         void getWater();
         void getNetwork();
+        void getFluvialTerrace();
         void glewIsReady();
         void showPatternsInformation();
 
