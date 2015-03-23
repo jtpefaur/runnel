@@ -63,7 +63,7 @@ SOURCES += main.cpp\
     waterPathAlgorithms/pathwatercallaghanalgorithm.cpp \
     waterPathAlgorithms/pathwatergradientalgorithm.cpp \
     fluvialTerraceAlgorithms/fluvialterracealgorithm.cpp \
-    fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.cpp
+    fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.cpp \
     inputData/utmconverter.cpp \
     inputData/elipsoidetype.cpp \
     UI/patternsdata.cpp
@@ -266,7 +266,7 @@ HEADERS  += UI/mainwindow.h \
     waterPathAlgorithms/pathwatercallaghanalgorithm.h \
     waterPathAlgorithms/pathwatergradientalgorithm.h \
     fluvialTerraceAlgorithms/fluvialterracealgorithm.h \
-    fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.h
+    fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.h \
     inputData/utmconverter.h \
     inputData/elipsoidetype.h \
     UI/patternsdata.h
