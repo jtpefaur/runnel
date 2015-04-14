@@ -147,8 +147,12 @@ void PainterTerrain::ObtainPositionFromView(int x, int y, glm::mat4 view, glm::m
             emit drawGoogleEarth(water_algorithm->getPathWater());
         }
         this->GLWidget::updateGL();
+    } else if ( fluvial_terrace_algorithm ) {
+        // TODO: Select and paint the triangle before running the terrace algorithm
+        fluvial_terrace_algorithm->run(objcoord, this->ter);
+        this->GLWidget::updateGL();
     }
-    // TODO: If not running a water path algorithm, select and paint the triangle instead
+    // TODO: If not running either algorithm, select and paint the triangle instead
 }
 
 void PainterTerrain::changeModelTerrain(int index){
