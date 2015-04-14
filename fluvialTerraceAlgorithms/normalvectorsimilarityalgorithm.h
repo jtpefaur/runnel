@@ -16,6 +16,7 @@ class NormalVectorSimilarityAlgorithm : public FluvialTerraceAlgorithm
 
     private:
         Terrain* ter;
+        runnel::Triangle* baseTriangle;
         // TODO Add shader, etc.
 
     public slots:
