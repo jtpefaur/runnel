@@ -25,6 +25,7 @@ class PainterTerrain : public GLWidget {
         static const int render_network = 2;
         static const int render_patterns = 3;
         static const int render_water = 4;
+        static const int render_fluvial_terraces = 5;
         int render_tab;
         PainterTerrain();
         virtual ~PainterTerrain();

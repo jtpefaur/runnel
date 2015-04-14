@@ -15,7 +15,7 @@
 #include "waterPathAlgorithms/nonepathwateralgorithm.h"
 #include "waterPathAlgorithms/pathwatercallaghanalgorithm.h"
 #include "waterPathAlgorithms/pathwatergradientalgorithm.h"
-
+#include "fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.h"
 
 
 ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :

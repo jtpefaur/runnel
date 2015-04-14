@@ -123,6 +123,6 @@ void RunnelController::changeSelectNetwork(BuildNetwork* alg){
 }
 
 void RunnelController::changeSelectFluvialTerrace(FluvialTerraceAlgorithm* alg){
-    alg->run(ter);
+    alg->run(coords, ter);
     pterrain.setFluvialTerraceAlgorithm(alg);
 }

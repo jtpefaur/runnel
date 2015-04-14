@@ -4,7 +4,7 @@
 #include "terrain.h"
 #include "lib/glm/glm.hpp"
 
-class FluvialTerraceAlgorithm
+class FluvialTerraceAlgorithm : public QObject
 {
     public:
         FluvialTerraceAlgorithm();
@@ -14,6 +14,9 @@ class FluvialTerraceAlgorithm
         virtual void glewReady() = 0;
         virtual QString getName() = 0;
         virtual QWidget* getConf() = 0;
+
+   signals:
+        void reload();
 };
 
 #endif // FLUVIALTERRACEALGORITHM_H

@@ -29,10 +29,19 @@ void ShaderUtils::readFilesShaders(std::string vertex_shader, std::string fragme
 void ShaderUtils::InitializeProgram()
 {
     std::vector<GLuint> shaderList;
-    std::cout << strVertexShader << std::endl;
-    std::cout << strFragmentShader << std::endl;
-    shaderList.push_back(CreateShader(GL_VERTEX_SHADER, strVertexShader));
-    shaderList.push_back(CreateShader(GL_FRAGMENT_SHADER, strFragmentShader));
+    /*std::cout << strVertexShader << std::endl;
+    std::cout << strFragmentShader << std::endl;*/
+    GLuint vertexShader, fragmentShader;
+    vertexShader = CreateShader(GL_VERTEX_SHADER, strVertexShader);
+    fragmentShader = CreateShader(GL_FRAGMENT_SHADER, strFragmentShader);
+
+    if(!vertexShader || !fragmentShader){
+        std::cout << "Unable to initialize shaders!" << std::endl;
+        exit(-1);
+    }
+
+    shaderList.push_back(vertexShader);
+    shaderList.push_back(fragmentShader);
 
     theProgram = CreateProgram(shaderList);
 
@@ -43,7 +52,8 @@ void ShaderUtils::InitializeProgram()
 GLuint ShaderUtils::CreateShader(GLenum eShaderType, const std::string &strShaderFile)
 {
     if (!glCreateShader){
-        std::cout << "glCreateShader - No Existe!"<<std::endl;
+        std::cout << "Error: glCreateShader is undefined!" << std::endl;
+        std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
         return 0;
     }
     GLuint shader = glCreateShader(eShaderType);

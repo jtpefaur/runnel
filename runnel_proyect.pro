@@ -5,7 +5,7 @@
 #-------------------------------------------------
 CONFIG   += c++11
 
-QT       += core webkitwidgets widgets
+QT       += core webkitwidgets widgets opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += core widgets
 

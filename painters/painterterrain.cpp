@@ -110,9 +110,12 @@ void PainterTerrain::paintGL(){
         case render_water:
             if( water_algorithm )
                 water_algorithm->render(matrix_final, exag_z, color_conf["color_gradient_path"]);
-    }
-    if( fluvial_terrace_algorithm ){
-        fluvial_terrace_algorithm->render(matrix_final, exag_z, color_conf["fluvial_terrace_color"]);
+            break;
+        case render_fluvial_terraces:
+            if( fluvial_terrace_algorithm ){
+                fluvial_terrace_algorithm->render(matrix_final, exag_z, color_conf["fluvial_terrace_color"]);
+            }
+            break;
     }
     if( render_normal ){
         shader_normal->render(matrix_final, exag_z, color_conf["normal_color"], false);
@@ -201,6 +204,8 @@ void PainterTerrain::setNetworkAlgorithm(BuildNetwork* alg){
 
 void PainterTerrain::setFluvialTerraceAlgorithm(FluvialTerraceAlgorithm* alg){
     fluvial_terrace_algorithm = alg;
+    render_tab = render_fluvial_terraces;
+    QObject::connect(fluvial_terrace_algorithm, SIGNAL(reload()), this, SLOT(updateGL()));
     this->GLWidget::updateGL();
 }
 

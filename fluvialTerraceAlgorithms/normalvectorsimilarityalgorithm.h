@@ -3,7 +3,7 @@
 #include "terrain.h"
 #include "fluvialTerraceAlgorithms/fluvialterracealgorithm.h"
 
-class NormalVectorSimilarityAlgorithm : public fluvialTerraceAlgorithm
+class NormalVectorSimilarityAlgorithm : public FluvialTerraceAlgorithm
 {
     public:
         NormalVectorSimilarityAlgorithm();
@@ -17,6 +17,9 @@ class NormalVectorSimilarityAlgorithm : public fluvialTerraceAlgorithm
     private:
         Terrain* ter;
         // TODO Add shader, etc.
+
+    public slots:
+        void changeThreshold();
 };
 
 #endif // NORMALVECTORSIMILARITYALGORITHM_H
