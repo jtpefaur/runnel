@@ -66,7 +66,8 @@ SOURCES += main.cpp\
     fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.cpp \
     inputData/utmconverter.cpp \
     inputData/elipsoidetype.cpp \
-    UI/patternsdata.cpp
+    UI/patternsdata.cpp \
+    painters/shaders/shadernormalvectorsimilarity.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -269,7 +270,8 @@ HEADERS  += UI/mainwindow.h \
     fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.h \
     inputData/utmconverter.h \
     inputData/elipsoidetype.h \
-    UI/patternsdata.h
+    UI/patternsdata.h \
+    painters/shaders/shadernormalvectorsimilarity.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \
@@ -305,4 +307,6 @@ OTHER_FILES += \
     shaders/callaghan.vert \
     shaders/callaghan.frag \
     shaders/arbol_drenaje.vert \
-    shaders/arbol_drenaje.frag
+    shaders/arbol_drenaje.frag \
+    shaders/terrace.vert \
+    shaders/terrace.frag

@@ -3,6 +3,8 @@
 #include "terrain.h"
 #include "fluvialTerraceAlgorithms/fluvialterracealgorithm.h"
 
+#include <painters/shaders/shadernormalvectorsimilarity.h>
+
 class NormalVectorSimilarityAlgorithm : public FluvialTerraceAlgorithm
 {
     public:
@@ -17,6 +19,8 @@ class NormalVectorSimilarityAlgorithm : public FluvialTerraceAlgorithm
     private:
         Terrain* ter;
         runnel::Triangle* baseTriangle;
+        ShaderNormalVectorSimilarity* shader;
+        std::vector<glm::vec3> terraceVertices;
         // TODO Add shader, etc.
 
     public slots:

@@ -14,5 +14,7 @@
         <file>shaders/callaghan.frag</file>
         <file>shaders/arbol_drenaje.frag</file>
         <file>shaders/arbol_drenaje.vert</file>
+        <file>shaders/terrace.frag</file>
+        <file>shaders/terrace.vert</file>
     </qresource>
 </RCC>
