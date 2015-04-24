@@ -67,7 +67,8 @@ SOURCES += main.cpp\
     inputData/utmconverter.cpp \
     inputData/elipsoidetype.cpp \
     UI/patternsdata.cpp \
-    painters/shaders/shadernormalvectorsimilarity.cpp
+    painters/shaders/shadernormalvectorsimilarity.cpp \
+    UI/normalvectorsimilarityconf.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -271,7 +272,8 @@ HEADERS  += UI/mainwindow.h \
     inputData/utmconverter.h \
     inputData/elipsoidetype.h \
     UI/patternsdata.h \
-    painters/shaders/shadernormalvectorsimilarity.h
+    painters/shaders/shadernormalvectorsimilarity.h \
+    UI/normalvectorsimilarityconf.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \
@@ -282,7 +284,8 @@ FORMS    += UI/mainwindow.ui \
     UI/patronAlgorithm/zhangguilberconf.ui \
     UI/buildNetwork/peuckernetworkconf.ui \
     UI/buildNetwork/callaghannetworkconf.ui \
-    UI/waterAlgorithm/callaghanwaterconf.ui
+    UI/waterAlgorithm/callaghanwaterconf.ui \
+    UI/normalvectorsimilarityconf.ui
 
 RESOURCES += \
     resources/shader.qrc \
