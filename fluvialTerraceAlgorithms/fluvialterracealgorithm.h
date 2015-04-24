@@ -6,6 +6,7 @@
 
 class FluvialTerraceAlgorithm : public QObject
 {
+    Q_OBJECT
     public:
         FluvialTerraceAlgorithm();
         virtual ~FluvialTerraceAlgorithm();

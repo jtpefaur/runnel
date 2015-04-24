@@ -1,12 +1,13 @@
 #ifndef NORMALVECTORSIMILARITYALGORITHM_H
 #define NORMALVECTORSIMILARITYALGORITHM_H
-#include "terrain.h"
 #include "fluvialTerraceAlgorithms/fluvialterracealgorithm.h"
+#include "UI/normalvectorsimilarityconf.h"
 
 #include <painters/shaders/shadernormalvectorsimilarity.h>
 
 class NormalVectorSimilarityAlgorithm : public FluvialTerraceAlgorithm
 {
+    Q_OBJECT
     public:
         NormalVectorSimilarityAlgorithm();
         virtual ~NormalVectorSimilarityAlgorithm();
@@ -19,12 +20,14 @@ class NormalVectorSimilarityAlgorithm : public FluvialTerraceAlgorithm
     private:
         Terrain* ter;
         runnel::Triangle* baseTriangle;
-        ShaderNormalVectorSimilarity* shader;
+        float angleThreshold;
+        glm::vec3 clickedPoint;
         std::vector<glm::vec3> terraceVertices;
-        // TODO Add shader, etc.
+        NormalVectorSimilarityConf conf;
+        ShaderNormalVectorSimilarity* shader;
 
     public slots:
-        void changeThreshold();
+        void changeAttr();
 };
 
 #endif // NORMALVECTORSIMILARITYALGORITHM_H
