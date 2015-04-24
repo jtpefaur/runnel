@@ -23,11 +23,13 @@ void ShaderNormalVectorSimilarity::fillPositionBuffer(std::vector<glm::vec3>& da
 
 void ShaderNormalVectorSimilarity::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
     if (data_buffer_size > 0){
+        glDisable(GL_DEPTH_TEST);
         glUseProgram(this->theProgram);
         this->setUniform("exag", exag_z);
         this->setUniform("mvp", matrix);
         this->setUniform("valuecolor", color);
         this->linkBufferWithAttr(position_buffer, "position", 3);
-        glDrawArrays(GL_POINTS, 0, data_buffer_size);
+        glDrawArrays(GL_TRIANGLES, 0, data_buffer_size);
+        glEnable(GL_DEPTH_TEST);
     }
 }

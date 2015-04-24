@@ -33,7 +33,6 @@ void NormalVectorSimilarityAlgorithm::run(glm::vec3 point, Terrain *terr){
     baseTriangle = this->ter->getClosestTriangle(point);
     baseTriangle->calculateNormalVector();
 
-    //std::vector<int> terraceIds;
     float angle;
     //TODO: Convert user-given threshold to radians
     const float threshold = glm::radians(20.0f);
@@ -46,8 +45,6 @@ void NormalVectorSimilarityAlgorithm::run(glm::vec3 point, Terrain *terr){
             for(runnel::Point* p : tri->points) {
                 terraceVertices.push_back(p->coord);
             }
-            //terraceIds.push_back(tri->ident);
-            //cout << tri->ident << endl;
         }
     }
 
