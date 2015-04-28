@@ -68,7 +68,8 @@ SOURCES += main.cpp\
     inputData/elipsoidetype.cpp \
     UI/patternsdata.cpp \
     painters/shaders/shadernormalvectorsimilarity.cpp \
-    UI/normalvectorsimilarityconf.cpp
+    fluvialTerraceAlgorithms/nonefluvialterracealgorithm.cpp \
+    UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -273,7 +274,8 @@ HEADERS  += UI/mainwindow.h \
     inputData/elipsoidetype.h \
     UI/patternsdata.h \
     painters/shaders/shadernormalvectorsimilarity.h \
-    UI/normalvectorsimilarityconf.h
+    fluvialTerraceAlgorithms/nonefluvialterracealgorithm.h \
+    UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \
@@ -285,7 +287,7 @@ FORMS    += UI/mainwindow.ui \
     UI/buildNetwork/peuckernetworkconf.ui \
     UI/buildNetwork/callaghannetworkconf.ui \
     UI/waterAlgorithm/callaghanwaterconf.ui \
-    UI/normalvectorsimilarityconf.ui
+    UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.ui
 
 RESOURCES += \
     resources/shader.qrc \

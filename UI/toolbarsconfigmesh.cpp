@@ -15,6 +15,7 @@
 #include "waterPathAlgorithms/nonepathwateralgorithm.h"
 #include "waterPathAlgorithms/pathwatercallaghanalgorithm.h"
 #include "waterPathAlgorithms/pathwatergradientalgorithm.h"
+#include "fluvialTerraceAlgorithms/nonefluvialterracealgorithm.h"
 #include "fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.h"
 
 
@@ -48,6 +49,7 @@ ToolbarsConfigMesh::~ToolbarsConfigMesh()
     while (ui->path_conf->layout()->takeAt(0) != 0);
     while (ui->network_conf->layout()->takeAt(0) != 0);
     while (ui->patron_conf->layout()->takeAt(0) != 0);
+    while (ui->fluvial_terrace_conf->layout()->takeAt(0) != 0);
     for(auto alg: drainage_algorithms)
         delete alg;
     for(auto alg: path_water_algorithms)
@@ -139,11 +141,20 @@ void ToolbarsConfigMesh::getWater(){
 }
 
 void ToolbarsConfigMesh::fluvialTerraceIncludeAlgorithms(){
+    fluvial_terrace_algorithms.push_back(new NoneFluvialTerraceAlgorithm());
     fluvial_terrace_algorithms.push_back(new NormalVectorSimilarityAlgorithm());
+    for( FluvialTerraceAlgorithm* item : fluvial_terrace_algorithms){
+        ui->fluvial_terrace_value->addItem(item->getName());
+    }
 }
 
 void ToolbarsConfigMesh::getFluvialTerrace(){
-    FluvialTerraceAlgorithm* item = fluvial_terrace_algorithms[0];
+    int number = ui->fluvial_terrace_value->currentIndex();
+    FluvialTerraceAlgorithm* item = fluvial_terrace_algorithms[number];
+    if(item->getConf()){
+        ui->fluvial_terrace_conf->layout()->takeAt(0);
+        ui->fluvial_terrace_conf->layout()->addWidget(item->getConf());
+    }
     emit selectFluvialTerrace(item);
 }
 

@@ -1,7 +1,7 @@
 #ifndef NORMALVECTORSIMILARITYALGORITHM_H
 #define NORMALVECTORSIMILARITYALGORITHM_H
-#include "fluvialTerraceAlgorithms/fluvialterracealgorithm.h"
-#include "UI/normalvectorsimilarityconf.h"
+#include "fluvialterracealgorithm.h"
+#include "UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.h"
 
 #include <painters/shaders/shadernormalvectorsimilarity.h>
 

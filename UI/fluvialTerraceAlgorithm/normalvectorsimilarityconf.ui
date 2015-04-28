@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>150</width>
+    <width>158</width>
     <height>100</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>151</width>
+     <width>160</width>
      <height>101</height>
     </rect>
    </property>
@@ -64,7 +64,14 @@
      </widget>
     </item>
     <item>
-     <widget class="QDoubleSpinBox" name="threshold_value"/>
+     <widget class="QDoubleSpinBox" name="threshold_value">
+      <property name="maximum">
+       <double>90.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>20.000000000000000</double>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QPushButton" name="threshold_button">
