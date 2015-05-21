@@ -11,5 +11,5 @@ void main(void)
 {
     height = height_angle;
     angles = angle_edge;
-    gl_Position  = mvp*vec4(position.x, position.y, position.z*exag, 1.0);
+    gl_Position  = mvp*vec4(position.x, 1.0-position.y, position.z*exag, 1.0);
 }

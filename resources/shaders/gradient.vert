@@ -8,5 +8,5 @@ out vec3 color;
 void main(void)
 {
     color = valuecolor;
-    gl_Position  = mvp*vec4(position.x, position.y, position.z*exag, 1.0);
+    gl_Position  = mvp*vec4(position.x, 1.0-position.y, position.z*exag, 1.0);
 }

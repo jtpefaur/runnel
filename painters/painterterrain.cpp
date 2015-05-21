@@ -88,7 +88,7 @@ void PainterTerrain::paintGL(){
         std::cout << "No hay terreno para pintar"<<std::endl;
         return;
     }
-    this->GLWidget::model_view_matrix = glm::translate(glm::mat4(),glm::vec3(0.0f,0.0f, -5.0f))*this->GLWidget::matrix_glwidget*this->GLWidget::model_matrix;
+    this->GLWidget::model_view_matrix = glm::translate(glm::mat4(),glm::vec3(0.0f,1.0f, -5.0f))*this->GLWidget::matrix_glwidget*this->GLWidget::model_matrix;
     matrix_final = ortho_matrix*this->GLWidget::model_view_matrix;
 
     shader_terrain->render(matrix_final, exag_z, ter->max_bounding.z, color_conf["shader_terrain_color"]);
