@@ -33,7 +33,6 @@ std::unordered_map<std::string, glm::vec3> RunnelController::getColorConf(){
 }
 
 void RunnelController::changeColors(std::string name, glm::vec3 value){
-    pterrain.changeAttrConf(name, value);
 }
 
 PainterTerrain& RunnelController::getPainter(){
@@ -80,18 +79,15 @@ void RunnelController::saveData(QString fileName){
 }
 
 void RunnelController::buildTerrain(){
-    pterrain.initGL();
     BuilderTerrain bt;
     bt.runTriangulation(ter);
     std::cout << "Finish Triangulation..." << std::endl;
     ter->normalize();
-    pterrain.setTerrain(ter);
 
 }
 
 void RunnelController::changeSelectDrainage(DrainageAlgorithms* alg){
     alg->run(ter);
-    pterrain.setDrainageAlgorithm(alg);
     if ( this->ter->signalPaintGoogle ){
         emit drawGoogleEarth(alg->getPathTree());
     }
@@ -100,7 +96,6 @@ void RunnelController::changeSelectDrainage(DrainageAlgorithms* alg){
 void RunnelController::changeSelectPatron(AlgorithmPatron* alg){
     if (drainage_network.size() > 0){
         alg->run(ter, drainage_network);
-        pterrain.setPatternAlgorithm(alg);
         if ( this->ter->signalPaintGoogle ){
             emit drawGoogleEarth(alg->getPathTree());
         }
@@ -111,12 +106,10 @@ void RunnelController::changeSelectPatron(AlgorithmPatron* alg){
 
 void RunnelController::changeSelectWater(PathWaterAlgorithm* alg){
     alg->run(coords, ter);
-    pterrain.setWaterAlgorithm(alg);
 }
 
 void RunnelController::changeSelectNetwork(BuildNetwork* alg){
     drainage_network = alg->run(ter);
-    pterrain.setNetworkAlgorithm(alg);
     if ( this->ter->signalPaintGoogle ){
         emit drawGoogleEarth(alg->getPathTree());
     }
@@ -124,5 +117,4 @@ void RunnelController::changeSelectNetwork(BuildNetwork* alg){
 
 void RunnelController::changeSelectFluvialTerrace(FluvialTerraceAlgorithm* alg){
     alg->run(coords, ter);
-    pterrain.setFluvialTerraceAlgorithm(alg);
 }
