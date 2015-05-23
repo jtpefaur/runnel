@@ -58,22 +58,28 @@ bool RunnelData::writeFile(QString fileName, Terrain* ter){
 
     QTextStream outStream(&outputFile);
 
+    // 3mn - 2m - 2n + 1
     /* Write the line to the file */
     //writes points
-    float lat0 = ter->lat0;
-    float lng0 = ter->lng0;
-    outStream << ter->struct_point.size() << " " << ter->width << " " << ter->height << " " << lat0 << " " << lng0 << " " << ter->ratio << endl;
+    //float lat0 = ter->lat0;
+    //float lng0 = ter->lng0;
+    //outStream << ter->struct_point.size() << " " << ter->width << " " << ter->height << " " << lat0 << " " << lng0 << " " << ter->ratio << endl;
+
+    outStream << "OFF" << endl;
+    outStream << ter->struct_point.size() << " " << ter->struct_triangle.size() << " " << ter->struct_edge.size() << endl;
+
     for(runnel::Point *pto : ter->struct_point){
-        outStream << pto->ident << " " << pto->coord.x << " " << pto->coord.y << " " << pto->coord.z << endl;
+        //outStream << pto->ident << " " << pto->coord.x << " " << pto->coord.y << " " << pto->coord.z << endl;
+        outStream << pto->coord.x << " " << pto->coord.y << " " << pto->coord.z << endl;
     }
     //writes triangles
-    outStream << ter->struct_triangle.size() << endl;
+    //outStream << ter->struct_triangle.size() << endl;
     for(runnel::Triangle *trian : ter->struct_triangle){
-        outStream << trian->ident << " " << trian->points[0]->ident << " " << trian->points[1]->ident << " " << trian->points[2]->ident << endl;
+        outStream << "3" << " " << trian->points[0]->ident << " " << trian->points[1]->ident << " " << trian->points[2]->ident << endl;
     }
 
 
-    for(runnel::Triangle *trian : ter->struct_triangle){
+    /*for(runnel::Triangle *trian : ter->struct_triangle){
         std::vector<runnel::Triangle*> neighbour = trian->getNeighbours();
         if ( neighbour.size() == 3 )
             outStream << neighbour[0]->ident << " " << neighbour[1]->ident << " " << neighbour[2]->ident << endl;
@@ -83,7 +89,7 @@ bool RunnelData::writeFile(QString fileName, Terrain* ter){
 
         if ( neighbour.size() == 1 )
             outStream << neighbour[0]->ident << " " << -1 << " " << -1 << endl;
-    }
+    }*/
 
     outputFile.close();
     return true;
