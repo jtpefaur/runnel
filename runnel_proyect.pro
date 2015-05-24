@@ -69,7 +69,8 @@ SOURCES += main.cpp\
     UI/patternsdata.cpp \
     painters/shaders/shadernormalvectorsimilarity.cpp \
     fluvialTerraceAlgorithms/nonefluvialterracealgorithm.cpp \
-    UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.cpp
+    UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.cpp \
+    drainageAlgorithms/rwfloodalgorithm.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -275,7 +276,8 @@ HEADERS  += UI/mainwindow.h \
     UI/patternsdata.h \
     painters/shaders/shadernormalvectorsimilarity.h \
     fluvialTerraceAlgorithms/nonefluvialterracealgorithm.h \
-    UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.h
+    UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.h \
+    drainageAlgorithms/rwfloodalgorithm.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \
