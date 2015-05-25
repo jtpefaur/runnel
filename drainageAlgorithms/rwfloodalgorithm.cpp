@@ -53,7 +53,7 @@ void RWFloodAlgorithm::flood()
     std::vector<std::queue<runnel::Point*>> queueArray(arraySize, std::queue<runnel::Point*>());
 
     for(runnel::Point* point : this->ter->struct_point){
-        bool isBoundaryPoint = setInitialDirection(point);
+        bool isBoundaryPoint = initializeDirection(point);
         if(isBoundaryPoint){
             queueArray[point->coord.z - minElev].push(point);
         }
@@ -67,31 +67,39 @@ void RWFloodAlgorithm::flood()
             std::vector<runnel::Point*> neighborhood = computeNeighborhood(point);
             for(runnel::Point* neighbor : neighborhood){
                 if(neighbor->flags==0){
-
+                    setDirectionTowardsAdjacentPoint(neighbor, point);
+                    if(neighbor->coord.z < z){
+                        /*Warning: this modifies the data! Might want to make a local copy instead.*/
+                        neighbor->coord.z = z;
+                    }
+                    queueArray[neighbor->coord.z - minElev].push(neighbor);
                 }
             }
         }
     }
 }
 
-bool RWFloodAlgorithm::setInitialDirection(runnel::Point* point){
-    if(point->ident == 0){
+bool RWFloodAlgorithm::initializeDirection(runnel::Point* point){
+    int id = point->ident;
+    int width = ter->width;
+    int height = ter->height;
+    if(id == 0){
         /*Top-left corner of raster*/
         point->setFlagsOn(TOP_LEFT);
-    } else if (point->ident < ter->width - 1){
+    } else if (id < width - 1){
         point->setFlagsOn(TOP);
-    } else if (point->ident == ter->width - 1){
+    } else if (id == width - 1){
         point->setFlagsOn(TOP_RIGHT);
-    } else if (point->ident == ter->width*(ter->height-1)){
+    } else if (id == width*(height - 1)){
         point->setFlagsOn(BOTTOM_LEFT);
-    } else if (point->ident > ter->width*(ter->height-1) &&
-               point->ident < ter->width*ter->height - 1){
+    } else if (id > width*(height - 1) &&
+               id < width*height - 1){
         point->setFlagsOn(BOTTOM);
-    } else if (point->ident == ter->width*ter->height - 1){
+    } else if (id == width*height - 1){
         point->setFlagsOn(BOTTOM_RIGHT);
-    } else if (point->ident%ter->width == 0){
+    } else if (id%width == 0){
         point->setFlagsOn(LEFT);
-    } else if (point->ident%ter->width == ter->width - 1){
+    } else if (id%width == width - 1){
         point->setFlagsOn(RIGHT);
     } else {
         /*Not a boundary point; set a null direction and return*/
@@ -103,57 +111,81 @@ bool RWFloodAlgorithm::setInitialDirection(runnel::Point* point){
 
 std::vector<runnel::Point*> RWFloodAlgorithm::computeNeighborhood(runnel::Point* point){
     std::vector<runnel::Point*> neighborhood;
-    if(point->ident == 0){
-        neighborhood.push_back(ter->struct_point[point->ident + 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width + 1]);
-    } else if (point->ident < ter->width - 1){
-        neighborhood.push_back(ter->struct_point[point->ident - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width + 1]);
-    } else if (point->ident == ter->width - 1){
-        neighborhood.push_back(ter->struct_point[point->ident - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width]);
-    } else if (point->ident == ter->width*(ter->height-1)){
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width]);
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width + 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + 1]);
-    } else if (point->ident > ter->width*(ter->height-1) &&
-               point->ident < ter->width*ter->height - 1){
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width]);
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width + 1]);
-        neighborhood.push_back(ter->struct_point[point->ident - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + 1]);
-    } else if (point->ident == ter->width*ter->height - 1){
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width]);
-        neighborhood.push_back(ter->struct_point[point->ident - 1]);
-    } else if (point->ident%ter->width == 0){
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width]);
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width + 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width + 1]);
-    } else if (point->ident%ter->width == ter->width - 1){
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width]);
-        neighborhood.push_back(ter->struct_point[point->ident - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width]);
+    int id = point->ident;
+    int width = ter->width;
+    int height = ter->height;
+    if(id == 0){
+        neighborhood.push_back(ter->struct_point[id + 1]);
+        neighborhood.push_back(ter->struct_point[id + width]);
+        neighborhood.push_back(ter->struct_point[id + width + 1]);
+    } else if (id < width - 1){
+        neighborhood.push_back(ter->struct_point[id - 1]);
+        neighborhood.push_back(ter->struct_point[id + 1]);
+        neighborhood.push_back(ter->struct_point[id + width - 1]);
+        neighborhood.push_back(ter->struct_point[id + width]);
+        neighborhood.push_back(ter->struct_point[id + width + 1]);
+    } else if (id == width - 1){
+        neighborhood.push_back(ter->struct_point[id - 1]);
+        neighborhood.push_back(ter->struct_point[id + width - 1]);
+        neighborhood.push_back(ter->struct_point[id + width]);
+    } else if (id == width*(height - 1)){
+        neighborhood.push_back(ter->struct_point[id - width]);
+        neighborhood.push_back(ter->struct_point[id - width + 1]);
+        neighborhood.push_back(ter->struct_point[id + 1]);
+    } else if (id > width*(height - 1) && id < width*height - 1){
+        neighborhood.push_back(ter->struct_point[id - width - 1]);
+        neighborhood.push_back(ter->struct_point[id - width]);
+        neighborhood.push_back(ter->struct_point[id - width + 1]);
+        neighborhood.push_back(ter->struct_point[id - 1]);
+        neighborhood.push_back(ter->struct_point[id + 1]);
+    } else if (id == width*height - 1){
+        neighborhood.push_back(ter->struct_point[id - width - 1]);
+        neighborhood.push_back(ter->struct_point[id - width]);
+        neighborhood.push_back(ter->struct_point[id - 1]);
+    } else if (id%width == 0){
+        neighborhood.push_back(ter->struct_point[id - width]);
+        neighborhood.push_back(ter->struct_point[id - width + 1]);
+        neighborhood.push_back(ter->struct_point[id + 1]);
+        neighborhood.push_back(ter->struct_point[id + width]);
+        neighborhood.push_back(ter->struct_point[id + width + 1]);
+    } else if (id%width == width - 1){
+        neighborhood.push_back(ter->struct_point[id - width - 1]);
+        neighborhood.push_back(ter->struct_point[id - width]);
+        neighborhood.push_back(ter->struct_point[id - 1]);
+        neighborhood.push_back(ter->struct_point[id + width - 1]);
+        neighborhood.push_back(ter->struct_point[id + width]);
     } else {
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width]);
-        neighborhood.push_back(ter->struct_point[point->ident - ter->width + 1]);
-        neighborhood.push_back(ter->struct_point[point->ident - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width - 1]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width]);
-        neighborhood.push_back(ter->struct_point[point->ident + ter->width + 1]);
+        neighborhood.push_back(ter->struct_point[id - width - 1]);
+        neighborhood.push_back(ter->struct_point[id - width]);
+        neighborhood.push_back(ter->struct_point[id - width + 1]);
+        neighborhood.push_back(ter->struct_point[id - 1]);
+        neighborhood.push_back(ter->struct_point[id + 1]);
+        neighborhood.push_back(ter->struct_point[id + width - 1]);
+        neighborhood.push_back(ter->struct_point[id + width]);
+        neighborhood.push_back(ter->struct_point[id + width + 1]);
     }
     neighborhood.shrink_to_fit();
     return neighborhood;
+}
+
+void RWFloodAlgorithm::setDirectionTowardsAdjacentPoint(runnel::Point* source, runnel::Point* destination){
+    int diff = destination->ident - source->ident;
+    int width = ter->width;
+    if (diff == -width - 1){
+        source->setFlagsOn(TOP_LEFT);
+    } else if (diff == -width) {
+        source->setFlagsOn(TOP);
+    } else if (diff == -width + 1) {
+        source->setFlagsOn(TOP_RIGHT);
+    } else if (diff == -1) {
+        source->setFlagsOn(LEFT);
+    } else if (diff == 1) {
+        source->setFlagsOn(RIGHT);
+    } else if (diff == width -1) {
+        source->setFlagsOn(BOTTOM_LEFT);
+    } else if (diff == width) {
+        source->setFlagsOn(BOTTOM);
+    } else if (diff == width + 1) {
+        source->setFlagsOn(BOTTOM_RIGHT);
+    }
 }
