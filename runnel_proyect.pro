@@ -3,7 +3,7 @@
 # Project created by QtCreator 2014-09-13T15:42:48
 # Mingw C:\Qt5\Tools\mingw48_32\i686-w64-mingw32
 #-------------------------------------------------
-CONFIG   += c++11
+CONFIG   += c++11 warn_on
 
 QT       += core webkitwidgets widgets opengl
 
