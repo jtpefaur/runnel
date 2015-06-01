@@ -4,7 +4,7 @@
 
 struct customMorePeucker{
     inline bool operator()(runnel::Point* p1, runnel::Point* p2){
-        return p1->coord.z < p1->coord.z;
+        return p1->coord.z > p2->coord.z;
     }
 };
 
