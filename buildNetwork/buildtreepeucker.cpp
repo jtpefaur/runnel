@@ -104,7 +104,7 @@ void BuildTreePeucker::createTree(arbol* ar){
     return;
 }
 
-std::vector<arbol*> BuildTreePeucker::reviewPoints(){
+void BuildTreePeucker::reviewPoints(){
     arbolitos.clear();
     for(runnel::Point* pto: points_order){
 
@@ -124,7 +124,6 @@ std::vector<arbol*> BuildTreePeucker::reviewPoints(){
     for(arbol* b: arbolitos){
         b->getNumberStrahlerHorton();
     }
-
 
 }
 

@@ -29,7 +29,7 @@ class BuildTreePeucker : public BuildNetwork
         std::unordered_map<int, int> point_counter_peucker;
         Terrain* t;
         void createTree(arbol* ar);
-        std::vector<arbol*> reviewPoints();
+        void reviewPoints();
         void calculateGrid(Terrain *ter);
         std::vector<arbol*> arbolitos;
         ShaderPatron* shader;
