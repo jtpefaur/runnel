@@ -28,9 +28,12 @@ private:
         BOTTOM_RIGHT
     };
     void flood();
+    void calculateWaterAccumulation();
     bool initializeDirection(runnel::Point*);
     std::vector<runnel::Point*> computeNeighborhood(runnel::Point*);
     void setDirectionTowardsAdjacentPoint(runnel::Point*,runnel::Point*);
+    bool isDirectedOutsideTerrainBoundary(runnel::Point*);
+    int getNextPointId(runnel::Point*);
 };
 
 #endif // RWFLOODALGORITHM_H
