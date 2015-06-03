@@ -15,6 +15,11 @@ class PeuckerNetworkConf : public QWidget
         explicit PeuckerNetworkConf(QWidget *parent = 0);
         ~PeuckerNetworkConf();
 
+        int getOrderThreshold();
+
+    signals:
+        void changeAttr();
+
     private:
         Ui::PeuckerNetworkConf *ui;
 };
