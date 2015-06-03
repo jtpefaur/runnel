@@ -16,10 +16,12 @@ class arbol
         int number_strahler_horton;
         std::vector<arbol *> hijos;
         void getArbolEdges(std::vector<glm::vec3>& edges);
+        void getArbolEdges(std::vector<glm::vec3>& edges, int orderThreshold);
         void getNumberStrahlerHorton();
 
         void getColorEdgesType(std::vector<glm::vec3>& color_edges, std::string type_color);
         void getColorEdges(std::vector<glm::vec3>& color_edges);
+        void getColorEdges(std::vector<glm::vec3>& color_edges, int orderThreshold);
 };
 
 #endif // ARBOL_H

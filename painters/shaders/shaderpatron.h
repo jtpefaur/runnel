@@ -12,6 +12,7 @@ class ShaderPatron : public ShaderUtils
         std::vector<GLuint> buffer_color_arbolitos;
         std::vector<int> tamano_arbol;
         void fillPositionBuffer(std::vector<arbol*> arbolines,std::vector<std::string> names_type);
+        void fillPositionBuffer(std::vector<arbol*> arbolines,std::vector<std::string> names_type, int orderThreshold);
         void render(glm::mat4 matrix, float exag_z);
 };
 

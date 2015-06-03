@@ -22,25 +22,36 @@ arbol::arbol(runnel::Point* p)
 
 
 void arbol::getArbolEdges(std::vector<glm::vec3>& edges){
+    getArbolEdges(edges, 1);
+}
+
+void arbol::getArbolEdges(std::vector<glm::vec3> &edges, int orderThreshold) {
     for (arbol* h: hijos){
-        edges.push_back(pto->coord);
-        edges.push_back(h->pto->coord);
+        if(h->number_strahler_horton >= orderThreshold) {
+            edges.push_back(pto->coord);
+            edges.push_back(h->pto->coord);
+        }
 
-
-        h->getArbolEdges(edges);
+        h->getArbolEdges(edges, orderThreshold);
     }
 }
 
-void arbol::getColorEdges(std::vector<glm::vec3>& color_edges){
+void arbol::getColorEdges(std::vector<glm::vec3>& color_edges) {
+    getColorEdges(color_edges, 1);
+}
+
+void arbol::getColorEdges(std::vector<glm::vec3> &color_edges, int orderThreshold) {
     for (arbol* h: hijos){
-      if(h->number_strahler_horton > colores.size()){
-          color_edges.push_back(colores[colores.size()-1]);
-          color_edges.push_back(colores[colores.size()-1]);
-      }else{
-          color_edges.push_back(colores[h->number_strahler_horton]);
-          color_edges.push_back(colores[h->number_strahler_horton]);
-      }
-      h->getColorEdges(color_edges);
+        if (h->number_strahler_horton >= orderThreshold) {
+            if(h->number_strahler_horton > colores.size()){
+                color_edges.push_back(colores[colores.size()-1]);
+                color_edges.push_back(colores[colores.size()-1]);
+            }else{
+                color_edges.push_back(colores[h->number_strahler_horton - 1]);
+                color_edges.push_back(colores[h->number_strahler_horton - 1]);
+            }
+        }
+      h->getColorEdges(color_edges, orderThreshold);
     }
 }
 

@@ -16,7 +16,11 @@ ShaderPatron::ShaderPatron():
     std::cout << "Initialize ShaderPatron" << std::endl;
 }
 
-void ShaderPatron::fillPositionBuffer(std::vector<arbol*> arbolines, std::vector<std::string> names_type){
+void ShaderPatron::fillPositionBuffer(std::vector<arbol*> arbolines, std::vector<std::string> names_type) {
+    fillPositionBuffer(arbolines, names_type, 1);
+}
+
+void ShaderPatron::fillPositionBuffer(std::vector<arbol*> arbolines, std::vector<std::string> names_type, int orderThreshold){
     for (auto buf: buffer_position_arbolitos){
         if(buf != 0){
             glDeleteBuffers(1, &buf );
@@ -38,7 +42,7 @@ void ShaderPatron::fillPositionBuffer(std::vector<arbol*> arbolines, std::vector
         for(arbol* aa : arbolines){
             GLuint buffer_arbolito;
             std::vector<glm::vec3> ed_ar;
-            aa->getArbolEdges(ed_ar);
+            aa->getArbolEdges(ed_ar, orderThreshold);
             this->bufferCreate(buffer_arbolito, ed_ar);
             tamano_arbol.push_back(ed_ar.size());
             buffer_position_arbolitos.push_back(buffer_arbolito);
@@ -48,7 +52,7 @@ void ShaderPatron::fillPositionBuffer(std::vector<arbol*> arbolines, std::vector
             if(names_type.size()>0){
                 aa->getColorEdgesType(ed_ar_col, names_type[i]);
             }else{
-                aa->getColorEdges(ed_ar_col);
+                aa->getColorEdges(ed_ar_col, orderThreshold);
             }
             this->bufferCreate(buffer_arbolito_color, ed_ar_col);
             buffer_color_arbolitos.push_back(buffer_arbolito_color);

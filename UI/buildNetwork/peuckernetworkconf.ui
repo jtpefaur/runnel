@@ -10,6 +10,12 @@
     <height>119</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -34,7 +40,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="threshold_value">
+       <widget class="QSpinBox" name="order_threshold_value">
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -47,7 +53,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="threshold_button">
+       <widget class="QPushButton" name="order_threshold_button">
         <property name="text">
          <string>Prune</string>
         </property>

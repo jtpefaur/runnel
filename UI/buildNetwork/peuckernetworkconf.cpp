@@ -6,7 +6,7 @@ PeuckerNetworkConf::PeuckerNetworkConf(QWidget *parent) :
     ui(new Ui::PeuckerNetworkConf)
 {
     ui->setupUi(this);
-    QObject::connect(ui->threshold_button, SIGNAL(clicked()), this, SIGNAL(changeAttr()));
+    QObject::connect(ui->order_threshold_button, SIGNAL(clicked()), this, SIGNAL(changeOrderThreshold()));
 }
 
 PeuckerNetworkConf::~PeuckerNetworkConf()
@@ -15,5 +15,5 @@ PeuckerNetworkConf::~PeuckerNetworkConf()
 }
 
 int PeuckerNetworkConf::getOrderThreshold() {
-    return ui->threshold_value->value();
+    return ui->order_threshold_value->value();
 }

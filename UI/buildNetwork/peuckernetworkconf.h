@@ -18,7 +18,7 @@ class PeuckerNetworkConf : public QWidget
         int getOrderThreshold();
 
     signals:
-        void changeAttr();
+        void changeOrderThreshold();
 
     private:
         Ui::PeuckerNetworkConf *ui;
