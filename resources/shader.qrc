@@ -16,5 +16,7 @@
         <file>shaders/arbol_drenaje.vert</file>
         <file>shaders/terrace.frag</file>
         <file>shaders/terrace.vert</file>
+        <file>shaders/rwflood.frag</file>
+        <file>shaders/rwflood.vert</file>
     </qresource>
 </RCC>
