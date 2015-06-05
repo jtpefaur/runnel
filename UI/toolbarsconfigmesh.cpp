@@ -7,6 +7,7 @@
 #include "drainageAlgorithms/peuckerdrainagenetwork.h"
 #include "drainageAlgorithms/nonedrainagealgorithm.h"
 #include "drainageAlgorithms/diedralangledrainage.h"
+#include "drainageAlgorithms/rwfloodalgorithm.h"
 #include "buildNetwork/nonebuildnetwork.h"
 #include "buildNetwork/buildtreecallaghan.h"
 #include "buildNetwork/buildtreepeucker.h"
@@ -17,7 +18,6 @@
 #include "waterPathAlgorithms/pathwatergradientalgorithm.h"
 #include "fluvialTerraceAlgorithms/nonefluvialterracealgorithm.h"
 #include "fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.h"
-
 
 ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     QWidget(parent),
@@ -69,6 +69,7 @@ void ToolbarsConfigMesh::drainageIncludeAlgorithms(){
     drainage_algorithms.push_back(new PeuckerDrainageNetwork());
     drainage_algorithms.push_back(new DiedralAngleDrainage());
     drainage_algorithms.push_back(new GradientDrainageCallaghanMark());
+    drainage_algorithms.push_back(new RWFloodAlgorithm());
     for( DrainageAlgorithms* item : drainage_algorithms){
         ui->river_value->addItem(item->getName());
     }
@@ -182,7 +183,7 @@ void ToolbarsConfigMesh::showPatternsInformation(){
     QString title = "Patterns Information";
     QString information;
     information+="<table>";
-    for( int i = 0; i < PatternsData::names_patterns.size(); ++i){
+    for( int i = 0; i < (int)PatternsData::names_patterns.size(); ++i){
         information+= "<tr>";
 
         information+= "<td valign=\"middle\" >";

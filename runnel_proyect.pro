@@ -70,7 +70,9 @@ SOURCES += main.cpp\
     painters/shaders/shadernormalvectorsimilarity.cpp \
     fluvialTerraceAlgorithms/nonefluvialterracealgorithm.cpp \
     UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.cpp \
-    drainageAlgorithms/rwfloodalgorithm.cpp
+    drainageAlgorithms/rwfloodalgorithm.cpp \
+    UI/buildNetwork/rwfloodconf.cpp \
+    painters/shaders/shaderrwflood.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -277,7 +279,9 @@ HEADERS  += UI/mainwindow.h \
     painters/shaders/shadernormalvectorsimilarity.h \
     fluvialTerraceAlgorithms/nonefluvialterracealgorithm.h \
     UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.h \
-    drainageAlgorithms/rwfloodalgorithm.h
+    drainageAlgorithms/rwfloodalgorithm.h \
+    UI/buildNetwork/rwfloodconf.h \
+    painters/shaders/shaderrwflood.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \
@@ -289,7 +293,8 @@ FORMS    += UI/mainwindow.ui \
     UI/buildNetwork/peuckernetworkconf.ui \
     UI/buildNetwork/callaghannetworkconf.ui \
     UI/waterAlgorithm/callaghanwaterconf.ui \
-    UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.ui
+    UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.ui \
+    UI/buildNetwork/rwfloodconf.ui
 
 RESOURCES += \
     resources/shader.qrc \
@@ -317,3 +322,6 @@ OTHER_FILES += \
     shaders/arbol_drenaje.frag \
     shaders/terrace.vert \
     shaders/terrace.frag
+
+DISTFILES += \
+    resources/rwflood.vert
