@@ -1,33 +1,40 @@
 #include "rwfloodalgorithm.h"
-#include <memory>
 #include <queue>
 
 RWFloodAlgorithm::RWFloodAlgorithm():
     DrainageAlgorithms()
 {
-
+    this->ter = 0;
+    this->shader = 0;
+    this->maxWaterCount = 0;
 }
 
 RWFloodAlgorithm::~RWFloodAlgorithm()
 {
-
+    if (shader) {
+        delete shader;
+    }
 }
 
 void RWFloodAlgorithm::run(Terrain *ter)
 {
     this->ter = ter;
-    this->flood();
-    this->calculateWaterAccumulation();
+    this->flood(this->ter->struct_point);
+    this->calculateWaterAccumulation(this->ter->struct_point);
+    this->getDrainagePoints();
+    this->shader->fillBuffers(this->drainagePoints, this->drainageColors);
 }
 
 void RWFloodAlgorithm::glewReady()
 {
-
+    this->shader = new ShaderRWFlood();
 }
 
-void RWFloodAlgorithm::render(glm::mat4 matrix, float exag_z, glm::vec3 color)
+void RWFloodAlgorithm::render(glm::mat4 matrix, float exagValue, glm::vec3)
 {
-
+    if (shader) {
+        shader->render(matrix, exagValue);
+    }
 }
 
 QString RWFloodAlgorithm::getName()
@@ -37,7 +44,7 @@ QString RWFloodAlgorithm::getName()
 
 QWidget* RWFloodAlgorithm::getConf()
 {
-    return 0;
+    return &conf;
 }
 
 std::vector<glm::vec3> RWFloodAlgorithm::getPathTree()
@@ -46,106 +53,140 @@ std::vector<glm::vec3> RWFloodAlgorithm::getPathTree()
     return path;
 }
 
-void RWFloodAlgorithm::flood()
+void RWFloodAlgorithm::flood(std::vector<runnel::Point*>& points)
 {
     const int maxElev = (int)(ter->max_bounding.z);
     const int minElev = (int)(ter->min_bounding.z);
     const std::size_t arraySize = maxElev - minElev + 1;
 
-    std::vector<std::queue<runnel::Point*>> queueArray(arraySize, std::queue<runnel::Point*>());
+    std::vector<std::queue<runnel::Point*>> queueArray(arraySize,
+                                                       std::queue<runnel::Point*>());
+    std::map<int, float> zValueStore;
 
-    for(runnel::Point* point : this->ter->struct_point){
-        bool isBoundaryPoint = initializeDirection(point);
-        if(isBoundaryPoint){
+    for (runnel::Point* point : points) {
+        bool isBoundaryPoint = initializeDirection(points, point);
+        if (isBoundaryPoint) {
             queueArray[point->coord.z - minElev].push(point);
         }
     }
 
-    for(int z = minElev; z <= maxElev; ++z){
-        while(!queueArray[z-minElev].empty()){
+    for (int z = minElev; z <= maxElev; ++z) {
+        while (!queueArray[z-minElev].empty()) {
             runnel::Point* point = queueArray[z-minElev].front();
             queueArray[z-minElev].pop();
 
             std::vector<runnel::Point*> neighborhood = computeNeighborhood(point);
-            for(runnel::Point* neighbor : neighborhood){
-                if(neighbor->flags==0){
-                    setDirectionTowardsAdjacentPoint(neighbor, point);
-                    if(neighbor->coord.z < z){
-                        /* Warning: this modifies the data! Might want to make a
-                         * local copy instead.*/
-                        neighbor->coord.z = z;
+            for (runnel::Point* neighbor : neighborhood) {
+                if (neighbor->flags==0) {
+                    setDirectionTowardsAdjacentPoint(points, neighbor, point);
+                    if (neighbor->coord.z < z) {
+                        /* Warning: this modifies the data!
+                         * The original values are saved for later restoration. */
+                        int id = neighbor->ident;
+                        zValueStore[id] = points[id]->coord.z;
+                        points[id]->coord.z = z;
                     }
                     queueArray[neighbor->coord.z - minElev].push(neighbor);
                 }
             }
         }
     }
+
+    // Restore modified z-coordinate values to their original values.
+    for (auto &entry : zValueStore) {
+        points[entry.first]->coord.z = entry.second;
+    }
 }
 
-void RWFloodAlgorithm::calculateWaterAccumulation()
+void RWFloodAlgorithm::calculateWaterAccumulation(std::vector<runnel::Point*>& points)
 {
-    std::vector<int> inboundDegree(ter->struct_point.size());
-    std::vector<bool> pointIsVisited(ter->struct_point.size());
+    int maxWaterCount = 1;
+    std::vector<int> inboundDegree(points.size());
+    std::vector<bool> pointIsVisited(points.size());
 
-    for (runnel::Point* point : ter->struct_point) {
-        point->water_value = 1;
+    for (runnel::Point* point : points) {
+        points[point->ident]->water_value = 1;
         inboundDegree[point->ident] = 0;
         pointIsVisited[point->ident] = false;
     }
 
-    for (runnel::Point* point : ter->struct_point) {
+    for (runnel::Point* point : points) {
         if (!isDirectedOutsideTerrainBoundary(point)) {
             inboundDegree[getNextPointId(point)]++;
         }
     }
 
-    for (runnel::Point* point : ter->struct_point) {
+    for (runnel::Point* point : points) {
         if (!pointIsVisited[point->ident]) {
             runnel::Point* currentPoint = point;
             while (inboundDegree[currentPoint->ident] == 0) {
                 pointIsVisited[currentPoint->ident] = true;
                 if (isDirectedOutsideTerrainBoundary(currentPoint)) break;
-                runnel::Point* nextPoint =
-                        ter->struct_point[getNextPointId(currentPoint)];
-                nextPoint->water_value += currentPoint->water_value;
-                inboundDegree[nextPoint->ident]--;
-                currentPoint = nextPoint;
+                int nextPointId = getNextPointId(currentPoint);
+                int currentPointId = currentPoint->ident;
+                points[nextPointId]->water_value += points[currentPointId]->water_value;
+                if (points[nextPointId]->water_value > maxWaterCount) {
+                    maxWaterCount = points[nextPointId]->water_value;
+                }
+                inboundDegree[nextPointId]--;
+                currentPoint = points[nextPointId];
             }
+        }
+    }
+
+    this->maxWaterCount = maxWaterCount;
+}
+
+void RWFloodAlgorithm::getDrainagePoints()
+{
+    for (runnel::Edge* edge : this->ter->struct_edge) {
+        runnel::Point* p1 = this->ter->struct_point[edge->id1];
+        runnel::Point* p2 = this->ter->struct_point[edge->id2];
+        if (p1->water_value >= 200 && p2->water_value >= 200) {
+            float water1 = (float)p1->water_value / (float)this->maxWaterCount;
+            float water2 = (float)p2->water_value / (float)this->maxWaterCount;
+            this->drainagePoints.push_back(p1->coord);
+            this->drainagePoints.push_back(p2->coord);
+            this->drainageColors.push_back(glm::vec3(0.0f, 0.0f, water1));
+            this->drainageColors.push_back(glm::vec3(0.0f, 0.0f, water2));
         }
     }
 }
 
-bool RWFloodAlgorithm::initializeDirection(runnel::Point* point){
+bool RWFloodAlgorithm::initializeDirection(std::vector<runnel::Point*>& points,
+                                           runnel::Point* point)
+{
     int id = point->ident;
     int width = ter->width;
     int height = ter->height;
     if (id == 0) {
         /*Top-left corner of raster*/
-        point->setFlagsOn(TOP_LEFT);
+        points[id]->setFlagsOn(TOP_LEFT);
     } else if (id < width - 1) {
-        point->setFlagsOn(TOP);
+        points[id]->setFlagsOn(TOP);
     } else if (id == width - 1) {
-        point->setFlagsOn(TOP_RIGHT);
+        points[id]->setFlagsOn(TOP_RIGHT);
     } else if (id == width*(height - 1)) {
-        point->setFlagsOn(BOTTOM_LEFT);
+        points[id]->setFlagsOn(BOTTOM_LEFT);
     } else if (id > width*(height - 1) &&
                id < width*height - 1) {
-        point->setFlagsOn(BOTTOM);
+        points[id]->setFlagsOn(BOTTOM);
     } else if (id == width*height - 1) {
-        point->setFlagsOn(BOTTOM_RIGHT);
+        points[id]->setFlagsOn(BOTTOM_RIGHT);
     } else if (id%width == 0) {
-        point->setFlagsOn(LEFT);
+        points[id]->setFlagsOn(LEFT);
     } else if (id%width == width - 1) {
-        point->setFlagsOn(RIGHT);
+        points[id]->setFlagsOn(RIGHT);
     } else {
         /*Not a boundary point; set a null direction and return*/
-        point->flags = 0;
+        points[id]->flags = 0;
         return false;
     }
     return true;
 }
 
-std::vector<runnel::Point*> RWFloodAlgorithm::computeNeighborhood(runnel::Point* point){
+std::vector<runnel::Point*> RWFloodAlgorithm::computeNeighborhood(runnel::Point* point)
+{
     std::vector<runnel::Point*> neighborhood;
     int id = point->ident;
     int width = ter->width;
@@ -205,30 +246,33 @@ std::vector<runnel::Point*> RWFloodAlgorithm::computeNeighborhood(runnel::Point*
     return neighborhood;
 }
 
-void RWFloodAlgorithm::setDirectionTowardsAdjacentPoint(runnel::Point* source, runnel::Point* destination){
+void RWFloodAlgorithm::setDirectionTowardsAdjacentPoint(std::vector<runnel::Point*>& points, runnel::Point* source, runnel::Point* destination)
+{
+    int sourceId = source->ident;
     int diff = destination->ident - source->ident;
     int width = ter->width;
 
     if (diff == -width - 1) {
-        source->setFlagsOn(TOP_LEFT);
+        points[sourceId]->setFlagsOn(TOP_LEFT);
     } else if (diff == -width) {
-        source->setFlagsOn(TOP);
+        points[sourceId]->setFlagsOn(TOP);
     } else if (diff == -width + 1) {
-        source->setFlagsOn(TOP_RIGHT);
+        points[sourceId]->setFlagsOn(TOP_RIGHT);
     } else if (diff == -1) {
-        source->setFlagsOn(LEFT);
+        points[sourceId]->setFlagsOn(LEFT);
     } else if (diff == 1) {
-        source->setFlagsOn(RIGHT);
+        points[sourceId]->setFlagsOn(RIGHT);
     } else if (diff == width -1) {
-        source->setFlagsOn(BOTTOM_LEFT);
+        points[sourceId]->setFlagsOn(BOTTOM_LEFT);
     } else if (diff == width) {
-        source->setFlagsOn(BOTTOM);
+        points[sourceId]->setFlagsOn(BOTTOM);
     } else if (diff == width + 1) {
-        source->setFlagsOn(BOTTOM_RIGHT);
+        points[sourceId]->setFlagsOn(BOTTOM_RIGHT);
     }
 }
 
-bool RWFloodAlgorithm::isDirectedOutsideTerrainBoundary(runnel::Point* point) {
+bool RWFloodAlgorithm::isDirectedOutsideTerrainBoundary(runnel::Point* point)
+{
     // Pre-condition: point->flags != 0 (a direction must be set.)
     int id = point->ident;
     int height = ter->height;
@@ -265,7 +309,8 @@ bool RWFloodAlgorithm::isDirectedOutsideTerrainBoundary(runnel::Point* point) {
     return false;
 }
 
-int RWFloodAlgorithm::getNextPointId(runnel::Point* point) {
+int RWFloodAlgorithm::getNextPointId(runnel::Point* point)
+{
     // Pre-condition: !isDirectedOutsideTerrainBoundary(point) == true
     int id = point->ident;
     int width = ter->width;

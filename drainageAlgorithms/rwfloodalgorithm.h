@@ -2,6 +2,10 @@
 #define RWFLOODALGORITHM_H
 #include "drainagealgorithms.h"
 
+#include <painters/shaders/shaderrwflood.h>
+
+#include <UI/buildNetwork/rwfloodconf.h>
+
 class RWFloodAlgorithm : public DrainageAlgorithms
 {
     Q_OBJECT
@@ -17,6 +21,11 @@ public:
 
 private:
     Terrain* ter;
+    ShaderRWFlood* shader;
+    RWFloodConf conf;
+    int maxWaterCount;
+    std::vector<glm::vec3> drainagePoints;
+    std::vector<glm::vec3> drainageColors;
     enum Direction {
         TOP_LEFT,
         TOP,
@@ -27,11 +36,16 @@ private:
         BOTTOM,
         BOTTOM_RIGHT
     };
-    void flood();
-    void calculateWaterAccumulation();
-    bool initializeDirection(runnel::Point*);
+
+    void flood(std::vector<runnel::Point*>&);
+    void calculateWaterAccumulation(std::vector<runnel::Point*>&);
+    void getDrainagePoints();
+
+    bool initializeDirection(std::vector<runnel::Point*>&,runnel::Point*);
     std::vector<runnel::Point*> computeNeighborhood(runnel::Point*);
-    void setDirectionTowardsAdjacentPoint(runnel::Point*,runnel::Point*);
+    void setDirectionTowardsAdjacentPoint(std::vector<runnel::Point*>&,
+                                          runnel::Point*,
+                                          runnel::Point*);
     bool isDirectedOutsideTerrainBoundary(runnel::Point*);
     int getNextPointId(runnel::Point*);
 };
