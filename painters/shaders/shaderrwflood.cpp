@@ -34,6 +34,7 @@ void ShaderRWFlood::fillBuffers(std::vector<glm::vec3> coords,
 
 void ShaderRWFlood::render(glm::mat4 matrix, float exag)
 {
+    glDisable(GL_DEPTH_TEST);
     glLineWidth(3);
     glUseProgram(this->theProgram);
     this->setUniform("exag", exag);
@@ -42,4 +43,5 @@ void ShaderRWFlood::render(glm::mat4 matrix, float exag)
     this->linkBufferWithAttr(colorBuffer, "inputColor", 3);
     glDrawArrays(GL_LINES, 0, dataBufferSize);
     glLineWidth(1);
+    glEnable(GL_DEPTH_TEST);
 }
