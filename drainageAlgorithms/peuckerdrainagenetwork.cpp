@@ -97,8 +97,8 @@ std::vector<glm::vec3> PeuckerDrainageNetwork::getDrainageColor(){
         float color_p1 = (p1->isFlagsOn(p1->PEUCKER))? 1.0f : 0.0f;
         float color_p2 = (p2->isFlagsOn(p2->PEUCKER))? 1.0f : 0.0f;
         if((color_p1==0.0f && color_p2==0.0f) ){
-            color.push_back(glm::vec3(1,0,0));
-            color.push_back(glm::vec3(1,0,0));
+            color.push_back(glm::vec3(0.0f,0.0f,1.0f));
+            color.push_back(glm::vec3(0.0f,0.0f,1.0f));
             points_edge.push_back(p1->coord);
             points_edge.push_back(p2->coord);
         }
