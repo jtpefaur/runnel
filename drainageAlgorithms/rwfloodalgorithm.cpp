@@ -142,13 +142,13 @@ void RWFloodAlgorithm::getDrainagePoints()
     for (runnel::Edge* edge : this->ter->struct_edge) {
         runnel::Point* p1 = this->ter->struct_point[edge->id1];
         runnel::Point* p2 = this->ter->struct_point[edge->id2];
-        if (p1->water_value >= 200 && p2->water_value >= 200) {
+        if (p1->water_value >= 150 && p2->water_value >= 150) {
             float water1 = (float)p1->water_value / (float)this->maxWaterCount;
             float water2 = (float)p2->water_value / (float)this->maxWaterCount;
             this->drainagePoints.push_back(p1->coord);
             this->drainagePoints.push_back(p2->coord);
-            this->drainageColors.push_back(glm::vec3(0.0f, 0.0f, water1));
-            this->drainageColors.push_back(glm::vec3(0.0f, 0.0f, water2));
+            this->drainageColors.push_back(glm::vec3(1.0f-water1, 1.0f-water1, 1.0f));
+            this->drainageColors.push_back(glm::vec3(1.0f-water2, 1.0f-water2, 1.0f));
         }
     }
 }
