@@ -10,9 +10,9 @@ public:
 
     std::size_t dataBufferSize;
     GLuint positionBuffer;
-    GLuint normalizedWaterCountBuffer;
+    GLuint colorBuffer;
 
-    void fillBuffers(std::vector<glm::vec3>,std::vector<float>);
+    void fillBuffers(std::vector<glm::vec3>, std::vector<glm::vec3>);
     void render(glm::mat4, float);
 };
 
