@@ -71,8 +71,8 @@ SOURCES += main.cpp\
     fluvialTerraceAlgorithms/nonefluvialterracealgorithm.cpp \
     UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.cpp \
     drainageAlgorithms/rwfloodalgorithm.cpp \
-    UI/buildNetwork/rwfloodconf.cpp \
-    painters/shaders/shaderrwflood.cpp
+    painters/shaders/shaderrwflood.cpp \
+    UI/drainageAlgorithm/rwfloodconf.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
