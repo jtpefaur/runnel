@@ -7,6 +7,9 @@ RWFloodAlgorithm::RWFloodAlgorithm():
     this->ter = 0;
     this->shader = 0;
     this->maxWaterCount = 0;
+    this->waterThreshold = 100;
+
+    QObject::connect(&conf, SIGNAL(changeAttr()), this, SLOT(changeAttr()));
 }
 
 RWFloodAlgorithm::~RWFloodAlgorithm()
@@ -139,12 +142,12 @@ void RWFloodAlgorithm::calculateWaterAccumulation(std::vector<runnel::Point*>& p
 
 void RWFloodAlgorithm::getDrainagePoints()
 {
-    for (runnel::Edge* edge : this->ter->struct_edge) {
-        runnel::Point* p1 = this->ter->struct_point[edge->id1];
-        runnel::Point* p2 = this->ter->struct_point[edge->id2];
-        if (p1->water_value >= 150 && p2->water_value >= 150) {
-            float water1 = (float)p1->water_value / (float)this->maxWaterCount;
-            float water2 = (float)p2->water_value / (float)this->maxWaterCount;
+    for (runnel::Edge* edge : ter->struct_edge) {
+        runnel::Point* p1 = ter->struct_point[edge->id1];
+        runnel::Point* p2 = ter->struct_point[edge->id2];
+        if (p1->water_value >= waterThreshold && p2->water_value >= waterThreshold) {
+            float water1 = (float)p1->water_value / (float)maxWaterCount;
+            float water2 = (float)p2->water_value / (float)maxWaterCount;
             this->drainagePoints.push_back(p1->coord);
             this->drainagePoints.push_back(p2->coord);
             this->drainageColors.push_back(glm::vec3(1.0f-water1, 1.0f-water1, 1.0f));
@@ -325,4 +328,11 @@ int RWFloodAlgorithm::getNextPointId(runnel::Point* point)
     if (point->isFlagsOn(BOTTOM_RIGHT)) return (id + width + 1);
 
     return -1;
+}
+
+void RWFloodAlgorithm::changeAttr()
+{
+    this->waterThreshold = conf.getWaterThreshold();
+    this->run(ter);
+    emit reload();
 }

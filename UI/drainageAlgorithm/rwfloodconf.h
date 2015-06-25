@@ -15,6 +15,11 @@ public:
     explicit RWFloodConf(QWidget *parent = 0);
     ~RWFloodConf();
 
+    int getWaterThreshold();
+
+signals:
+    void changeAttr();
+
 private:
     Ui::RWFloodConf *ui;
 };

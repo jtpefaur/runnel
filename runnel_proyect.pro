@@ -294,7 +294,7 @@ FORMS    += UI/mainwindow.ui \
     UI/buildNetwork/callaghannetworkconf.ui \
     UI/waterAlgorithm/callaghanwaterconf.ui \
     UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.ui \
-    UI/buildNetwork/rwfloodconf.ui
+    UI/drainageAlgorithm/rwfloodconf.ui
 
 RESOURCES += \
     resources/shader.qrc \

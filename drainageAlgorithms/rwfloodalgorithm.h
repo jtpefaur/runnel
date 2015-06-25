@@ -24,6 +24,7 @@ private:
     ShaderRWFlood* shader;
     RWFloodConf conf;
     int maxWaterCount;
+    int waterThreshold;
     std::vector<glm::vec3> drainagePoints;
     std::vector<glm::vec3> drainageColors;
     enum Direction {
@@ -48,6 +49,9 @@ private:
                                           runnel::Point*);
     bool isDirectedOutsideTerrainBoundary(runnel::Point*);
     int getNextPointId(runnel::Point*);
+
+public slots:
+    void changeAttr();
 };
 
 #endif // RWFLOODALGORITHM_H
