@@ -24,6 +24,8 @@ void RWFloodAlgorithm::run(Terrain *ter)
     this->ter = ter;
     this->flood(this->ter->struct_point);
     this->calculateWaterAccumulation(this->ter->struct_point);
+    drainageColors.clear();
+    drainagePoints.clear();
     this->getDrainagePoints();
     this->shader->fillBuffers(this->drainagePoints, this->drainageColors);
 }
