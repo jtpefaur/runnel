@@ -69,6 +69,7 @@ void RWFloodAlgorithm::flood(std::vector<runnel::Point*>& points)
     std::map<int, float> zValueStore;
 
     for (runnel::Point* point : points) {
+        point->flags = 0;
         bool isBoundaryPoint = initializeDirection(points, point);
         if (isBoundaryPoint) {
             queueArray[point->coord.z - minElev].push(point);
@@ -87,9 +88,8 @@ void RWFloodAlgorithm::flood(std::vector<runnel::Point*>& points)
                     if (neighbor->coord.z < z) {
                         /* Warning: this modifies the data!
                          * The original values are saved for later restoration. */
-                        int id = neighbor->ident;
-                        zValueStore[id] = points[id]->coord.z;
-                        points[id]->coord.z = z;
+                        zValueStore[neighbor->ident] = neighbor->coord.z;
+                        neighbor->coord.z = z;
                     }
                     queueArray[neighbor->coord.z - minElev].push(neighbor);
                 }

@@ -47,6 +47,10 @@ void PeuckerDrainageNetwork::calculateGrid(Terrain *ter){
     int width = ter->width;
     int height = ter->height;
 
+    for (runnel::Point* point : ter->struct_point) {
+        point->flags = 0;
+    }
+
     for(unsigned int i = 0; i < ter->struct_point.size() ; ++i){
         int fila = i/width;
 
@@ -78,8 +82,6 @@ void PeuckerDrainageNetwork::calculateGrid(Terrain *ter){
                 max_point->setFlagsOn(runnel::Point::PEUCKER);
             }
         }
-
-
     }
 }
 
