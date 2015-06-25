@@ -3,19 +3,19 @@
 #include <iostream>
 #include <QMessageBox>
 #include "patternsdata.h"
-#include "drainageAlgorithms/gradientdrainagecallaghanmark.h"
-#include "drainageAlgorithms/peuckerdrainagenetwork.h"
 #include "drainageAlgorithms/nonedrainagealgorithm.h"
+#include "drainageAlgorithms/peuckerdrainagenetwork.h"
 #include "drainageAlgorithms/diedralangledrainage.h"
+#include "drainageAlgorithms/gradientdrainagecallaghanmark.h"
 #include "drainageAlgorithms/rwfloodalgorithm.h"
 #include "buildNetwork/nonebuildnetwork.h"
 #include "buildNetwork/buildtreecallaghan.h"
 #include "buildNetwork/buildtreepeucker.h"
-#include "patternsAlgorithms/nonepatronalgorithm.h"
-#include "patternsAlgorithms/zhangguilbertalgorithm.h"
 #include "waterPathAlgorithms/nonepathwateralgorithm.h"
 #include "waterPathAlgorithms/pathwatercallaghanalgorithm.h"
 #include "waterPathAlgorithms/pathwatergradientalgorithm.h"
+#include "patternsAlgorithms/nonepatronalgorithm.h"
+#include "patternsAlgorithms/zhangguilbertalgorithm.h"
 #include "fluvialTerraceAlgorithms/nonefluvialterracealgorithm.h"
 #include "fluvialTerraceAlgorithms/normalvectorsimilarityalgorithm.h"
 
@@ -24,20 +24,29 @@ ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     ui(new Ui::ToolbarsConfigMesh)
 {
     ui->setupUi(this);
-    QObject::connect(ui->drainage_patron_button, SIGNAL(clicked()), this, SLOT(getPatron()));
+
+    drainageWidget = 0;
+    networkWidget = 0;
+    waterPathWidget = 0;
+    patternWidget = 0;
+    fluvialTerraceWidget = 0;
+
     QObject::connect(ui->river_button, SIGNAL(clicked()), this, SLOT(getDrainage()));
-    QObject::connect(ui->path_water_button, SIGNAL(clicked()), this, SLOT(getWater()));
     QObject::connect(ui->network_button, SIGNAL(clicked()), this, SLOT(getNetwork()));
+    QObject::connect(ui->path_water_button, SIGNAL(clicked()), this, SLOT(getWater()));
+    QObject::connect(ui->drainage_patron_button, SIGNAL(clicked()), this, SLOT(getPatron()));
     QObject::connect(ui->fluvial_terrace_button, SIGNAL(clicked()), this, SLOT(getFluvialTerrace()));
+
     QObject::connect(ui->exaggeration_terrain_value, SIGNAL(valueChanged(int)), this, SIGNAL(changeElevation(int)));
     QObject::connect(ui->landform_value, SIGNAL(currentIndexChanged(int)), this, SIGNAL(changeLandForm(int)));
     QObject::connect(ui->gradient_vector, SIGNAL(clicked(bool)), this, SIGNAL(showGradientVector(bool)));
     QObject::connect(ui->normal_vector, SIGNAL(clicked(bool)), this, SIGNAL(showNormalVector(bool)));
     QObject::connect(ui->coordinate_axis, SIGNAL(clicked(bool)), this, SIGNAL(showCoordinateAxis(bool)));
     QObject::connect(ui->patterns_information, SIGNAL(clicked()), this, SLOT(showPatternsInformation()));
+
     this->drainageIncludeAlgorithms();
-    this->pathWaterIncludeAlgorithms();
     this->networkIncludeAlgorithms();
+    this->pathWaterIncludeAlgorithms();
     this->patronIncludeAlgorithms();
     this->fluvialTerraceIncludeAlgorithms();
 }
@@ -60,130 +69,211 @@ ToolbarsConfigMesh::~ToolbarsConfigMesh()
         delete alg;
     for(auto alg: fluvial_terrace_algorithms)
         delete alg;
+    delete drainageWidget;
+    delete networkWidget;
+    delete patternWidget;
+    delete waterPathWidget;
+    delete fluvialTerraceWidget;
     delete ui;
 }
 
-void ToolbarsConfigMesh::drainageIncludeAlgorithms(){
-    //Add new gradient algorithms
+void ToolbarsConfigMesh::drainageIncludeAlgorithms()
+{
+    drainageWidget = new QStackedWidget;
+
     drainage_algorithms.push_back(new NoneDrainageAlgorithm());
     drainage_algorithms.push_back(new PeuckerDrainageNetwork());
     drainage_algorithms.push_back(new DiedralAngleDrainage());
     drainage_algorithms.push_back(new GradientDrainageCallaghanMark());
     drainage_algorithms.push_back(new RWFloodAlgorithm());
-    for( DrainageAlgorithms* item : drainage_algorithms){
+
+    for (DrainageAlgorithms* item : drainage_algorithms) {
         ui->river_value->addItem(item->getName());
+        if (item->getConf()) {
+            drainageWidget->addWidget(item->getConf());
+        }
     }
+
+    ui->river_conf->layout()->addWidget(drainageWidget);
+    drainageWidget->hide();
 }
 
-void ToolbarsConfigMesh::getDrainage(){
+void ToolbarsConfigMesh::getDrainage()
+{
     int number = ui->river_value->currentIndex();
     DrainageAlgorithms* item = drainage_algorithms[number];
-    if(item->getConf()){
-        ui->river_conf->layout()->takeAt(0);
-        ui->river_conf->layout()->addWidget(item->getConf());
+
+    if (item->getConf()) {
+        drainageWidget->setCurrentWidget(item->getConf());
+        drainageWidget->show();
+    } else {
+        drainageWidget->hide();
     }
+
     emit selectDrainage(item);
 }
 
-void ToolbarsConfigMesh::networkIncludeAlgorithms(){
+void ToolbarsConfigMesh::networkIncludeAlgorithms()
+{
+    networkWidget = new QStackedWidget;
+
     network_algorithms.push_back(new NoneBuildNetwork());
     network_algorithms.push_back(new buildTreeCallaghan());
     network_algorithms.push_back(new BuildTreePeucker());
-    for( BuildNetwork* item : network_algorithms){
+
+    for (BuildNetwork* item : network_algorithms) {
         ui->network_value->addItem(item->getName());
+        if (item->getConf()) {
+            networkWidget->addWidget(item->getConf());
+        }
     }
+
+    ui->network_conf->layout()->addWidget(networkWidget);
+    networkWidget->hide();
 }
 
-void ToolbarsConfigMesh::getNetwork(){
+void ToolbarsConfigMesh::getNetwork()
+{
     int number = ui->network_value->currentIndex();
     BuildNetwork* item = network_algorithms[number];
-    if(item->getConf()){
-        ui->network_conf->layout()->takeAt(0);
-        ui->network_conf->layout()->addWidget(item->getConf());
+
+    if (item->getConf()) {
+        networkWidget->setCurrentWidget(item->getConf());
+        networkWidget->show();
+    } else {
+        networkWidget->hide();
     }
+
     emit selectNetwork(item);
 }
 
-void ToolbarsConfigMesh::patronIncludeAlgorithms(){
-    patron_algorithms.push_back(new NonePatronAlgorithm());
-    patron_algorithms.push_back(new ZhangGuilbertAlgorithm());
-    for( AlgorithmPatron* item : patron_algorithms){
-        ui->drainage_patron_value->addItem(item->getName());
-    }
-}
+void ToolbarsConfigMesh::pathWaterIncludeAlgorithms()
+{
+    waterPathWidget = new QStackedWidget;
 
-void ToolbarsConfigMesh::getPatron(){
-    int number = ui->drainage_patron_value->currentIndex();
-    AlgorithmPatron* item = patron_algorithms[number];
-    if(item->getConf()){
-        ui->patron_conf->layout()->takeAt(0);
-        ui->patron_conf->layout()->addWidget(item->getConf());
-    }
-    emit selectPatron(item);
-}
-
-void ToolbarsConfigMesh::pathWaterIncludeAlgorithms(){
     path_water_algorithms.push_back(new NonePathWaterAlgorithm());
     path_water_algorithms.push_back(new PathWaterCallaghanAlgorithm());
     path_water_algorithms.push_back(new PathWaterGradientAlgorithm());
-    for( PathWaterAlgorithm* item : path_water_algorithms){
+
+    for (PathWaterAlgorithm* item : path_water_algorithms) {
         ui->path_water_value->addItem(item->getName());
+        if (item->getConf()) {
+            waterPathWidget->addWidget(item->getConf());
+        }
     }
+
+    ui->path_conf->layout()->addWidget(waterPathWidget);
+    waterPathWidget->hide();
 }
 
-void ToolbarsConfigMesh::getWater(){
+void ToolbarsConfigMesh::getWater()
+{
     int number = ui->path_water_value->currentIndex();
     PathWaterAlgorithm* item = path_water_algorithms[number];
-    if(item->getConf()){
-        ui->path_conf->layout()->takeAt(0);
-        ui->path_conf->layout()->addWidget(item->getConf());
+
+    if (item->getConf()) {
+        waterPathWidget->setCurrentWidget(item->getConf());
+        waterPathWidget->show();
+    } else {
+        waterPathWidget->hide();
     }
+
     emit selectWater(item);
 }
 
-void ToolbarsConfigMesh::fluvialTerraceIncludeAlgorithms(){
-    fluvial_terrace_algorithms.push_back(new NoneFluvialTerraceAlgorithm());
-    fluvial_terrace_algorithms.push_back(new NormalVectorSimilarityAlgorithm());
-    for( FluvialTerraceAlgorithm* item : fluvial_terrace_algorithms){
-        ui->fluvial_terrace_value->addItem(item->getName());
+void ToolbarsConfigMesh::patronIncludeAlgorithms()
+{
+    patternWidget = new QStackedWidget;
+
+    patron_algorithms.push_back(new NonePatronAlgorithm());
+    patron_algorithms.push_back(new ZhangGuilbertAlgorithm());
+
+    for (AlgorithmPatron* item : patron_algorithms) {
+        ui->drainage_patron_value->addItem(item->getName());
+        if (item->getConf()) {
+            patternWidget->addWidget(item->getConf());
+        }
     }
+
+    ui->patron_conf->layout()->addWidget(patternWidget);
+    patternWidget->hide();
 }
 
-void ToolbarsConfigMesh::getFluvialTerrace(){
+void ToolbarsConfigMesh::getPatron()
+{
+    int number = ui->drainage_patron_value->currentIndex();
+    AlgorithmPatron* item = patron_algorithms[number];
+
+    if (item->getConf()) {
+        patternWidget->setCurrentWidget(item->getConf());
+        patternWidget->show();
+    } else {
+        patternWidget->hide();
+    }
+
+    emit selectPatron(item);
+}
+
+void ToolbarsConfigMesh::fluvialTerraceIncludeAlgorithms()
+{
+    fluvialTerraceWidget = new QStackedWidget;
+
+    fluvial_terrace_algorithms.push_back(new NoneFluvialTerraceAlgorithm());
+    fluvial_terrace_algorithms.push_back(new NormalVectorSimilarityAlgorithm());
+
+    for (FluvialTerraceAlgorithm* item : fluvial_terrace_algorithms) {
+        ui->fluvial_terrace_value->addItem(item->getName());
+        if (item->getConf()) {
+            fluvialTerraceWidget->addWidget(item->getConf());
+        }
+    }
+
+    ui->fluvial_terrace_conf->layout()->addWidget(fluvialTerraceWidget);
+    fluvialTerraceWidget->hide();
+}
+
+void ToolbarsConfigMesh::getFluvialTerrace()
+{
     int number = ui->fluvial_terrace_value->currentIndex();
     FluvialTerraceAlgorithm* item = fluvial_terrace_algorithms[number];
-    if(item->getConf()){
-        ui->fluvial_terrace_conf->layout()->takeAt(0);
-        ui->fluvial_terrace_conf->layout()->addWidget(item->getConf());
+
+    if (item->getConf()) {
+        fluvialTerraceWidget->setCurrentWidget(item->getConf());
+        fluvialTerraceWidget->show();
+    } else {
+        fluvialTerraceWidget->hide();
     }
+
     emit selectFluvialTerrace(item);
 }
 
-void ToolbarsConfigMesh::glewIsReady(){
-    for( DrainageAlgorithms* item : drainage_algorithms){
+void ToolbarsConfigMesh::glewIsReady()
+{
+    for (DrainageAlgorithms* item : drainage_algorithms) {
         item->glewReady();
     }
-    for( BuildNetwork* item : network_algorithms){
+    for (BuildNetwork* item : network_algorithms) {
         item->glewReady();
     }
-    for( PathWaterAlgorithm* item : path_water_algorithms){
+    for (PathWaterAlgorithm* item : path_water_algorithms) {
         item->glewReady();
     }
-    for( AlgorithmPatron* item : patron_algorithms){
+    for (AlgorithmPatron* item : patron_algorithms) {
         item->glewReady();
     }
-    for( FluvialTerraceAlgorithm* item : fluvial_terrace_algorithms){
+    for (FluvialTerraceAlgorithm* item : fluvial_terrace_algorithms) {
         item->glewReady();
     }
 }
 
-void ToolbarsConfigMesh::showPatternsInformation(){
-
+void ToolbarsConfigMesh::showPatternsInformation()
+{
     QMessageBox s;
     QString title = "Patterns Information";
     QString information;
     information+="<table>";
-    for( int i = 0; i < (int)PatternsData::names_patterns.size(); ++i){
+
+    for (int i = 0; i < (int)PatternsData::names_patterns.size(); ++i) {
         information+= "<tr>";
 
         information+= "<td valign=\"middle\" >";
@@ -199,6 +289,7 @@ void ToolbarsConfigMesh::showPatternsInformation(){
 
         information+= "</tr>";
     }
+
     information+="</table>";
     s.about(this, title, information);
 }
