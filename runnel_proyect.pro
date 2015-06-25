@@ -280,8 +280,8 @@ HEADERS  += UI/mainwindow.h \
     fluvialTerraceAlgorithms/nonefluvialterracealgorithm.h \
     UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.h \
     drainageAlgorithms/rwfloodalgorithm.h \
-    UI/buildNetwork/rwfloodconf.h \
-    painters/shaders/shaderrwflood.h
+    painters/shaders/shaderrwflood.h \
+    UI/drainageAlgorithm/rwfloodconf.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \

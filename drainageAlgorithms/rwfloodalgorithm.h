@@ -4,7 +4,7 @@
 
 #include <painters/shaders/shaderrwflood.h>
 
-#include <UI/buildNetwork/rwfloodconf.h>
+#include <UI/drainageAlgorithm/rwfloodconf.h>
 
 class RWFloodAlgorithm : public DrainageAlgorithms
 {
