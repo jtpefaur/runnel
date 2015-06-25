@@ -206,23 +206,23 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 void GLWidget::keyPressEvent( QKeyEvent *e ){
    // std::cout << "presiono la tecla " << e->key() << std::endl;
     glm::vec3 vect_move = glm::vec3();
-    float value_move = 0.001;
+    float value_move = 0.01;
     switch( e->key() )
     {
         case Qt::Key_Up:
-            vect_move = glm::vec3(value_move, 0, 0);
-            moveTranslate(vect_move);
-            break;
-        case Qt::Key_Down:
-            vect_move = glm::vec3(-value_move, 0, 0);
-            moveTranslate(vect_move);
-            break;
-        case Qt::Key_Left:
             vect_move = glm::vec3(0, value_move, 0);
             moveTranslate(vect_move);
             break;
-        case Qt::Key_Right:
+        case Qt::Key_Down:
             vect_move = glm::vec3(0, -value_move, 0);
+            moveTranslate(vect_move);
+            break;
+        case Qt::Key_Left:
+            vect_move = glm::vec3(value_move, 0, 0);
+            moveTranslate(vect_move);
+            break;
+        case Qt::Key_Right:
+            vect_move = glm::vec3(-value_move, 0, 0);
             moveTranslate(vect_move);
             break;
         case Qt::Key_P:
