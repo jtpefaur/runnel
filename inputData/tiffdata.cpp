@@ -25,7 +25,7 @@ void TiffData::getDataTerrain(Terrain* ter){
     ter->width = width;
     ter->height = height;
     const uchar* raster = image.constBits ();//(uint32*) _TIFFmalloc(npixels * sizeof (uint32));
-    ter->setMapPixel(1,1);
+    ter->setMapPixel(width,height);
     if (raster != NULL) {
         if (raster) {
             int counter = 0;
