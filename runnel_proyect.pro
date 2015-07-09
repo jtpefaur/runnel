@@ -72,7 +72,8 @@ SOURCES += main.cpp\
     UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.cpp \
     drainageAlgorithms/rwfloodalgorithm.cpp \
     painters/shaders/shaderrwflood.cpp \
-    UI/drainageAlgorithm/rwfloodconf.cpp
+    UI/drainageAlgorithm/rwfloodconf.cpp \
+    garbrechtmartz.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -281,7 +282,8 @@ HEADERS  += UI/mainwindow.h \
     UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.h \
     drainageAlgorithms/rwfloodalgorithm.h \
     painters/shaders/shaderrwflood.h \
-    UI/drainageAlgorithm/rwfloodconf.h
+    UI/drainageAlgorithm/rwfloodconf.h \
+    garbrechtmartz.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \
