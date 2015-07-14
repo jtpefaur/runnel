@@ -10,6 +10,7 @@ public:
     GarbrechtMartz(Terrain*);
     ~GarbrechtMartz();
     void gradientTowardsLowerTerrain(std::set<int>, std::set<int>);
+    void gradientAwayFromHigherTerrain(std::set<int>, std::set<int>);
 
 private:
     Terrain* ter;
