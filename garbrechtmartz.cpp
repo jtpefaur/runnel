@@ -8,8 +8,14 @@ GarbrechtMartz::GarbrechtMartz(Terrain* ter)
 }
 
 GarbrechtMartz::~GarbrechtMartz()
-{
+{   
+}
 
+void GarbrechtMartz::run(std::set<int> flatIds)
+{
+   auto gradient = combinedGradient(gradientTowardsLowerTerrain(flatIds),
+                                    gradientAwayFromHigherTerrain(flatIds));
+   performIncrements(gradient);
 }
 
 std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set<int> flatIds)

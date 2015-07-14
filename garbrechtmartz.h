@@ -10,6 +10,7 @@ class GarbrechtMartz
 public:
     GarbrechtMartz(Terrain*);
     ~GarbrechtMartz();
+    void run(std::set<int>);
 
 private:
     Terrain* ter;
