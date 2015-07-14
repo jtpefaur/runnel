@@ -12,12 +12,12 @@ GarbrechtMartz::~GarbrechtMartz()
 
 }
 
-std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set<int> flatIds,
-                                                 std::set<int> downslopeGradientIds)
+std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set<int> flatIds)
 {
     int width = ter->width;
     std::unordered_map<int,int> idIncrementMap;
     std::set<int> flatIdsMarkedForDeletion;
+    std::set<int> downslopeGradientIds;
 
     while (!flatIds.empty()) {
         for (int id : flatIds) {
@@ -52,12 +52,12 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
     return idIncrementMap;
 }
 
-std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::set<int> flatIds,
-                                                   std::set<int> upslopeGradientIds)
+std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::set<int> flatIds)
 {
     int width = ter->width;
     std::unordered_map<int,int> idIncrementMap;
     std::set<int> flatIdsMarkedForDeletion;
+    std::set<int> upslopeGradientIds;
 
     while (!flatIds.empty()) {
         for (int id : flatIds) {
