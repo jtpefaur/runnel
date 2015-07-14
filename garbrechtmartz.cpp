@@ -16,6 +16,7 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
 {
     int width = ter->width;
     std::unordered_map<int,int> idIncrementMap;
+    std::set<int> flatIdsMarkedForDeletion;
 
     while (!flatIds.empty()) {
         for (int id : flatIds) {
@@ -28,11 +29,17 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
                              ter->struct_point[neighborIndex]->coord.z)) {
                         // Point 'id' has a downslope gradient.
                         downslopeGradientIds.insert(id);
-                        flatIds.erase(id);
+                        flatIdsMarkedForDeletion.insert(id);
                     }
                 }
             }
         }
+
+        for (int id : flatIdsMarkedForDeletion) {
+            flatIds.erase(id);
+        }
+
+        flatIdsMarkedForDeletion.clear();
 
         for (int id : flatIds) {
             /* Increase elevation of remaining flat-belonging points
@@ -49,6 +56,7 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
 {
     int width = ter->width;
     std::unordered_map<int,int> idIncrementMap;
+    std::set<int> flatIdsMarkedForDeletion;
 
     while (!flatIds.empty()) {
         for (int id : flatIds) {
@@ -62,7 +70,7 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
                             ter->struct_point[neighborIndex]->coord.z) {
                         // Point 'id' has a downslope gradient. Do not increment.
                         adjacentToLowerTerrain = true;
-                        flatIds.erase(id);
+                        flatIdsMarkedForDeletion.insert(id);
                     } else if ((upslopeGradientIds.find(neighborIndex) !=
                                 upslopeGradientIds.end()) ||
                                (ter->struct_point[id]->coord.z <
@@ -75,9 +83,15 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
 
             if (adjacentToHigherTerrain && !adjacentToLowerTerrain) {
                 upslopeGradientIds.insert(id);
-                flatIds.erase(id);
+                flatIdsMarkedForDeletion.insert(id);
             }
         }
+
+        for (int id : flatIdsMarkedForDeletion) {
+            flatIds.erase(id);
+        }
+
+        flatIdsMarkedForDeletion.clear();
 
         for (int id : upslopeGradientIds) {
             idIncrementMap[id]++;
