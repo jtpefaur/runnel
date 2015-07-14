@@ -11,10 +11,11 @@ GarbrechtMartz::~GarbrechtMartz()
 
 }
 
-void GarbrechtMartz::gradientTowardsLowerTerrain(std::set<int> flatIds,
+std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set<int> flatIds,
                                                  std::set<int> downslopeGradientIds)
 {
     int width = ter->width;
+    std::unordered_map<int,int> idIncrementMap;
 
     while (!flatIds.empty()) {
         for (int id : flatIds) {
@@ -36,15 +37,18 @@ void GarbrechtMartz::gradientTowardsLowerTerrain(std::set<int> flatIds,
         for (int id : flatIds) {
             /* Increase elevation of remaining flat-belonging points
         without a downslope gradient. */
-            ter->struct_point[id]->coord.z += elevationIncrement;
+            idIncrementMap[id]++;
         }
     }
+
+    return idIncrementMap;
 }
 
-void GarbrechtMartz::gradientAwayFromHigherTerrain(std::set<int> flatIds,
+std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::set<int> flatIds,
                                                    std::set<int> upslopeGradientIds)
 {
     int width = ter->width;
+    std::unordered_map<int,int> idIncrementMap;
 
     while (!flatIds.empty()) {
         for (int id : flatIds) {
@@ -76,8 +80,10 @@ void GarbrechtMartz::gradientAwayFromHigherTerrain(std::set<int> flatIds,
         }
 
         for (int id : upslopeGradientIds) {
-            ter->struct_point[id]->coord.z += elevationIncrement;
+            idIncrementMap[id]++;
         }
     }
+
+    return idIncrementMap;
 }
 
