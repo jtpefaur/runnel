@@ -1,3 +1,4 @@
+
 #include "garbrechtmartz.h"
 
 GarbrechtMartz::GarbrechtMartz(Terrain* ter)
@@ -99,5 +100,43 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
     }
 
     return idIncrementMap;
+}
+
+std::pair<std::unordered_map<int, int>,std::set<int>> GarbrechtMartz::combinedGradient(std::unordered_map<int,int> towardsLowerMap, std::unordered_map<int,int> awayFromHigherMap)
+{
+    std::pair<std::unordered_map<int,int>, std::set<int>> combinedGradientAndCanceledIds;
+    std::set<int> canceledIncrementIds;
+
+    // Copy towardsLowerMap to new map.
+    std::unordered_map<int,int> combinedIdIncrementMap(towardsLowerMap);
+
+    // Add awayFromHigherMap contents to the new map.
+    for (auto &pair : awayFromHigherMap) {
+        int incrementCount = pair.second;
+        if (combinedIdIncrementMap[pair.first] == incrementCount) {
+            // The increments cancel each other. Half-increment required.
+            canceledIncrementIds.insert(pair.first);
+        }
+        combinedIdIncrementMap[pair.first] += pair.second;
+    }
+
+    combinedGradientAndCanceledIds.first = combinedIdIncrementMap;
+    combinedGradientAndCanceledIds.second = canceledIncrementIds;
+
+    return combinedGradientAndCanceledIds;
+}
+
+void GarbrechtMartz::performIncrements(std::pair<std::unordered_map<int,int>, std::set<int>> combinedGradientAndCanceledIds)
+{
+    std::unordered_map<int,int> combinedGradient = combinedGradientAndCanceledIds.first;
+    std::set<int> canceledIncrementIds = combinedGradientAndCanceledIds.second;
+
+    for (auto &entry : combinedGradient) {
+        ter->struct_point[entry.first]->coord.z += entry.second*elevationIncrement;
+    }
+
+    for (int id : canceledIncrementIds) {
+        ter->struct_point[id]->coord.z += elevationIncrement/2.0f;
+    }
 }
 
