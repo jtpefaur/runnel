@@ -1,14 +1,13 @@
-
 #include "garbrechtmartz.h"
 
 GarbrechtMartz::GarbrechtMartz(Terrain* ter)
 {
     this->ter = ter;
-    elevationIncrement = 2;
+    elevationIncrement = 2.0f;
 }
 
 GarbrechtMartz::~GarbrechtMartz()
-{   
+{
 }
 
 void GarbrechtMartz::run(std::set<int> flatIds)
@@ -23,6 +22,7 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
     int width = ter->width;
     std::unordered_map<int,int> idIncrementMap;
     std::set<int> flatIdsMarkedForDeletion;
+    std::set<int> idsMarkedForDownslopeGradient;
     std::set<int> downslopeGradientIds;
 
     while (!flatIds.empty()) {
@@ -30,12 +30,17 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
             for (int i = -1; i <= 1; ++i) {
                 for (int j = -1; j <= 1; ++j) {
                     int neighborIndex = id + j*width + i;
+                    if (neighborIndex < 0 ||
+                            neighborIndex == id ||
+                            neighborIndex > ter->struct_point.size()-1) {
+                        continue;
+                    }
                     if ((downslopeGradientIds.find(neighborIndex) !=
                          downslopeGradientIds.end()) ||
                             (ter->struct_point[id]->coord.z >
                              ter->struct_point[neighborIndex]->coord.z)) {
                         // Point 'id' has a downslope gradient.
-                        downslopeGradientIds.insert(id);
+                        idsMarkedForDownslopeGradient.insert(id);
                         flatIdsMarkedForDeletion.insert(id);
                     }
                 }
@@ -48,9 +53,15 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
 
         flatIdsMarkedForDeletion.clear();
 
+        for (int id : idsMarkedForDownslopeGradient) {
+            downslopeGradientIds.insert(id);
+        }
+
+        idsMarkedForDownslopeGradient.clear();
+
         for (int id : flatIds) {
             /* Increase elevation of remaining flat-belonging points
-        without a downslope gradient. */
+             * without a downslope gradient. */
             idIncrementMap[id]++;
         }
     }
@@ -63,6 +74,7 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
     int width = ter->width;
     std::unordered_map<int,int> idIncrementMap;
     std::set<int> flatIdsMarkedForDeletion;
+    std::set<int> idsMarkedForUpslopeGradient;
     std::set<int> upslopeGradientIds;
 
     while (!flatIds.empty()) {
@@ -73,6 +85,11 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
             for (int i = -1; i <= 1 && !adjacentToLowerTerrain; ++i) {
                 for (int j = -1; j <= 1 && !adjacentToLowerTerrain; ++j) {
                     int neighborIndex = id + j*width + i;
+                    if (neighborIndex < 0 ||
+                            neighborIndex == id ||
+                            neighborIndex > ter->struct_point.size()-1) {
+                        continue;
+                    }
                     if (ter->struct_point[id]->coord.z >
                             ter->struct_point[neighborIndex]->coord.z) {
                         // Point 'id' has a downslope gradient. Do not increment.
@@ -89,7 +106,7 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
             }
 
             if (adjacentToHigherTerrain && !adjacentToLowerTerrain) {
-                upslopeGradientIds.insert(id);
+                idsMarkedForUpslopeGradient.insert(id);
                 flatIdsMarkedForDeletion.insert(id);
             }
         }
@@ -99,6 +116,12 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
         }
 
         flatIdsMarkedForDeletion.clear();
+
+        for (int id : idsMarkedForUpslopeGradient) {
+            upslopeGradientIds.insert(id);
+        }
+
+        idsMarkedForUpslopeGradient.clear();
 
         for (int id : upslopeGradientIds) {
             idIncrementMap[id]++;
@@ -110,6 +133,7 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
 
 std::pair<std::unordered_map<int, int>,std::set<int>> GarbrechtMartz::combinedGradient(std::unordered_map<int,int> towardsLowerMap, std::unordered_map<int,int> awayFromHigherMap)
 {
+    int width = ter->width;
     std::pair<std::unordered_map<int,int>, std::set<int>> combinedGradientAndCanceledIds;
     std::set<int> canceledIncrementIds;
 
@@ -117,13 +141,32 @@ std::pair<std::unordered_map<int, int>,std::set<int>> GarbrechtMartz::combinedGr
     std::unordered_map<int,int> combinedIdIncrementMap(towardsLowerMap);
 
     // Add awayFromHigherMap contents to the new map.
-    for (auto &pair : awayFromHigherMap) {
-        int incrementCount = pair.second;
-        if (combinedIdIncrementMap[pair.first] == incrementCount) {
-            // The increments cancel each other. Half-increment required.
-            canceledIncrementIds.insert(pair.first);
+    for (auto &entry : awayFromHigherMap) {
+        int id = entry.first;
+        int incrementCount = entry.second;
+        combinedIdIncrementMap[id] += incrementCount;
+    }
+
+    // Check if gradients on both maps cancel each other.
+    for (auto &entry : combinedIdIncrementMap) {
+        int id = entry.first;
+        for (int i = -1; i <= 1; ++i) {
+            for (int j = -1; j <= 1; ++j) {
+                int neighborIndex = id + j*width + i;
+                if (neighborIndex < 0 ||
+                        neighborIndex == id ||
+                        neighborIndex > ter->struct_point.size()-1) {
+                    continue;
+                }
+                if (towardsLowerMap[id] == awayFromHigherMap[neighborIndex] &&
+                        awayFromHigherMap[id] == towardsLowerMap[neighborIndex] &&
+                        canceledIncrementIds.find(neighborIndex) ==
+                         canceledIncrementIds.end()) {
+                    // The gradients cancel each other. Half-increment required.
+                    canceledIncrementIds.insert(id);
+                }
+            }
         }
-        combinedIdIncrementMap[pair.first] += pair.second;
     }
 
     combinedGradientAndCanceledIds.first = combinedIdIncrementMap;
@@ -145,4 +188,3 @@ void GarbrechtMartz::performIncrements(std::pair<std::unordered_map<int,int>, st
         ter->struct_point[id]->coord.z += elevationIncrement/2.0f;
     }
 }
-
