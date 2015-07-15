@@ -1,14 +1,16 @@
-
+#include <iostream>
 #include "garbrechtmartz.h"
 
 GarbrechtMartz::GarbrechtMartz(Terrain* ter)
 {
-    this->ter = ter;
-    elevationIncrement = 2;
+    //this->ter = ter;
+    elevationIncrement = 2.0f;
+    test();
 }
 
 GarbrechtMartz::~GarbrechtMartz()
 {   
+    delete this->ter;
 }
 
 void GarbrechtMartz::run(std::set<int> flatIds)
@@ -18,11 +20,58 @@ void GarbrechtMartz::run(std::set<int> flatIds)
    performIncrements(gradient);
 }
 
+void GarbrechtMartz::test()
+{
+    ter = new Terrain();
+    ter->width = 7;
+    ter->height = 7;
+    std::vector<runnel::Point*> v;
+
+    for (int i = 0; i < 7*7; ++i) {
+        runnel::Point* p = new runnel::Point(glm::vec3(0,0,9),i);
+        v.push_back(p);
+    }
+
+    std::set<int> flatIds;
+
+    for (runnel::Point* p : v) {
+        int id = p->ident;
+        if ((id >= 8 && id <= 12) ||
+                (id >= 15 && id <= 19) ||
+                (id >= 22 && id <= 26) ||
+                (id >= 29 && id <= 33) ||
+                (id >= 36 && id <= 40)) {
+            p->coord.z = 6;
+            flatIds.insert(id);
+        } else if (id == 14 || id == 21 || id == 34 || id == 41 || id == 47 || id == 48) {
+            p->coord.z = 8;
+        } else if (id == 28 || id == 35 || id == 42 || id == 43 || id == 45 || id == 46) {
+            p->coord.z = 7;
+        } else if (id == 44) {
+            p->coord.z = 5;
+        }
+
+        ter->addPoint(p);
+    }
+
+    run(flatIds);
+
+    for (runnel::Point* p : ter->struct_point) {
+        std::cout << p->ident << "-" << p->coord.z << " ";
+        if ((p->ident+1)%7 == 0) {
+            std::cout << std::endl;
+        }
+    }
+
+    std::cout << "Fin test C:" << std::endl;
+}
+
 std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set<int> flatIds)
 {
     int width = ter->width;
     std::unordered_map<int,int> idIncrementMap;
     std::set<int> flatIdsMarkedForDeletion;
+    std::set<int> idsMarkedForDownslopeGradient;
     std::set<int> downslopeGradientIds;
 
     while (!flatIds.empty()) {
@@ -30,12 +79,23 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
             for (int i = -1; i <= 1; ++i) {
                 for (int j = -1; j <= 1; ++j) {
                     int neighborIndex = id + j*width + i;
+                    if (neighborIndex < 0 ||
+                            neighborIndex == id ||
+                            neighborIndex > ter->struct_point.size()-1) {
+                        continue;
+                    }
+                    if (id == 39 || id == 40) {
+                        //std::cout << "dslope id " << id << ", neighbor " << neighborIndex << std::endl;
+                        //std::cout << "id.z, neighbor.z: " << ter->struct_point[id]->coord.z << ", " << ter->struct_point[neighborIndex]->coord.z << std::endl;
+                    }
                     if ((downslopeGradientIds.find(neighborIndex) !=
                          downslopeGradientIds.end()) ||
                             (ter->struct_point[id]->coord.z >
                              ter->struct_point[neighborIndex]->coord.z)) {
                         // Point 'id' has a downslope gradient.
-                        downslopeGradientIds.insert(id);
+                        //std::cout << "going in if with id,neighbor: " << id << "," << neighborIndex << std::endl;
+                        //downslopeGradientIds.insert(id);
+                        idsMarkedForDownslopeGradient.insert(id);
                         flatIdsMarkedForDeletion.insert(id);
                     }
                 }
@@ -48,13 +108,24 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
 
         flatIdsMarkedForDeletion.clear();
 
+        for (int id : idsMarkedForDownslopeGradient) {
+            downslopeGradientIds.insert(id);
+        }
+
+        idsMarkedForDownslopeGradient.clear();
+
         for (int id : flatIds) {
             /* Increase elevation of remaining flat-belonging points
         without a downslope gradient. */
             idIncrementMap[id]++;
         }
     }
-
+/*
+    std::cout << "downslope ids and increments" << std::endl;
+    for (auto &entry : idIncrementMap) {
+        std::cout << entry.first << ":" << entry.second << std::endl;
+    }
+*/
     return idIncrementMap;
 }
 
@@ -63,6 +134,7 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
     int width = ter->width;
     std::unordered_map<int,int> idIncrementMap;
     std::set<int> flatIdsMarkedForDeletion;
+    std::set<int> idsMarkedForUpslopeGradient;
     std::set<int> upslopeGradientIds;
 
     while (!flatIds.empty()) {
@@ -73,6 +145,11 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
             for (int i = -1; i <= 1 && !adjacentToLowerTerrain; ++i) {
                 for (int j = -1; j <= 1 && !adjacentToLowerTerrain; ++j) {
                     int neighborIndex = id + j*width + i;
+                    if (neighborIndex < 0 ||
+                            neighborIndex == id ||
+                            neighborIndex > ter->struct_point.size()-1) {
+                        continue;
+                    }
                     if (ter->struct_point[id]->coord.z >
                             ter->struct_point[neighborIndex]->coord.z) {
                         // Point 'id' has a downslope gradient. Do not increment.
@@ -89,7 +166,8 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
             }
 
             if (adjacentToHigherTerrain && !adjacentToLowerTerrain) {
-                upslopeGradientIds.insert(id);
+                //upslopeGradientIds.insert(id);
+                idsMarkedForUpslopeGradient.insert(id);
                 flatIdsMarkedForDeletion.insert(id);
             }
         }
@@ -100,11 +178,22 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
 
         flatIdsMarkedForDeletion.clear();
 
+        for (int id : idsMarkedForUpslopeGradient) {
+            upslopeGradientIds.insert(id);
+        }
+
+        idsMarkedForUpslopeGradient.clear();
+
         for (int id : upslopeGradientIds) {
             idIncrementMap[id]++;
         }
     }
 
+/*    std::cout << "upslope ids and increments" << std::endl;
+    for (auto &entry : idIncrementMap) {
+        std::cout << entry.first << ":" << entry.second << std::endl;
+    }
+*/
     return idIncrementMap;
 }
 

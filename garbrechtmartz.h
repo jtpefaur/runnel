@@ -11,6 +11,7 @@ public:
     GarbrechtMartz(Terrain*);
     ~GarbrechtMartz();
     void run(std::set<int>);
+    void test();
 
 private:
     Terrain* ter;

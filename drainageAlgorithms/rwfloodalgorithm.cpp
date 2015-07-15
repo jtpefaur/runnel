@@ -1,4 +1,5 @@
 #include "rwfloodalgorithm.h"
+#include "garbrechtmartz.h"
 #include <queue>
 
 RWFloodAlgorithm::RWFloodAlgorithm():
@@ -21,6 +22,8 @@ RWFloodAlgorithm::~RWFloodAlgorithm()
 
 void RWFloodAlgorithm::run(Terrain *ter)
 {
+    GarbrechtMartz* gm = new GarbrechtMartz(ter);
+    gm->test();
     this->ter = ter;
     this->flood(this->ter->struct_point);
     this->calculateWaterAccumulation(this->ter->struct_point);
