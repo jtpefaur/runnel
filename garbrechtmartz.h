@@ -19,6 +19,7 @@ private:
     std::unordered_map<int,int> gradientAwayFromHigherTerrain(std::set<int>);
     std::pair<std::unordered_map<int,int>,std::set<int>> combinedGradient(std::unordered_map<int,int>, std::unordered_map<int,int>);
     void performIncrements(std::pair<std::unordered_map<int,int>,std::set<int>>);
+    bool neighborIndexIsOutOfRange(int id, int neighborId);
 };
 
 #endif // GARBRECHTMARTZ_H

@@ -30,9 +30,7 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
             for (int i = -1; i <= 1; ++i) {
                 for (int j = -1; j <= 1; ++j) {
                     int neighborIndex = id + j*width + i;
-                    if (neighborIndex < 0 ||
-                            neighborIndex == id ||
-                            neighborIndex > ter->struct_point.size()-1) {
+                    if (neighborIndexIsOutOfRange(id, neighborIndex)) {
                         continue;
                     }
                     if ((downslopeGradientIds.find(neighborIndex) !=
@@ -85,9 +83,7 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
             for (int i = -1; i <= 1 && !adjacentToLowerTerrain; ++i) {
                 for (int j = -1; j <= 1 && !adjacentToLowerTerrain; ++j) {
                     int neighborIndex = id + j*width + i;
-                    if (neighborIndex < 0 ||
-                            neighborIndex == id ||
-                            neighborIndex > ter->struct_point.size()-1) {
+                    if (neighborIndexIsOutOfRange(id, neighborIndex)) {
                         continue;
                     }
                     if (ter->struct_point[id]->coord.z >
@@ -153,9 +149,7 @@ std::pair<std::unordered_map<int, int>,std::set<int>> GarbrechtMartz::combinedGr
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
                 int neighborIndex = id + j*width + i;
-                if (neighborIndex < 0 ||
-                        neighborIndex == id ||
-                        neighborIndex > ter->struct_point.size()-1) {
+                if (neighborIndexIsOutOfRange(id, neighborIndex)) {
                     continue;
                 }
                 if (towardsLowerMap[id] == awayFromHigherMap[neighborIndex] &&
@@ -187,4 +181,13 @@ void GarbrechtMartz::performIncrements(std::pair<std::unordered_map<int,int>, st
     for (int id : canceledIncrementIds) {
         ter->struct_point[id]->coord.z += elevationIncrement/2.0f;
     }
+}
+
+bool GarbrechtMartz::neighborIndexIsOutOfRange(int id, int neighborId)
+{
+    if (neighborId < 0 || neighborId > (int)ter->struct_point.size()-1 ||
+            id == neighborId) {
+        return true;
+    }
+    return false;
 }
