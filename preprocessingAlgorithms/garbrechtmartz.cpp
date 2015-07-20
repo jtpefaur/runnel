@@ -68,12 +68,18 @@ std::set<int> GarbrechtMartz::extractFlatIds()
 std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set<int> flatIds)
 {
     int width = ter->width;
+    int prevFlatIdCount = -1;
     std::unordered_map<int,int> idIncrementMap;
     std::set<int> flatIdsMarkedForDeletion;
     std::set<int> idsMarkedForDownslopeGradient;
     std::set<int> downslopeGradientIds;
 
     while (!flatIds.empty()) {
+        if ((int)flatIds.size() == prevFlatIdCount) {
+            // Remaining flat areas are isolated and cannot be resolved by this algorithm.
+            break;
+        }
+
         for (int id : flatIds) {
             for (int i = -1; i <= 1; ++i) {
                 for (int j = -1; j <= 1; ++j) {
@@ -92,6 +98,8 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
                 }
             }
         }
+
+        prevFlatIdCount = flatIds.size();
 
         for (int id : flatIdsMarkedForDeletion) {
             flatIds.erase(id);
@@ -118,12 +126,18 @@ std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set
 std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::set<int> flatIds)
 {
     int width = ter->width;
+    int prevFlatIdCount = -1;
     std::unordered_map<int,int> idIncrementMap;
     std::set<int> flatIdsMarkedForDeletion;
     std::set<int> idsMarkedForUpslopeGradient;
     std::set<int> upslopeGradientIds;
 
     while (!flatIds.empty()) {
+        if ((int)flatIds.size() == prevFlatIdCount) {
+            // Remaining flat areas are isolated and cannot be resolved by this algorithm.
+            break;
+        }
+
         for (int id : flatIds) {
             bool adjacentToHigherTerrain = false;
             bool adjacentToLowerTerrain = false;
@@ -154,6 +168,8 @@ std::unordered_map<int, int> GarbrechtMartz::gradientAwayFromHigherTerrain(std::
                 flatIdsMarkedForDeletion.insert(id);
             }
         }
+
+        prevFlatIdCount = flatIds.size();
 
         for (int id : flatIdsMarkedForDeletion) {
             flatIds.erase(id);
