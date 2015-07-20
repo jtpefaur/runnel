@@ -73,7 +73,7 @@ SOURCES += main.cpp\
     drainageAlgorithms/rwfloodalgorithm.cpp \
     painters/shaders/shaderrwflood.cpp \
     UI/drainageAlgorithm/rwfloodconf.cpp \
-    garbrechtmartz.cpp
+    preprocessingAlgorithms/garbrechtmartz.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -283,7 +283,7 @@ HEADERS  += UI/mainwindow.h \
     drainageAlgorithms/rwfloodalgorithm.h \
     painters/shaders/shaderrwflood.h \
     UI/drainageAlgorithm/rwfloodconf.h \
-    garbrechtmartz.h
+    preprocessingAlgorithms/garbrechtmartz.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \
