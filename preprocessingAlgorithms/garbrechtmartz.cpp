@@ -14,7 +14,7 @@ void GarbrechtMartz::run(std::set<int> flatIds)
 {
    auto gradient = combinedGradient(gradientTowardsLowerTerrain(flatIds),
                                     gradientAwayFromHigherTerrain(flatIds));
-   performIncrements(gradient);
+   applyIncrements(gradient);
 }
 
 std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set<int> flatIds)
@@ -169,7 +169,7 @@ std::pair<std::unordered_map<int, int>,std::set<int>> GarbrechtMartz::combinedGr
     return combinedGradientAndCanceledIds;
 }
 
-void GarbrechtMartz::performIncrements(std::pair<std::unordered_map<int,int>, std::set<int>> combinedGradientAndCanceledIds)
+void GarbrechtMartz::applyIncrements(std::pair<std::unordered_map<int,int>, std::set<int>> combinedGradientAndCanceledIds)
 {
     std::unordered_map<int,int> combinedGradient = combinedGradientAndCanceledIds.first;
     std::set<int> canceledIncrementIds = combinedGradientAndCanceledIds.second;
