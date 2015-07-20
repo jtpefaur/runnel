@@ -17,6 +17,49 @@ void GarbrechtMartz::run(std::set<int> flatIds)
    applyIncrements(gradient);
 }
 
+std::set<int> GarbrechtMartz::extractFlatIds()
+{
+    std::set<int> flatIds;
+    int width = ter->width;
+
+    for (runnel::Point* point : ter->struct_point) {
+        if (point->coord.z == 0) {
+            // No-data point. Do not consider as part of a flat area.
+            continue;
+        }
+
+        int id = point->ident;
+        bool hasGradient = false;
+        std::set<int> localFlatIds;
+
+        // We assume a 3x3 point region to be the minimal unit of a flat area.
+        for (int i = -1; i <= 1 && !hasGradient; ++i) {
+            for (int j = -1; j <= 1 && !hasGradient; ++j) {
+                localFlatIds.clear();
+                localFlatIds.insert(id);
+                int neighborIndex = id + j*width + i;
+                if (neighborIndexIsOutOfRange(id, neighborIndex)) {
+                    continue;
+                }
+                if (ter->struct_point[id]->coord.z !=
+                        ter->struct_point[neighborIndex]->coord.z) {
+                    hasGradient = true;
+                } else {
+                    localFlatIds.insert(neighborIndex);
+                }
+            }
+        }
+
+        if (!hasGradient) {
+            for (int flatId : localFlatIds) {
+                flatIds.insert(flatId);
+            }
+        }
+    }
+
+    return flatIds;
+}
+
 std::unordered_map<int,int> GarbrechtMartz::gradientTowardsLowerTerrain(std::set<int> flatIds)
 {
     int width = ter->width;
