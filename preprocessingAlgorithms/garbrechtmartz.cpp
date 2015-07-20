@@ -10,11 +10,13 @@ GarbrechtMartz::~GarbrechtMartz()
 {
 }
 
-void GarbrechtMartz::run(std::set<int> flatIds)
+void GarbrechtMartz::run()
 {
-   auto gradient = combinedGradient(gradientTowardsLowerTerrain(flatIds),
-                                    gradientAwayFromHigherTerrain(flatIds));
-   applyIncrements(gradient);
+
+    std::set<int> flatIds = extractFlatIds();
+    auto gradient = combinedGradient(gradientTowardsLowerTerrain(flatIds),
+                                     gradientAwayFromHigherTerrain(flatIds));
+    applyIncrements(gradient);
 }
 
 std::set<int> GarbrechtMartz::extractFlatIds()
