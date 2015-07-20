@@ -239,5 +239,9 @@ bool GarbrechtMartz::neighborIndexIsOutOfRange(int id, int neighborId)
             id == neighborId) {
         return true;
     }
+    if ((id%ter->width == 0 && neighborId%ter->width == ter->width - 1) ||
+            (id%ter->width == ter->width - 1 && neighborId%ter->width == 0)) {
+        return true; // neighborId is not a true neighbor in the DEM grid!
+    }
     return false;
 }
