@@ -41,7 +41,6 @@ std::set<int> GarbrechtMartz::extractFlatIds()
         // We assume a 3x3 point region to be the minimal unit of a flat area.
         for (int i = -1; i <= 1 && !hasGradient; ++i) {
             for (int j = -1; j <= 1 && !hasGradient; ++j) {
-                localFlatIds.clear();
                 localFlatIds.insert(id);
                 int neighborIndex = id + j*width + i;
                 if (neighborIndexIsOutOfRange(id, neighborIndex)) {
