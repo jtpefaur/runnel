@@ -73,7 +73,8 @@ SOURCES += main.cpp\
     drainageAlgorithms/rwfloodalgorithm.cpp \
     painters/shaders/shaderrwflood.cpp \
     UI/drainageAlgorithm/rwfloodconf.cpp \
-    preprocessingAlgorithms/garbrechtmartz.cpp
+    preprocessingAlgorithms/garbrechtmartz.cpp \
+    UI/preprocessingAlgorithm/garbrechtmartzconf.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -283,7 +284,8 @@ HEADERS  += UI/mainwindow.h \
     drainageAlgorithms/rwfloodalgorithm.h \
     painters/shaders/shaderrwflood.h \
     UI/drainageAlgorithm/rwfloodconf.h \
-    preprocessingAlgorithms/garbrechtmartz.h
+    preprocessingAlgorithms/garbrechtmartz.h \
+    UI/preprocessingAlgorithm/garbrechtmartzconf.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \
@@ -296,7 +298,8 @@ FORMS    += UI/mainwindow.ui \
     UI/buildNetwork/callaghannetworkconf.ui \
     UI/waterAlgorithm/callaghanwaterconf.ui \
     UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.ui \
-    UI/drainageAlgorithm/rwfloodconf.ui
+    UI/drainageAlgorithm/rwfloodconf.ui \
+    UI/preprocessingAlgorithm/garbrechtmartzconf.ui
 
 RESOURCES += \
     resources/shader.qrc \
