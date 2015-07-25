@@ -245,7 +245,7 @@ void GarbrechtMartz::applyIncrements(std::unordered_map<int,int> combinedGradien
     }
 
     for (int id : halfIncrementIds) {
-        ter->struct_point[id]->coord.z += elevationIncrement/2.0f;
+        ter->struct_point[id]->coord.z += elevationIncrement/2.0;
     }
 }
 
