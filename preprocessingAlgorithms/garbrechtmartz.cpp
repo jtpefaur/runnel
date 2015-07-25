@@ -3,7 +3,7 @@
 GarbrechtMartz::GarbrechtMartz(Terrain* ter)
 {
     this->ter = ter;
-    elevationIncrement = 2.0f;
+    elevationIncrement = 2.0;
 }
 
 GarbrechtMartz::~GarbrechtMartz()
