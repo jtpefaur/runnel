@@ -35,7 +35,6 @@ class RunnelController: public QObject
     private:
         std::vector<arbol*> drainage_network;
 
-
     public slots:
         void getTerrain();
         void getObtainTerrain();

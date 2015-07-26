@@ -17,6 +17,10 @@ public:
 
 private:
     Ui::GarbrechtMartzConf *ui;
+
+signals:
+    void runFlatResolution();
+    void changeIncrementation(double value);
 };
 
 #endif // GARBRECHTMARTZCONF_H

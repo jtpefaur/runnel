@@ -11,6 +11,7 @@ public:
     GarbrechtMartz();
     ~GarbrechtMartz();
     void run(Terrain* ter);
+    void changeIncrementation(double value);
 
 private:
     Terrain* ter;

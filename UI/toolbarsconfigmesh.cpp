@@ -37,6 +37,9 @@ ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     QObject::connect(ui->drainage_patron_button, SIGNAL(clicked()), this, SLOT(getPatron()));
     QObject::connect(ui->fluvial_terrace_button, SIGNAL(clicked()), this, SLOT(getFluvialTerrace()));
 
+    QObject::connect(ui->garbrecht_martz_conf, SIGNAL(changeIncrementation(double)), this, SLOT(changeIncrementation(double)));
+    QObject::connect(ui->garbrecht_martz_conf, SIGNAL(runFlatResolution()), this, SLOT(runFlatResolution()));
+
     QObject::connect(ui->exaggeration_terrain_value, SIGNAL(valueChanged(int)), this, SIGNAL(changeElevation(int)));
     QObject::connect(ui->landform_value, SIGNAL(currentIndexChanged(int)), this, SIGNAL(changeLandForm(int)));
     QObject::connect(ui->gradient_vector, SIGNAL(clicked(bool)), this, SIGNAL(showGradientVector(bool)));
@@ -69,6 +72,7 @@ ToolbarsConfigMesh::~ToolbarsConfigMesh()
         delete alg;
     for(auto alg: fluvial_terrace_algorithms)
         delete alg;
+    delete flatResolutionAlgorithm;
     delete drainageWidget;
     delete networkWidget;
     delete patternWidget;
@@ -232,6 +236,11 @@ void ToolbarsConfigMesh::fluvialTerraceIncludeAlgorithms()
     fluvialTerraceWidget->hide();
 }
 
+void ToolbarsConfigMesh::setupFlatResolutionAlgorithm()
+{
+    flatResolutionAlgorithm = new GarbrechtMartz();
+}
+
 void ToolbarsConfigMesh::getFluvialTerrace()
 {
     int number = ui->fluvial_terrace_value->currentIndex();
@@ -264,6 +273,16 @@ void ToolbarsConfigMesh::glewIsReady()
     for (FluvialTerraceAlgorithm* item : fluvial_terrace_algorithms) {
         item->glewReady();
     }
+}
+
+void ToolbarsConfigMesh::changeIncrementation(double value)
+{
+    flatResolutionAlgorithm->changeIncrementation(value);
+}
+
+void ToolbarsConfigMesh::runFlatResolution()
+{
+    emit resolveFlats(flatResolutionAlgorithm);
 }
 
 void ToolbarsConfigMesh::showPatternsInformation()

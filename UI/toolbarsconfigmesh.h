@@ -8,6 +8,7 @@
 #include "waterPathAlgorithms/pathwateralgorithm.h"
 #include "patternsAlgorithms/algorithmpatron.h"
 #include "fluvialTerraceAlgorithms/fluvialterracealgorithm.h"
+#include "preprocessingAlgorithms/garbrechtmartz.h"
 
 namespace Ui {
     class ToolbarsConfigMesh;
@@ -27,6 +28,9 @@ class ToolbarsConfigMesh : public QWidget
         std::vector<AlgorithmPatron*> patron_algorithms;
         std::vector<FluvialTerraceAlgorithm*> fluvial_terrace_algorithms;
 
+        // TODO: Allow for other flat resolution and preprocessing algorithms.
+        GarbrechtMartz* flatResolutionAlgorithm;
+
         QStackedWidget* drainageWidget;
         QStackedWidget* networkWidget;
         QStackedWidget* waterPathWidget;
@@ -40,6 +44,7 @@ class ToolbarsConfigMesh : public QWidget
         void pathWaterIncludeAlgorithms();
         void patronIncludeAlgorithms();
         void fluvialTerraceIncludeAlgorithms();
+        void setupFlatResolutionAlgorithm();
 
     signals:
         void selectDrainage(DrainageAlgorithms* value);
@@ -47,6 +52,7 @@ class ToolbarsConfigMesh : public QWidget
         void selectWater(PathWaterAlgorithm* value);
         void selectPatron(AlgorithmPatron* value);
         void selectFluvialTerrace(FluvialTerraceAlgorithm* value);
+        void resolveFlats(GarbrechtMartz* flatResolutionAlgorithm);
         void changeElevation(int value);
         void changeLandForm(int value);
         void showGradientVector(bool value);
@@ -60,6 +66,8 @@ class ToolbarsConfigMesh : public QWidget
         void getPatron();
         void getFluvialTerrace();
         void glewIsReady();
+        void changeIncrementation(double value);
+        void runFlatResolution();
         void showPatternsInformation();
 
 };

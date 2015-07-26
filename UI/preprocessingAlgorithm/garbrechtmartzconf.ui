@@ -28,7 +28,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="doubleSpinBox">
+       <widget class="QDoubleSpinBox" name="garbrecht_martz_value">
         <property name="locale">
          <locale language="English" country="UnitedStates"/>
         </property>
@@ -38,10 +38,13 @@
         <property name="singleStep">
          <double>0.100000000000000</double>
         </property>
+        <property name="value">
+         <double>2.000000000000000</double>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="garbrecht_martz_button">
         <property name="text">
          <string>Run</string>
         </property>

@@ -182,8 +182,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>180</width>
-           <height>527</height>
+           <width>113</width>
+           <height>117</height>
           </rect>
          </property>
          <attribute name="label">
@@ -246,8 +246,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>180</width>
-           <height>527</height>
+           <width>158</width>
+           <height>117</height>
           </rect>
          </property>
          <attribute name="label">
@@ -335,8 +335,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>180</width>
-           <height>527</height>
+           <width>150</width>
+           <height>247</height>
           </rect>
          </property>
          <attribute name="label">
@@ -490,8 +490,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>180</width>
-           <height>527</height>
+           <width>100</width>
+           <height>30</height>
           </rect>
          </property>
          <attribute name="label">
@@ -567,7 +567,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_20">
              <item>
-              <widget class="GarbrechtMartzConf" name="widget_8" native="true"/>
+              <widget class="GarbrechtMartzConf" name="garbrecht_martz_conf" native="true"/>
              </item>
             </layout>
            </widget>
@@ -592,8 +592,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>180</width>
-           <height>527</height>
+           <width>155</width>
+           <height>247</height>
           </rect>
          </property>
          <attribute name="label">

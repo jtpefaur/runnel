@@ -23,6 +23,11 @@ void GarbrechtMartz::run(Terrain* ter)
     applyIncrements(combinedGradient, halfIncrementIds);
 }
 
+void GarbrechtMartz::changeIncrementation(double value)
+{
+    elevationIncrement = value;
+}
+
 std::set<int> GarbrechtMartz::extractFlatIds()
 {
     std::set<int> flatIds;

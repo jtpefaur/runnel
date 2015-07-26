@@ -54,6 +54,7 @@ void MainWindow::connectSignalForRunnel(){
     QObject::connect(&ui_toolbar, SIGNAL(selectWater(PathWaterAlgorithm*)), &runnel_controller, SLOT(changeSelectWater(PathWaterAlgorithm*)));
     QObject::connect(&ui_toolbar, SIGNAL(selectNetwork(BuildNetwork*)), &runnel_controller, SLOT(changeSelectNetwork(BuildNetwork*)));
     QObject::connect(&ui_toolbar, SIGNAL(selectFluvialTerrace(FluvialTerraceAlgorithm*)), &runnel_controller, SLOT(changeSelectFluvialTerrace(FluvialTerraceAlgorithm*)));
+    QObject::connect(&ui_toolbar, SIGNAL(resolveFlats(GarbrechtMartz*)), &runnel_controller, SLOT(resolveFlats(GarbrechtMartz*)));
     QObject::connect(&ui_toolbar, SIGNAL(changeElevation(int)), &runnel_controller.getPainter(), SLOT(changeExag(int)));
     QObject::connect(&ui_toolbar, SIGNAL(changeLandForm(int)), &runnel_controller.getPainter(), SLOT(changeModelTerrain(int)));
     QObject::connect(&ui_toolbar, SIGNAL(showGradientVector(bool)), &runnel_controller.getPainter(), SLOT(showRenderGradientVector(bool)));
