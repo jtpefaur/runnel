@@ -91,7 +91,7 @@
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>524</height>
+           <height>527</height>
           </rect>
          </property>
          <property name="accessibleName">
@@ -183,7 +183,7 @@
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>524</height>
+           <height>527</height>
           </rect>
          </property>
          <attribute name="label">
@@ -247,7 +247,7 @@
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>524</height>
+           <height>527</height>
           </rect>
          </property>
          <attribute name="label">
@@ -336,7 +336,7 @@
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>524</height>
+           <height>527</height>
           </rect>
          </property>
          <attribute name="label">
@@ -491,7 +491,7 @@
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>524</height>
+           <height>527</height>
           </rect>
          </property>
          <attribute name="label">
@@ -547,13 +547,53 @@
           </layout>
          </widget>
         </widget>
+        <widget class="QWidget" name="preprocessing">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>180</width>
+           <height>527</height>
+          </rect>
+         </property>
+         <attribute name="label">
+          <string>DEM Preprocessing</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_21">
+          <item>
+           <widget class="QGroupBox" name="groupBox_5">
+            <property name="title">
+             <string>Flat Area Resolution</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_20">
+             <item>
+              <widget class="GarbrechtMartzConf" name="widget_8" native="true"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
         <widget class="QWidget" name="other_conf">
          <property name="geometry">
           <rect>
            <x>0</x>
            <y>0</y>
            <width>180</width>
-           <height>524</height>
+           <height>527</height>
           </rect>
          </property>
          <attribute name="label">
@@ -704,6 +744,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GarbrechtMartzConf</class>
+   <extends>QWidget</extends>
+   <header>UI/preprocessingAlgorithm/garbrechtmartzconf.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
