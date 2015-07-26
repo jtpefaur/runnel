@@ -126,3 +126,8 @@ void RunnelController::changeSelectFluvialTerrace(FluvialTerraceAlgorithm* alg){
     alg->run(coords, ter);
     pterrain.setFluvialTerraceAlgorithm(alg);
 }
+
+void RunnelController::resolveFlats(GarbrechtMartz *alg) {
+    alg->run(ter);
+    pterrain.GLWidget::updateGL();
+}
