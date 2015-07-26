@@ -8,9 +8,9 @@
 class GarbrechtMartz
 {
 public:
-    GarbrechtMartz(Terrain*);
+    GarbrechtMartz();
     ~GarbrechtMartz();
-    void run();
+    void run(Terrain* ter);
 
 private:
     Terrain* ter;

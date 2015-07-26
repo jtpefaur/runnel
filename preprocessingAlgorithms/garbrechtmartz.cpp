@@ -1,8 +1,7 @@
 #include "garbrechtmartz.h"
 
-GarbrechtMartz::GarbrechtMartz(Terrain* ter)
-{
-    this->ter = ter;
+GarbrechtMartz::GarbrechtMartz()
+{   
     elevationIncrement = 2.0;
 }
 
@@ -10,8 +9,9 @@ GarbrechtMartz::~GarbrechtMartz()
 {
 }
 
-void GarbrechtMartz::run()
+void GarbrechtMartz::run(Terrain* ter)
 {
+    this->ter = ter;
     std::set<int> flatIds = extractFlatIds();
     std::unordered_map<int,int> towardsLower = gradientTowardsLowerTerrain(flatIds);
     std::unordered_map<int,int> awayFromHigher = gradientAwayFromHigherTerrain(flatIds);
