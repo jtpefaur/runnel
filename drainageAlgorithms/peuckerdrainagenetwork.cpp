@@ -79,7 +79,7 @@ void PeuckerDrainageNetwork::calculateGrid(Terrain *ter){
 
         for(runnel::Point* pto: points){
             if(pto->coord.z == max_point->coord.z){
-                max_point->setFlagsOn(runnel::Point::PEUCKER);
+                pto->setFlagsOn(runnel::Point::PEUCKER);
             }
         }
     }
