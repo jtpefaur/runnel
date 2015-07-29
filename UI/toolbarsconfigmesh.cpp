@@ -52,6 +52,7 @@ ToolbarsConfigMesh::ToolbarsConfigMesh(QWidget *parent) :
     this->pathWaterIncludeAlgorithms();
     this->patronIncludeAlgorithms();
     this->fluvialTerraceIncludeAlgorithms();
+    this->setupFlatResolutionAlgorithm();
 }
 
 ToolbarsConfigMesh::~ToolbarsConfigMesh()
