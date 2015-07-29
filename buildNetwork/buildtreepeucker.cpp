@@ -74,15 +74,29 @@ void BuildTreePeucker::createTree(arbol* ar) {
     }
 
     if (pto->ident%t->width > 0) {
-        position_neightbour.push_back(pto->ident + t->width - 1);
-        position_neightbour.push_back(pto->ident - t->width - 1);
         position_neightbour.push_back(pto->ident - 1);
     }
 
     if (pto->ident%t->width < (t->width-1)) {
         position_neightbour.push_back(pto->ident + 1);
-        position_neightbour.push_back(pto->ident - t->width + 1);
+    }
+
+    if (pto->ident%t->width > 0 &&
+            pto->ident + t->width < t->width*t->height) {
+        position_neightbour.push_back(pto->ident + t->width - 1);
+    }
+
+    if (pto->ident%t->width < t->width - 1 &&
+            pto->ident + t->width < t->width*t->height) {
         position_neightbour.push_back(pto->ident + t->width + 1);
+    }
+
+    if (pto->ident - t->width >= 0 && pto->ident%t->width > 0) {
+        position_neightbour.push_back(pto->ident - t->width - 1);
+    }
+
+    if (pto->ident - t->width >= 0 && pto->ident%t->width < t->width - 1) {
+        position_neightbour.push_back(pto->ident - t->width + 1);
     }
 
     for (int position: position_neightbour) {
