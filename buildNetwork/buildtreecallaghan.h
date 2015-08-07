@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include "primitives/point.h"
 #include "UI/buildNetwork/callaghannetworkconf.h"
-#include "patternsAlgorithms/arbol.h"
+#include "buildNetwork/arbol.h"
 #include "painters/shaders/shaderpatron.h"
 
 

@@ -2,7 +2,7 @@
 #define BUILDNETWORK_H
 #include <QString>
 #include <QWidget>
-#include "patternsAlgorithms/arbol.h"
+#include "buildNetwork/arbol.h"
 #include "terrain.h"
 
 class BuildNetwork : public QObject

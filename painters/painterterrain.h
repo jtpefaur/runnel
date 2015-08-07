@@ -5,13 +5,13 @@
 #include "drainageAlgorithms/drainagealgorithms.h"
 #include "waterPathAlgorithms/pathwateralgorithm.h"
 #include "patternsAlgorithms/algorithmpatron.h"
+#include "buildNetwork/arbol.h"
 #include "buildNetwork/buildnetwork.h"
 #include "fluvialTerraceAlgorithms/fluvialterracealgorithm.h"
 #include "shaders/shaderutils.h"
 #include "shaders/shaderterrain.h"
 #include "shaders/shadergradient.h"
 #include "shaders/shaderdrainage.h"
-#include "patternsAlgorithms/arbol.h"
 #include "painters/glwidget.h"
 
 class PainterTerrain : public GLWidget {

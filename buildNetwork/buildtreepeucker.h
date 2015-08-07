@@ -3,7 +3,7 @@
 
 #include "primitives/point.h"
 #include "terrain.h"
-#include "patternsAlgorithms/arbol.h"
+#include "buildNetwork/arbol.h"
 #include "buildNetwork/buildnetwork.h"
 #include "painters/shaders/shaderpatron.h"
 #include "UI/buildNetwork/peuckernetworkconf.h"

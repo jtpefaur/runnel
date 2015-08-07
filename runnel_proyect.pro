@@ -33,7 +33,6 @@ SOURCES += main.cpp\
     painters/openglutils.cpp \
     drainageAlgorithms/gradientdrainagecallaghanmark.cpp \
     drainageAlgorithms/peuckerdrainagenetwork.cpp \
-    patternsAlgorithms/arbol.cpp \
     patternsAlgorithms/zhangguilbertalgorithm.cpp \
     patternsAlgorithms/algorithmpatron.cpp \
     buildNetwork/buildtreecallaghan.cpp \
@@ -74,7 +73,8 @@ SOURCES += main.cpp\
     painters/shaders/shaderrwflood.cpp \
     UI/drainageAlgorithm/rwfloodconf.cpp \
     preprocessingAlgorithms/garbrechtmartz.cpp \
-    UI/preprocessingAlgorithm/garbrechtmartzconf.cpp
+    UI/preprocessingAlgorithm/garbrechtmartzconf.cpp \
+    buildNetwork/arbol.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -243,7 +243,6 @@ HEADERS  += UI/mainwindow.h \
     lib/glm/vec3.hpp \
     lib/glm/vec4.hpp \
     lib/glm/vector_relational.hpp \
-    patternsAlgorithms/arbol.h \
     patternsAlgorithms/algorithmpatron.h \
     patternsAlgorithms/zhangguilbertalgorithm.h \
     buildNetwork/buildtreecallaghan.h \
@@ -285,7 +284,8 @@ HEADERS  += UI/mainwindow.h \
     painters/shaders/shaderrwflood.h \
     UI/drainageAlgorithm/rwfloodconf.h \
     preprocessingAlgorithms/garbrechtmartz.h \
-    UI/preprocessingAlgorithm/garbrechtmartzconf.h
+    UI/preprocessingAlgorithm/garbrechtmartzconf.h \
+    buildNetwork/arbol.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \

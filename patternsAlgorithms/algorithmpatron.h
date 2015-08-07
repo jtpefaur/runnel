@@ -4,7 +4,7 @@
 #include <QString>
 #include <QWidget>
 #include "terrain.h"
-#include "patternsAlgorithms/arbol.h"
+#include "buildNetwork/arbol.h"
 
 class AlgorithmPatron : public QObject
 {
