@@ -3,6 +3,13 @@
 #include <vector>
 #include "primitives/point.h"
 #include <unordered_map>
+
+namespace runnel {
+    class Edge;
+}
+
+class Terrain;
+
 class arbol
 {
     public:
@@ -15,6 +22,10 @@ class arbol
         std::vector<int> numbers_strahler_horton;
         int number_strahler_horton;
         std::vector<arbol *> hijos;
+
+        std::unordered_map<int,std::vector<runnel::Edge*>> makeInflowingEdgeMap(Terrain*);
+        std::unordered_map<runnel::Edge*,int> makeUpstreamNodeMap(Terrain*);
+
         void getArbolEdges(std::vector<glm::vec3>& edges);
         void getArbolEdges(std::vector<glm::vec3>& edges, int orderThreshold);
         void getNumberStrahlerHorton();

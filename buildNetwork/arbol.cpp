@@ -20,6 +20,16 @@ arbol::arbol(runnel::Point* p)
     type_colors[""] = glm::vec3(1,1,1);
 }
 
+std::unordered_map<int, std::vector<runnel::Edge*>> arbol::makeInflowingEdgeMap(Terrain * ter)
+{
+
+}
+
+std::unordered_map<runnel::Edge*, int> arbol::makeUpstreamNodeMap(Terrain *ter)
+{
+
+}
+
 
 void arbol::getArbolEdges(std::vector<glm::vec3>& edges){
     getArbolEdges(edges, 1);
