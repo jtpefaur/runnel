@@ -181,12 +181,19 @@ void BuildTreePeucker::calculateGrid(Terrain *ter) {
 
 
 std::vector<glm::vec3> BuildTreePeucker::getPathTree() {
-    std::vector<glm::vec3> path;
-    path.clear();
+    std::vector<runnel::Point*> pointPath;
+    pointPath.clear();
     for (arbol* ar: arbolitos) {
-        ar->getArbolEdges(path, this->orderThreshold);
+        std::vector<runnel::Point*> points;
+        ar->getArbolEdges(points, this->orderThreshold);
+        pointPath.insert(pointPath.end(), points.begin(), points.end());
+        points.clear();
     }
-    return path;
+    std::vector<glm::vec3> coordinatePath;
+    for (runnel::Point* point : pointPath) {
+        coordinatePath.push_back(point->coord);
+    }
+    return coordinatePath;
 }
 
 void BuildTreePeucker::changeOrderThreshold() {

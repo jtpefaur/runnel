@@ -41,8 +41,12 @@ void ShaderPatron::fillPositionBuffer(std::vector<arbol*> arbolines, std::vector
         int i = 0;
         for(arbol* aa : arbolines){
             GLuint buffer_arbolito;
+            std::vector<runnel::Point*> networkPoints;
+            aa->getArbolEdges(networkPoints, orderThreshold);
             std::vector<glm::vec3> ed_ar;
-            aa->getArbolEdges(ed_ar, orderThreshold);
+            for (runnel::Point* point : networkPoints) {
+                ed_ar.push_back(point->coord);
+            }
             this->bufferCreate(buffer_arbolito, ed_ar);
             tamano_arbol.push_back(ed_ar.size());
             buffer_position_arbolitos.push_back(buffer_arbolito);

@@ -322,14 +322,18 @@ arbol* ZhangGuilbertAlgorithm::selectPrincipalStream(arbol* father){
 }
 
 std::vector<glm::vec3> ZhangGuilbertAlgorithm::getPathTree(){
-    std::vector<glm::vec3> path;
-    path.clear();
+    std::vector<runnel::Point*> pointPath;
+    pointPath.clear();
     for( arbol* ar: this->drainage_trees){
-        std::vector<glm::vec3> path_edge;
-        ar->getArbolEdges(path_edge);
-        path.insert( path.end(), path_edge.begin(), path_edge.end() );
-        path_edge.clear();
+        std::vector<runnel::Point*> points;
+        ar->getArbolEdges(points);
+        pointPath.insert( pointPath.end(), points.begin(), points.end() );
+        points.clear();
     }
-    return path;
+    std::vector<glm::vec3> coordinatePath;
+    for (runnel::Point* point : pointPath) {
+        coordinatePath.push_back(point->coord);
+    }
+    return coordinatePath;
 }
 

@@ -31,15 +31,15 @@ std::unordered_map<runnel::Edge*, int> arbol::makeUpstreamNodeMap(Terrain *ter)
 }
 
 
-void arbol::getArbolEdges(std::vector<glm::vec3>& edges){
+void arbol::getArbolEdges(std::vector<runnel::Point*>& edges){
     getArbolEdges(edges, 1);
 }
 
-void arbol::getArbolEdges(std::vector<glm::vec3> &edges, int orderThreshold) {
+void arbol::getArbolEdges(std::vector<runnel::Point*> &edges, int orderThreshold) {
     for (arbol* h: hijos){
         if(h->number_strahler_horton >= orderThreshold) {
-            edges.push_back(pto->coord);
-            edges.push_back(h->pto->coord);
+            edges.push_back(pto);
+            edges.push_back(h->pto);
         }
 
         h->getArbolEdges(edges, orderThreshold);

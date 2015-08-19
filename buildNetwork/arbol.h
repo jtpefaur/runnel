@@ -26,8 +26,8 @@ class arbol
         std::unordered_map<int,std::vector<runnel::Edge*>> makeInflowingEdgeMap(Terrain*);
         std::unordered_map<runnel::Edge*,int> makeUpstreamNodeMap(Terrain*);
 
-        void getArbolEdges(std::vector<glm::vec3>& edges);
-        void getArbolEdges(std::vector<glm::vec3>& edges, int orderThreshold);
+        void getArbolEdges(std::vector<runnel::Point*> &edges);
+        void getArbolEdges(std::vector<runnel::Point*> &edges, int orderThreshold);
         void getNumberStrahlerHorton();
 
         void getColorEdgesType(std::vector<glm::vec3>& color_edges, std::string type_color);
