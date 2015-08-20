@@ -24,7 +24,7 @@ class arbol
         std::vector<arbol *> hijos;
 
         std::unordered_map<int, std::vector<runnel::Point *> > makeInflowingEdgeMap(std::vector<runnel::Point*> &edges);
-        std::unordered_map<runnel::Edge*,int> makeUpstreamNodeMap(std::vector<runnel::Point*>);
+        std::vector<std::pair<runnel::Point*, runnel::Point*>> makeEdgeList(std::vector<runnel::Point*> &edges);
 
         void getArbolEdges(std::vector<runnel::Point*> &edges);
         void getArbolEdges(std::vector<runnel::Point*> &edges, int orderThreshold);

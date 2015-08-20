@@ -30,7 +30,7 @@ std::unordered_map<int, std::vector<runnel::Point*>> arbol::makeInflowingEdgeMap
         // We consider higher points to flow into lower ones.
         runnel::Point* p1 = *iterator;
         runnel::Point* p2 = *(iterator+1);
-        if (p1->coord.z < p2->coord.z ) {
+        if (p1->coord.z < p2->coord.z) {
             inflowingEdgeMap[p1->ident].push_back(p2);
         } else {
             inflowingEdgeMap[p2->ident].push_back(p1);
@@ -40,11 +40,19 @@ std::unordered_map<int, std::vector<runnel::Point*>> arbol::makeInflowingEdgeMap
     return inflowingEdgeMap;
 }
 
-std::unordered_map<runnel::Edge *, int> arbol::makeUpstreamNodeMap(std::vector<runnel::Point *>)
+std::vector<std::pair<runnel::Point*, runnel::Point*>> arbol::makeEdgeList(std::vector<runnel::Point*> &edges)
 {
+    std::vector<std::pair<runnel::Point*, runnel::Point*>> edgeList;
 
+    for (auto iterator = edges.begin(); iterator != edges.end(); std::advance(iterator, 2)) {
+        runnel::Point* p1 = *iterator;
+        runnel::Point* p2 = *(iterator+1);
+        std::pair<runnel::Point*, runnel::Point*> edgePair(p1, p2);
+        edgeList.push_back(edgePair);
+    }
+
+    return edgeList;
 }
-
 
 void arbol::getArbolEdges(std::vector<runnel::Point*>& edges){
     getArbolEdges(edges, 1);
