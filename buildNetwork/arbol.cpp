@@ -20,20 +20,19 @@ arbol::arbol(runnel::Point* p)
     type_colors[""] = glm::vec3(1,1,1);
 }
 
-std::unordered_map<int, std::vector<runnel::Point*>> arbol::makeInflowingEdgeMap(std::vector<runnel::Point*> &edges)
+std::unordered_map<int, std::vector<int>> arbol::makeInflowingEdgeMap(
+        std::vector<std::pair<runnel::Point*,runnel::Point*>> &edgeList)
 {
-    std::unordered_map<int, std::vector<runnel::Point*>> inflowingEdgeMap;
+    std::unordered_map<int, std::vector<int>> inflowingEdgeMap;
 
-    std::vector<runnel::Point*>::iterator iterator;
-    for (iterator = edges.begin(); iterator != edges.end(); std::advance(iterator, 2)) {
-        // Each even-indexed point in the vector is followed by a point with which it forms an edge.
-        // We consider higher points to flow into lower ones.
-        runnel::Point* p1 = *iterator;
-        runnel::Point* p2 = *(iterator+1);
+    for (auto iter = edgeList.begin(); iter != edgeList.end(); std::advance(iter, 1)) {
+        runnel::Point* p1 = (*iter).first;
+        runnel::Point* p2 = (*iter).second;
         if (p1->coord.z < p2->coord.z) {
-            inflowingEdgeMap[p1->ident].push_back(p2);
+            // We save the edge's index in edgeList, not the point's ID!
+            inflowingEdgeMap[p1->ident].push_back(iter - edgeList.begin());
         } else {
-            inflowingEdgeMap[p2->ident].push_back(p1);
+            inflowingEdgeMap[p2->ident].push_back(iter - edgeList.begin());
         }
     }
 
@@ -44,9 +43,10 @@ std::vector<std::pair<runnel::Point*, runnel::Point*>> arbol::makeEdgeList(std::
 {
     std::vector<std::pair<runnel::Point*, runnel::Point*>> edgeList;
 
-    for (auto iterator = edges.begin(); iterator != edges.end(); std::advance(iterator, 2)) {
-        runnel::Point* p1 = *iterator;
-        runnel::Point* p2 = *(iterator+1);
+    for (auto iter = edges.begin(); iter != edges.end(); std::advance(iter, 2)) {
+        // Each even-indexed point in the vector is followed by a point with which it forms an edge.
+        runnel::Point* p1 = *iter;
+        runnel::Point* p2 = *(iter+1);
         std::pair<runnel::Point*, runnel::Point*> edgePair(p1, p2);
         edgeList.push_back(edgePair);
     }

@@ -23,7 +23,8 @@ class arbol
         int number_strahler_horton;
         std::vector<arbol *> hijos;
 
-        std::unordered_map<int, std::vector<runnel::Point *> > makeInflowingEdgeMap(std::vector<runnel::Point*> &edges);
+        std::unordered_map<int, std::vector<int> > makeInflowingEdgeMap(
+                std::vector<std::pair<runnel::Point *,runnel::Point*>> &edgeList);
         std::vector<std::pair<runnel::Point*, runnel::Point*>> makeEdgeList(std::vector<runnel::Point*> &edges);
 
         void getArbolEdges(std::vector<runnel::Point*> &edges);
