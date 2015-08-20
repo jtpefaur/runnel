@@ -20,12 +20,27 @@ arbol::arbol(runnel::Point* p)
     type_colors[""] = glm::vec3(1,1,1);
 }
 
-std::unordered_map<int, std::vector<runnel::Edge*>> arbol::makeInflowingEdgeMap(Terrain * ter)
+std::unordered_map<int, std::vector<runnel::Point*>> arbol::makeInflowingEdgeMap(std::vector<runnel::Point*> &edges)
 {
+    std::unordered_map<int, std::vector<runnel::Point*>> inflowingEdgeMap;
 
+    std::vector<runnel::Point*>::iterator iterator;
+    for (iterator = edges.begin(); iterator != edges.end(); std::advance(iterator, 2)) {
+        // Each even-indexed point in the vector is followed by a point with which it forms an edge.
+        // We consider higher points to flow into lower ones.
+        runnel::Point* p1 = *iterator;
+        runnel::Point* p2 = *(iterator+1);
+        if (p1->coord.z < p2->coord.z ) {
+            inflowingEdgeMap[p1->ident].push_back(p2);
+        } else {
+            inflowingEdgeMap[p2->ident].push_back(p1);
+        }
+    }
+
+    return inflowingEdgeMap;
 }
 
-std::unordered_map<runnel::Edge*, int> arbol::makeUpstreamNodeMap(Terrain *ter)
+std::unordered_map<runnel::Edge *, int> arbol::makeUpstreamNodeMap(std::vector<runnel::Point *>)
 {
 
 }
@@ -90,6 +105,7 @@ void arbol::getNumberStrahlerHorton(){
         number_strahler_horton = mayor_ord;
     }
 }
+
 void arbol::getColorEdgesType(std::vector<glm::vec3>& color_edges, std::string type_color){
     for(arbol* child: hijos){
         color_edges.push_back(type_colors[type_color]);
