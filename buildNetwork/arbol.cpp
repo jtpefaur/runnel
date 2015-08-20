@@ -20,8 +20,7 @@ arbol::arbol(runnel::Point* p)
     type_colors[""] = glm::vec3(1,1,1);
 }
 
-std::unordered_map<int, std::vector<int>> arbol::makeInflowingEdgeMap(
-        std::vector<std::pair<runnel::Point*,runnel::Point*>> &edgeList)
+std::unordered_map<int, std::vector<int>> arbol::makeInflowingEdgeMap(EdgeList &edgeList)
 {
     std::unordered_map<int, std::vector<int>> inflowingEdgeMap;
 
@@ -39,9 +38,9 @@ std::unordered_map<int, std::vector<int>> arbol::makeInflowingEdgeMap(
     return inflowingEdgeMap;
 }
 
-std::vector<std::pair<runnel::Point*, runnel::Point*>> arbol::makeEdgeList(std::vector<runnel::Point*> &edges)
+EdgeList arbol::makeEdgeList(std::vector<runnel::Point*> &edges)
 {
-    std::vector<std::pair<runnel::Point*, runnel::Point*>> edgeList;
+    EdgeList edgeList;
 
     for (auto iter = edges.begin(); iter != edges.end(); std::advance(iter, 2)) {
         // Each even-indexed point in the vector is followed by a point with which it forms an edge.
@@ -52,6 +51,23 @@ std::vector<std::pair<runnel::Point*, runnel::Point*>> arbol::makeEdgeList(std::
     }
 
     return edgeList;
+}
+
+std::map<int, int> arbol::makeUpstreamNodePerEdgeMap(EdgeList &edgeList)
+{
+    std::map<int, int> upstreamNodePerEdge;
+
+    for (auto iter = edgeList.begin(); iter != edgeList.end(); std::advance(iter, 1)) {
+        runnel::Point* p1 = (*iter).first;
+        runnel::Point* p2 = (*iter).second;
+        if (p1->coord.z < p2->coord.z) {
+            upstreamNodePerEdge[iter - edgeList.begin()] = p2->ident;
+        } else {
+            upstreamNodePerEdge[iter - edgeList.begin()] = p1->ident;
+        }
+    }
+
+    return upstreamNodePerEdge;
 }
 
 void arbol::getArbolEdges(std::vector<runnel::Point*>& edges){

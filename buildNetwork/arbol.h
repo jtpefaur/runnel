@@ -3,10 +3,9 @@
 #include <vector>
 #include "primitives/point.h"
 #include <unordered_map>
+#include <map>
 
-namespace runnel {
-    class Edge;
-}
+using EdgeList = std::vector<std::pair<runnel::Point*, runnel::Point*>>;
 
 class Terrain;
 
@@ -23,9 +22,9 @@ class arbol
         int number_strahler_horton;
         std::vector<arbol *> hijos;
 
-        std::unordered_map<int, std::vector<int> > makeInflowingEdgeMap(
-                std::vector<std::pair<runnel::Point *,runnel::Point*>> &edgeList);
-        std::vector<std::pair<runnel::Point*, runnel::Point*>> makeEdgeList(std::vector<runnel::Point*> &edges);
+        std::unordered_map<int, std::vector<int>> makeInflowingEdgeMap(EdgeList &edgeList);
+        EdgeList makeEdgeList(std::vector<runnel::Point*> &edges);
+        std::map<int, int> makeUpstreamNodePerEdgeMap(EdgeList &edgeList);
 
         void getArbolEdges(std::vector<runnel::Point*> &edges);
         void getArbolEdges(std::vector<runnel::Point*> &edges, int orderThreshold);
