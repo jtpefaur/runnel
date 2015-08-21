@@ -20,9 +20,9 @@ arbol::arbol(runnel::Point* p)
     type_colors[""] = glm::vec3(1,1,1);
 }
 
-std::unordered_map<int, std::vector<int>> arbol::makeInflowingEdgeMap(EdgeList &edgeList)
+std::map<int, std::vector<int>> arbol::makeInflowingEdgeMap(EdgeList &edgeList)
 {
-    std::unordered_map<int, std::vector<int>> inflowingEdgeMap;
+    std::map<int, std::vector<int>> inflowingEdgeMap;
 
     for (auto iter = edgeList.begin(); iter != edgeList.end(); std::advance(iter, 1)) {
         runnel::Point* p1 = (*iter).first;
@@ -80,7 +80,6 @@ void arbol::getArbolEdges(std::vector<runnel::Point*> &edges, int orderThreshold
             edges.push_back(pto);
             edges.push_back(h->pto);
         }
-
         h->getArbolEdges(edges, orderThreshold);
     }
 }
@@ -129,6 +128,67 @@ void arbol::getNumberStrahlerHorton(){
         number_strahler_horton = mayor_ord;
     }
 }
+
+int arbol::streamOrdering(int edgeIndex, std::map<int, bool> &visitedEdges,
+                          std::map<int, std::vector<int>> &inflowingEdgesPerNode,
+                          std::map<int, int> &upstreamNodePerEdge,
+                          std::map<int, int> &streamOrders,
+                          std::map<int, int> &originatingNode)
+{
+    visitedEdges[edgeIndex] = true;
+
+    if (inflowingEdgesPerNode[upstreamNodePerEdge[edgeIndex]].size() == 0) {
+        streamOrders[edgeIndex] = 1;
+    } else {
+        std::map<int, std::pair<int,int>> upstreamOrders;
+
+        for (int inflowingEdgeIndex : inflowingEdgesPerNode[upstreamNodePerEdge[edgeIndex]]) {
+            if (!visitedEdges[inflowingEdgeIndex]) {
+                upstreamOrders[inflowingEdgeIndex] = std::make_pair(streamOrdering(inflowingEdgeIndex,
+                                                                                   visitedEdges,
+                                                                                   inflowingEdgesPerNode,
+                                                                                   upstreamNodePerEdge,
+                                                                                   streamOrders,
+                                                                                   originatingNode),
+                                                                    originatingNode[inflowingEdgeIndex]);
+            } else {
+                upstreamOrders[inflowingEdgeIndex] = std::make_pair(streamOrders[inflowingEdgeIndex],
+                                                                    originatingNode[inflowingEdgeIndex]);
+            }
+        }
+
+        int maxOrder = 0;
+        int maxOrderCount = 0;
+        int maxOrderOrigin = -1;
+
+        for (auto iter = upstreamOrders.begin(); iter != upstreamOrders.end(); std::advance(iter, 1)) {
+            std::pair<int,int> orderOriginPair = (*iter).second;
+            int order = orderOriginPair.first;
+            int origin = orderOriginPair.second;
+
+            if (order > maxOrder) {
+                maxOrder = order;
+                maxOrderCount = 1;
+                maxOrderOrigin = origin;
+            } else if (order == maxOrder) {
+                if (origin != maxOrderOrigin) {
+                    maxOrderCount += 1;
+                }
+            }
+        }
+
+        if (maxOrderCount > 1) {
+            streamOrders[edgeIndex] = maxOrder + 1;
+            originatingNode[edgeIndex] = upstreamNodePerEdge[edgeIndex];
+        } else {
+            streamOrders[edgeIndex] = maxOrder;
+            originatingNode[edgeIndex] = maxOrderOrigin;
+        }
+    }
+
+    return streamOrders[edgeIndex];
+}
+
 
 void arbol::getColorEdgesType(std::vector<glm::vec3>& color_edges, std::string type_color){
     for(arbol* child: hijos){
