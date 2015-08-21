@@ -149,7 +149,7 @@ void buildTreeCallaghan::reviewPoints(){
     }
 
     for(arbol* b: arbolitos){
-        b->getNumberStrahlerHorton();
+        b->computeNetworkStrahlerOrdering();
     }
 }
 

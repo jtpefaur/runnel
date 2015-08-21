@@ -76,10 +76,9 @@ void arbol::getArbolEdges(std::vector<runnel::Point*>& edges){
 
 void arbol::getArbolEdges(std::vector<runnel::Point*> &edges, int orderThreshold) {
     for (arbol* h: hijos){
-        if(h->number_strahler_horton >= orderThreshold) {
-            edges.push_back(pto);
-            edges.push_back(h->pto);
-        }
+        edges.push_back(pto);
+        edges.push_back(h->pto);
+
         h->getArbolEdges(edges, orderThreshold);
     }
 }
@@ -103,30 +102,19 @@ void arbol::getColorEdges(std::vector<glm::vec3> &color_edges, int orderThreshol
     }
 }
 
-void arbol::getNumberStrahlerHorton(){
-    if(hijos.size() == 0){
-        number_strahler_horton = 1;
-        return;
-    }
+void arbol::computeNetworkStrahlerOrdering(){
+    std::vector<runnel::Point*> edges;
+    this->getArbolEdges(edges);
+    EdgeList edgeList = makeEdgeList(edges);
+    std::map<int, bool> visitedEdges;
+    std::map<int, std::vector<int>> inflowingEdgesPerNode = makeInflowingEdgeMap(edgeList);
+    std::map<int, int> upstreamNodePerEdge = makeUpstreamNodePerEdgeMap(edgeList);
+    std::map<int, int> streamOrders;
+    std::map<int, int> originatingNode;
 
-    std::unordered_map<int, int> ordenes;
-    for(arbol*h : hijos){
-        if(h->number_strahler_horton == NO_NUMBER_STRAHLER_HORTON){
-            h->getNumberStrahlerHorton();
-        }
-        ordenes[h->number_strahler_horton] +=1;
-    }
-    int mayor_ord = 0;
-    for( auto ord : ordenes){
-        if(mayor_ord < ord.first){
-            mayor_ord = ord.first;
-        }
-    }
-    if(ordenes[mayor_ord] > 1){
-        number_strahler_horton = mayor_ord + 1;
-    }else{
-        number_strahler_horton = mayor_ord;
-    }
+    streamOrdering(0, visitedEdges, inflowingEdgesPerNode, upstreamNodePerEdge, streamOrders, originatingNode);
+
+    this->updateStrahlerOrder(edgeList, streamOrders);
 }
 
 int arbol::streamOrdering(int edgeIndex, std::map<int, bool> &visitedEdges,
@@ -187,6 +175,29 @@ int arbol::streamOrdering(int edgeIndex, std::map<int, bool> &visitedEdges,
     }
 
     return streamOrders[edgeIndex];
+}
+
+void arbol::updateStrahlerOrder(EdgeList &edgeList, std::map<int, int> &streamOrders)
+{
+    if (this->number_strahler_horton != NO_NUMBER_STRAHLER_HORTON) {
+        return;
+    }
+
+    int maxOrder = 0;
+
+    for (auto iter = edgeList.begin(); iter != edgeList.end(); std::advance(iter, 1)) {
+        auto edge = (*iter);
+        runnel::Point* p = edge.first;
+        if (this->pto->ident == p->ident && streamOrders[iter - edgeList.begin()] > maxOrder) {
+            maxOrder = streamOrders[iter - edgeList.begin()];
+        }
+    }
+
+    this->number_strahler_horton = maxOrder;
+
+    for (arbol* child : this->hijos) {
+        child->updateStrahlerOrder(edgeList, streamOrders);
+    }
 }
 
 

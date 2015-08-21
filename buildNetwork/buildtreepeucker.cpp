@@ -135,7 +135,7 @@ void BuildTreePeucker::reviewPoints() {
     }
 
     for (arbol* b: arbolitos) {
-        b->getNumberStrahlerHorton();
+        b->computeNetworkStrahlerOrdering();
     }
 }
 

@@ -28,7 +28,7 @@ class arbol
 
         void getArbolEdges(std::vector<runnel::Point*> &edges);
         void getArbolEdges(std::vector<runnel::Point*> &edges, int orderThreshold);
-        void getNumberStrahlerHorton();
+        void computeNetworkStrahlerOrdering();
 
         void getColorEdgesType(std::vector<glm::vec3>& color_edges, std::string type_color);
         void getColorEdges(std::vector<glm::vec3>& color_edges);
@@ -36,6 +36,7 @@ class arbol
 
     private:
         int streamOrdering(int edgeIndex, std::map<int,bool> &visitedEdges, std::map<int, std::vector<int> > &inflowingEdgesPerNode, std::map<int, int> &upstreamNodePerEdge, std::map<int,int> &streamOrders, std::map<int,int> &originatingNode);
+        void updateStrahlerOrder(EdgeList &edgeList, std::map<int,int> &streamOrders);
 };
 
 #endif // ARBOL_H
