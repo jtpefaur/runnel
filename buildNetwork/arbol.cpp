@@ -111,7 +111,10 @@ void arbol::computeNetworkStrahlerOrdering(){
     std::map<int, int> upstreamNodePerEdge = makeUpstreamNodePerEdgeMap(edgeList);
     std::map<int, int> streamOrders;
     std::map<int, int> originatingNode(upstreamNodePerEdge); // Must be initialized to each edge's upstream node.
-    streamOrdering(0, visitedEdges, inflowingEdgesPerNode, upstreamNodePerEdge, streamOrders, originatingNode);
+
+    for (int i = 0; i < edgeList.size(); i++) {
+        streamOrdering(i, visitedEdges, inflowingEdgesPerNode, upstreamNodePerEdge, streamOrders, originatingNode);
+    }
 
     this->updateStrahlerOrder(edgeList, streamOrders);
 }
