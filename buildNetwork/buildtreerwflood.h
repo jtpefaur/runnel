@@ -20,6 +20,10 @@ public:
     virtual QString getName();
     virtual QWidget* getConf();
     virtual std::vector<glm::vec3> getPathTree();
+private:
+    Terrain* ter;
+    ShaderPatron* shader;
+    std::vector<arbol*> networkTrees;
 };
 
 #endif // BUILDTREERWFLOOD_H
