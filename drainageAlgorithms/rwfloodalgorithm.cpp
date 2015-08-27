@@ -7,7 +7,7 @@ RWFloodAlgorithm::RWFloodAlgorithm():
     this->ter = 0;
     this->shader = 0;
     this->maxWaterCount = 0;
-    this->waterThreshold = 100;
+    this->waterThreshold = 10;
 
     QObject::connect(&conf, SIGNAL(changeAttr()), this, SLOT(changeAttr()));
 }

@@ -92,6 +92,7 @@ void BuildTreeRWFlood::buildNetworkTrees()
     std::map<int,bool> visitedPoints;
 
     sortPoints(ter->struct_point);
+    flagPointsUnderThreshold(visitedPoints);
 
     for (runnel::Point* point : sortedPoints) {
         if (visitedPoints[point->ident]) {
@@ -118,8 +119,28 @@ void BuildTreeRWFlood::buildTree(arbol *parent, std::map<int,bool>& visitedPoint
                 arbol* tree = new arbol(point);
                 parent->hijos.push_back(tree);
                 buildTree(tree, visitedPoints);
-             }
+            }
         }
+    }
+}
+
+void BuildTreeRWFlood::flagPointsUnderThreshold(std::map<int, bool> &visitedPoints)
+{
+    runnel::Point* dummyPoint = new runnel::Point(glm::vec3(0,0,0), -1);
+    dummyPoint->water_value = waterLevelThreshold;
+
+    auto iter = std::upper_bound(sortedPoints.begin(),
+                                 sortedPoints.end(),
+                                 dummyPoint,
+                                 [] (runnel::Point* p1, runnel::Point* p2) {
+                                        return p1->water_value > p2->water_value;
+                                    });
+
+    delete dummyPoint;
+
+    while (iter != sortedPoints.end()) {
+        visitedPoints[(*iter)->ident] = true;
+        std::advance(iter, 1);
     }
 }
 
@@ -129,6 +150,6 @@ void BuildTreeRWFlood::sortPoints(std::vector<runnel::Point *>& terrainPoints)
 
     std::sort(sortedPoints.begin(), sortedPoints.end(),
               [] (runnel::Point* p1, runnel::Point* p2) {
-                    return p1->water_value > p2->water_value;
-    });
+                     return p1->water_value > p2->water_value;
+                 });
 }
