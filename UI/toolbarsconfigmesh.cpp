@@ -11,6 +11,7 @@
 #include "buildNetwork/nonebuildnetwork.h"
 #include "buildNetwork/buildtreecallaghan.h"
 #include "buildNetwork/buildtreepeucker.h"
+#include "buildNetwork/buildtreerwflood.h"
 #include "waterPathAlgorithms/nonepathwateralgorithm.h"
 #include "waterPathAlgorithms/pathwatercallaghanalgorithm.h"
 #include "waterPathAlgorithms/pathwatergradientalgorithm.h"
@@ -125,6 +126,7 @@ void ToolbarsConfigMesh::networkIncludeAlgorithms()
     network_algorithms.push_back(new NoneBuildNetwork());
     network_algorithms.push_back(new buildTreeCallaghan());
     network_algorithms.push_back(new BuildTreePeucker());
+    network_algorithms.push_back(new BuildTreeRWFlood());
 
     for (BuildNetwork* item : network_algorithms) {
         ui->network_value->addItem(item->getName());

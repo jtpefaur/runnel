@@ -6,6 +6,7 @@
 #include "terrain.h"
 #include "painters/shaders/shaderpatron.h"
 #include "primitives/point.h"
+#include <UI/buildNetwork/rwfloodnetworkconf.h>
 
 class BuildTreeRWFlood : public BuildNetwork
 {
@@ -20,9 +21,13 @@ public:
     virtual QString getName();
     virtual QWidget* getConf();
     virtual std::vector<glm::vec3> getPathTree();
+public slots:
+    void changeWaterLevelThreshold();
 private:
     Terrain* ter;
     ShaderPatron* shader;
+    RWFloodNetworkConf conf;
+    int waterLevelThreshold;
     std::vector<arbol*> networkTrees;
     std::vector<runnel::Point*> sortedPoints;
     void buildNetworkTrees();

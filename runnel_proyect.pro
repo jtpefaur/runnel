@@ -75,7 +75,8 @@ SOURCES += main.cpp\
     preprocessingAlgorithms/garbrechtmartz.cpp \
     UI/preprocessingAlgorithm/garbrechtmartzconf.cpp \
     buildNetwork/arbol.cpp \
-    buildNetwork/buildtreerwflood.cpp
+    buildNetwork/buildtreerwflood.cpp \
+    UI/buildNetwork/rwfloodnetworkconf.cpp
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -287,7 +288,8 @@ HEADERS  += UI/mainwindow.h \
     preprocessingAlgorithms/garbrechtmartz.h \
     UI/preprocessingAlgorithm/garbrechtmartzconf.h \
     buildNetwork/arbol.h \
-    buildNetwork/buildtreerwflood.h
+    buildNetwork/buildtreerwflood.h \
+    UI/buildNetwork/rwfloodnetworkconf.h
 
 FORMS    += UI/mainwindow.ui \
     UI/toolbarsconfigmesh.ui \
@@ -301,7 +303,8 @@ FORMS    += UI/mainwindow.ui \
     UI/waterAlgorithm/callaghanwaterconf.ui \
     UI/fluvialTerraceAlgorithm/normalvectorsimilarityconf.ui \
     UI/drainageAlgorithm/rwfloodconf.ui \
-    UI/preprocessingAlgorithm/garbrechtmartzconf.ui
+    UI/preprocessingAlgorithm/garbrechtmartzconf.ui \
+    UI/buildNetwork/rwfloodnetworkconf.ui
 
 RESOURCES += \
     resources/shader.qrc \

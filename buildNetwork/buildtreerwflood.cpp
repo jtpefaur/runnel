@@ -4,6 +4,8 @@ BuildTreeRWFlood::BuildTreeRWFlood()
 {
     ter = 0;
     shader = 0;
+    waterLevelThreshold = 10;
+    QObject::connect(&conf, SIGNAL(changeWaterLevelThreshold()), this, SLOT(changeWaterLevelThreshold()));
 }
 
 BuildTreeRWFlood::~BuildTreeRWFlood()
@@ -24,6 +26,7 @@ std::vector<arbol *> BuildTreeRWFlood::run(Terrain *ter)
 {
     this->ter = ter;
     networkTrees.clear();
+    sortedPoints.clear();
 
     buildNetworkTrees();
 
@@ -57,7 +60,7 @@ QString BuildTreeRWFlood::getName()
 
 QWidget *BuildTreeRWFlood::getConf()
 {
-    return 0;
+    return &conf;
 }
 
 std::vector<glm::vec3> BuildTreeRWFlood::getPathTree()
@@ -75,6 +78,13 @@ std::vector<glm::vec3> BuildTreeRWFlood::getPathTree()
         coordinatePath.push_back(point->coord);
     }
     return coordinatePath;
+}
+
+void BuildTreeRWFlood::changeWaterLevelThreshold()
+{
+    this->waterLevelThreshold = conf.getWaterLevelThreshold();
+    this->run(ter);
+    emit reload();
 }
 
 void BuildTreeRWFlood::buildNetworkTrees()
