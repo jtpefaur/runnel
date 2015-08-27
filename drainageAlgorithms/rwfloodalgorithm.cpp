@@ -113,6 +113,7 @@ void RWFloodAlgorithm::calculateWaterAccumulation(std::vector<runnel::Point*>& p
         points[point->ident]->water_value = 1;
         inboundDegree[point->ident] = 0;
         pointIsVisited[point->ident] = false;
+        point->water_parent.clear();
     }
 
     for (runnel::Point* point : points) {
@@ -130,6 +131,7 @@ void RWFloodAlgorithm::calculateWaterAccumulation(std::vector<runnel::Point*>& p
                 int nextPointId = getNextPointId(currentPoint);
                 int currentPointId = currentPoint->ident;
                 points[nextPointId]->water_value += points[currentPointId]->water_value;
+                points[nextPointId]->water_parent.push_back(points[currentPointId]);
                 if (points[nextPointId]->water_value > maxWaterCount) {
                     maxWaterCount = points[nextPointId]->water_value;
                 }

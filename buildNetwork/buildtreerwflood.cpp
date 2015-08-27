@@ -11,6 +11,13 @@ BuildTreeRWFlood::~BuildTreeRWFlood()
     if (shader) {
         delete shader;
     }
+
+    for (auto it1 = networkTrees.begin(); it1 != networkTrees.end(); std::advance(it1, 1)) {
+        for (auto it2 = (*it1)->hijos.begin(); it2 != (*it1)->hijos.end(); std::advance(it2, 1)) {
+            delete (*it2);
+        }
+        delete (*it1);
+    }
 }
 
 std::vector<arbol *> BuildTreeRWFlood::run(Terrain *ter)
@@ -18,7 +25,7 @@ std::vector<arbol *> BuildTreeRWFlood::run(Terrain *ter)
     this->ter = ter;
     networkTrees.clear();
 
-    // TODO: Compute networkTrees
+    buildNetworkTrees();
 
     int orderThreshold = 1; // TODO: Receive threshold as user input.
     std::vector<std::string> types;
@@ -70,3 +77,48 @@ std::vector<glm::vec3> BuildTreeRWFlood::getPathTree()
     return coordinatePath;
 }
 
+void BuildTreeRWFlood::buildNetworkTrees()
+{
+    std::map<int,bool> visitedPoints;
+
+    sortPoints(ter->struct_point);
+
+    for (runnel::Point* point : sortedPoints) {
+        if (visitedPoints[point->ident]) {
+            continue;
+        }
+
+        arbol* tree = new arbol(point);
+        visitedPoints[point->ident] = true;
+        buildTree(tree, visitedPoints);
+        networkTrees.push_back(tree);
+    }
+
+    for (arbol* tree : networkTrees) {
+        tree->computeNetworkStrahlerOrdering();
+    }
+}
+
+void BuildTreeRWFlood::buildTree(arbol *parent, std::map<int,bool>& visitedPoints)
+{
+    if (parent->pto->water_parent.size() > 0) {
+        for (runnel::Point* point : parent->pto->water_parent) {
+            if (!visitedPoints[point->ident]) {
+                visitedPoints[point->ident] = true;
+                arbol* tree = new arbol(point);
+                parent->hijos.push_back(tree);
+                buildTree(tree, visitedPoints);
+             }
+        }
+    }
+}
+
+void BuildTreeRWFlood::sortPoints(std::vector<runnel::Point *>& terrainPoints)
+{
+    sortedPoints = terrainPoints;
+
+    std::sort(sortedPoints.begin(), sortedPoints.end(),
+              [] (runnel::Point* p1, runnel::Point* p2) {
+                    return p1->water_value > p2->water_value;
+    });
+}
