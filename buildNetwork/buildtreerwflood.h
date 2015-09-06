@@ -7,6 +7,7 @@
 #include "painters/shaders/shaderpatron.h"
 #include "primitives/point.h"
 #include <UI/buildNetwork/rwfloodnetworkconf.h>
+#include <set>
 
 class BuildTreeRWFlood : public BuildNetwork
 {
@@ -31,7 +32,7 @@ private:
     std::vector<arbol*> networkTrees;
     std::vector<runnel::Point*> sortedPoints;
     void buildNetworkTrees();
-    void buildTree(arbol* parent, std::map<int, bool> &visitedPoints);
+    void buildTree(arbol* parent, std::map<int, bool> &visitedPoints, std::set<int> &endpointIds);
     void flagPointsUnderThreshold(std::map<int, bool> &visitedPoints);
     void sortPoints(std::vector<runnel::Point*>& terrainPoints);
 };

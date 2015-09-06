@@ -90,6 +90,8 @@ void BuildTreeRWFlood::changeWaterLevelThreshold()
 void BuildTreeRWFlood::buildNetworkTrees()
 {
     std::map<int,bool> visitedPoints;
+    std::set<int> endpointIds;
+    std::vector<arbol*> unmergedTrees;
 
     sortPoints(ter->struct_point);
     flagPointsUnderThreshold(visitedPoints);
@@ -101,16 +103,24 @@ void BuildTreeRWFlood::buildNetworkTrees()
 
         arbol* tree = new arbol(point);
         visitedPoints[point->ident] = true;
-        buildTree(tree, visitedPoints);
-        networkTrees.push_back(tree);
+        buildTree(tree, visitedPoints, endpointIds);
+        unmergedTrees.push_back(tree);
     }
+
+    for (arbol* tree : unmergedTrees) {
+        if (endpointIds.find(tree->pto->ident) != endpointIds.end()) {
+            // TODO: Merge 'tree' into the branch ending on that node.
+        }
+    }
+
+    // TODO: Insert all merged trees into 'networkTrees'.
 
     for (arbol* tree : networkTrees) {
         tree->computeNetworkStrahlerOrdering();
     }
 }
 
-void BuildTreeRWFlood::buildTree(arbol *parent, std::map<int,bool>& visitedPoints)
+void BuildTreeRWFlood::buildTree(arbol *parent, std::map<int,bool>& visitedPoints, std::set<int>& endpointIds)
 {
     if (parent->pto->water_parent.size() > 0) {
         for (runnel::Point* point : parent->pto->water_parent) {
@@ -118,9 +128,11 @@ void BuildTreeRWFlood::buildTree(arbol *parent, std::map<int,bool>& visitedPoint
                 visitedPoints[point->ident] = true;
                 arbol* tree = new arbol(point);
                 parent->hijos.push_back(tree);
-                buildTree(tree, visitedPoints);
+                buildTree(tree, visitedPoints, endpointIds);
             }
         }
+    } else {
+        endpointIds.insert(parent->pto->ident);
     }
 }
 
