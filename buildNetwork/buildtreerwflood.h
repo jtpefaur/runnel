@@ -32,7 +32,7 @@ private:
     std::vector<arbol*> networkTrees;
     std::vector<runnel::Point*> sortedPoints;
     void buildNetworkTrees();
-    void buildTree(arbol* parent, std::map<int, bool> &visitedPoints, std::set<int> &endpointIds);
+    void buildTree(arbol* parent, std::map<int, bool> &visitedPoints, std::set<int> &endpointIds, std::map<int, arbol *> &treesByEndpointId);
     void flagPointsUnderThreshold(std::map<int, bool> &visitedPoints);
     void sortPoints(std::vector<runnel::Point*>& terrainPoints);
 };

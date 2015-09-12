@@ -91,7 +91,8 @@ void BuildTreeRWFlood::buildNetworkTrees()
 {
     std::map<int,bool> visitedPoints;
     std::set<int> endpointIds;
-    std::vector<arbol*> unmergedTrees;
+    std::map<int,arbol*> treesByEndpointId;
+    std::vector<arbol*> trees;
 
     sortPoints(ter->struct_point);
     flagPointsUnderThreshold(visitedPoints);
@@ -103,24 +104,43 @@ void BuildTreeRWFlood::buildNetworkTrees()
 
         arbol* tree = new arbol(point);
         visitedPoints[point->ident] = true;
-        buildTree(tree, visitedPoints, endpointIds);
-        unmergedTrees.push_back(tree);
+        buildTree(tree, visitedPoints, endpointIds, treesByEndpointId);
+        trees.push_back(tree);
     }
 
-    for (arbol* tree : unmergedTrees) {
-        if (endpointIds.find(tree->pto->ident) != endpointIds.end()) {
-            // TODO: Merge 'tree' into the branch ending on that node.
+    std::vector<int> treesMarkedForDeletion;
+    for (auto iter = trees.begin(); iter != trees.end(); std::advance(iter, 1)) {
+        if (endpointIds.find((*iter)->pto->ident) != endpointIds.end()) {
+            // Merge 'tree' into the branch ending on that node.
+            // Mark current index of unmergedTrees for deletion.
+            treesByEndpointId[(*iter)->pto->ident]->hijos.push_back(*iter);
+            treesMarkedForDeletion.push_back(iter - trees.begin());
         }
     }
 
-    // TODO: Insert all merged trees into 'networkTrees'.
+    std::sort(treesMarkedForDeletion.begin(), treesMarkedForDeletion.end(),
+              [](int v1, int v2){
+                return v1 > v2;
+                });
+
+    for (int treeIndex : treesMarkedForDeletion) {
+        trees.erase(trees.begin() + treeIndex);
+    }
+
+    networkTrees = trees;
+
+    std::sort(networkTrees.begin(), networkTrees.end(),
+              [](arbol* t1, arbol* t2){
+                return t1->hijos.size() > t2->hijos.size();
+                });
 
     for (arbol* tree : networkTrees) {
         tree->computeNetworkStrahlerOrdering();
     }
+
 }
 
-void BuildTreeRWFlood::buildTree(arbol *parent, std::map<int,bool>& visitedPoints, std::set<int>& endpointIds)
+void BuildTreeRWFlood::buildTree(arbol *parent, std::map<int,bool>& visitedPoints, std::set<int>& endpointIds, std::map<int,arbol*>& treesByEndpointId)
 {
     if (parent->pto->water_parent.size() > 0) {
         for (runnel::Point* point : parent->pto->water_parent) {
@@ -128,11 +148,12 @@ void BuildTreeRWFlood::buildTree(arbol *parent, std::map<int,bool>& visitedPoint
                 visitedPoints[point->ident] = true;
                 arbol* tree = new arbol(point);
                 parent->hijos.push_back(tree);
-                buildTree(tree, visitedPoints, endpointIds);
+                buildTree(tree, visitedPoints, endpointIds, treesByEndpointId);
             }
         }
     } else {
         endpointIds.insert(parent->pto->ident);
+        treesByEndpointId[parent->pto->ident] = parent;
     }
 }
 
