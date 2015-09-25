@@ -4,6 +4,7 @@
 
 arbol::arbol(runnel::Point* p)
 {
+    size = -1;
     pto = p;
     number_strahler_horton = NO_NUMBER_STRAHLER_HORTON;
     colores.push_back(glm::vec3(0, 1, 43.0/255));
@@ -102,7 +103,21 @@ void arbol::getColorEdges(std::vector<glm::vec3> &color_edges, int orderThreshol
     }
 }
 
-void arbol::computeNetworkStrahlerOrdering(){
+int arbol::calculateSize()
+{
+    if (size < 0) {
+        size = 1;
+
+        for (arbol* child : hijos) {
+            size += child->calculateSize();
+        }
+    }
+
+    return size;
+}
+
+void arbol::computeNetworkStrahlerOrdering()
+{
     std::vector<runnel::Point*> edges;
     this->getArbolEdges(edges);
     EdgeList edgeList = makeEdgeList(edges);
