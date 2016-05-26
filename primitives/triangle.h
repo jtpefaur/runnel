@@ -11,7 +11,6 @@ namespace runnel {
     {
         public:
             Triangle(int id);
-            int ident;
             std::vector< runnel::Point*> points;
             std::vector< runnel::Edge*> edges;
             std::vector<int> position;
@@ -22,6 +21,7 @@ namespace runnel {
             glm::vec3 sides;
             glm::vec3 height;
             glm::vec3 gradient_vector;
+            int ident;
             void addPoint(runnel::Point* p);
             void addGroupPoints(runnel::Point* p1, runnel::Point* p2, runnel::Point* p3);
             void addEdge(runnel::Edge* e);

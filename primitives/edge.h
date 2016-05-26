@@ -10,15 +10,15 @@ class Triangle;
 class Edge
 {
     public:
-        Edge(runnel::Point* value1, runnel::Point* value2);
-        float angulo_diedro;
+        std::vector< runnel::Triangle*> neighbour_triangle;
+        glm::vec3 vector_sort;
+        glm::vec3 edge_vector;
         int id1;
         int id2;
-        glm::vec3 vector_sort;
-        void addTriangle(runnel::Triangle* t);
-        glm::vec3 edge_vector;
         int calculate_angulo_diendro;
-        std::vector< runnel::Triangle*> neighbour_triangle;
+        float angulo_diedro;
+        Edge(runnel::Point* value1, runnel::Point* value2);
+        void addTriangle(runnel::Triangle* t);
         void calculateAngleDiedro();
         glm::vec3 getEdgeVector(runnel::Triangle* t1);
 
