@@ -74,7 +74,8 @@ SOURCES += main.cpp\
     painters/shaders/shaderrwflood.cpp \
     UI/drainageAlgorithm/rwfloodconf.cpp \
     preprocessingAlgorithms/garbrechtmartz.cpp \
-    UI/preprocessingAlgorithm/garbrechtmartzconf.cpp
+    UI/preprocessingAlgorithm/garbrechtmartzconf.cpp \
+    drainageAlgorithms/openclutils.c
 
 HEADERS  += UI/mainwindow.h \
     runnelcontroller.h \
@@ -271,6 +272,7 @@ HEADERS  += UI/mainwindow.h \
     UI/toolbarsconfigmesh.h \
     UI/drainageAlgorithm/callaghanconf.h \
     drainageAlgorithms/diedralangledrainage.h \
+    drainageAlgorithms/openclutils.h \
     waterPathAlgorithms/pathwatercallaghanalgorithm.h \
     waterPathAlgorithms/pathwatergradientalgorithm.h \
     fluvialTerraceAlgorithms/fluvialterracealgorithm.h \
@@ -308,7 +310,7 @@ RESOURCES += \
 
 
 win32: LIBS += -lglew32
-unix: LIBS+= -lGLEW -lGLU -lGL
+unix: LIBS+= -lGLEW -lGLU -lGL -lOpenCL
 
 OTHER_FILES += \
     shaders/terrain.vert \
@@ -326,7 +328,8 @@ OTHER_FILES += \
     shaders/arbol_drenaje.vert \
     shaders/arbol_drenaje.frag \
     shaders/terrace.vert \
-    shaders/terrace.frag
+    shaders/terrace.frag \
+    drainageAlgorithms/kernels/peucker.cl
 
 DISTFILES += \
     resources/rwflood.vert
