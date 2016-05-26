@@ -30,7 +30,11 @@ PeuckerDrainageNetwork::~PeuckerDrainageNetwork(){
 
 void PeuckerDrainageNetwork::run(Terrain *ter){
     terr = ter;
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     this->calculateGrid(ter);
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>( t2 - t1 ).count();
+    cout << "Elapsed time on peucker: " <<  duration/1000 << " miliseg" << endl;
     points_edge.clear();
     std::vector<glm::vec3> color = this->getDrainageColor();
     shader->fillPositionBuffer(points_edge, color);
