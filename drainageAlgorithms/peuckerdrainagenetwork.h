@@ -20,6 +20,8 @@ class PeuckerDrainageNetwork : public DrainageAlgorithms
 
     private:
        static void calculateGrid(Terrain *ter);
+       static void calculateGridParallelProfiler(Terrain *ter);
+       static void calculateGridParallel(Terrain *ter);
        std::vector<glm::vec3> getDrainageColor();
        std::vector<glm::vec3> points_edge;
        PeuckerConf conf;
