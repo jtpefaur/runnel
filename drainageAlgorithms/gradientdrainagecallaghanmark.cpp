@@ -2,6 +2,18 @@
 #include <iostream>
 #include <algorithm>
 #include "primitives/point.h"
+#include "CL/cl.h"
+#include <chrono>
+#include <iostream>
+
+using namespace std;
+using namespace std::chrono;
+
+extern "C"
+{
+    #include "openclutils.h"
+}
+
 struct customLess{
     inline bool operator()(runnel::Point* p1, runnel::Point* p2){
         return p1->coord.z > p2->coord.z;
