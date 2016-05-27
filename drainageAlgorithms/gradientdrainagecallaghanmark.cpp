@@ -274,7 +274,7 @@ void GradientDrainageCallaghanMark::chooseMoreDepthPoint(std::vector<runnel::Poi
     int id_max = -1;
     for (int id : position_neightbour){
         if(id >= 0 && id < points.size()){
-            if( points[id]->coord.z <= (pto->coord.z +delta_water)){
+            if( points[id]->coord.z < (pto->coord.z +delta_water)){
                 float dist_z = pto->coord.z - points[id]->coord.z;
                 if( max_z < dist_z){
                     max_z = dist_z;
