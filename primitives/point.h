@@ -9,7 +9,7 @@ namespace runnel {
     {
         public:
 
-            static const int PEUCKER = 0;
+            static const int PEUCKER = 1;
 
             std::vector<runnel::Point*> water_parent;
             glm::vec3 coord;
@@ -17,9 +17,6 @@ namespace runnel {
             int water_value;
             char flags; //0 representa el calculo del algoritmo de grilla 2x2 peucker and douglas
             Point(glm::vec3 p, int i);
-            void setFlagsOn(int position);
-            bool isFlagsOn(int position);
-            void setFlagsOff(int position);
 
 
     };
