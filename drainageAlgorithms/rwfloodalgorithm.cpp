@@ -276,23 +276,62 @@ void RWFloodAlgorithm::setDirectionTowardsAdjacentPoint(std::vector<runnel::Poin
     int width = ter->width;
 
     if (diff == -width - 1) {
-        points[sourceId]->setFlagsOn(TOP_LEFT);
+        points[sourceId]->flags = TOP_LEFT;
     } else if (diff == -width) {
-        points[sourceId]->setFlagsOn(TOP);
+        points[sourceId]->flags = TOP;
     } else if (diff == -width + 1) {
-        points[sourceId]->setFlagsOn(TOP_RIGHT);
+        points[sourceId]->flags = TOP_RIGHT;
     } else if (diff == -1) {
-        points[sourceId]->setFlagsOn(LEFT);
+        points[sourceId]->flags = LEFT;
     } else if (diff == 1) {
-        points[sourceId]->setFlagsOn(RIGHT);
+        points[sourceId]->flags = RIGHT;
     } else if (diff == width -1) {
-        points[sourceId]->setFlagsOn(BOTTOM_LEFT);
+        points[sourceId]->flags = BOTTOM_LEFT;
     } else if (diff == width) {
-        points[sourceId]->setFlagsOn(BOTTOM);
+        points[sourceId]->flags = BOTTOM;
     } else if (diff == width + 1) {
-        points[sourceId]->setFlagsOn(BOTTOM_RIGHT);
+        points[sourceId]->flags = BOTTOM_RIGHT;
     }
 }
+
+
+bool RWFloodAlgorithm::isDirectedOutsideTerrainBoundary(int id, char flag)
+{
+    // Pre-condition: point->flags != 0 (a direction must be set.)
+    int height = ter->height;
+    int width = ter->width;
+
+    if (id < width &&
+        (flag == TOP ||
+         flag == TOP_LEFT ||
+         flag == TOP_RIGHT)) {
+        return true;
+    }
+
+    if (id%width == 0 &&
+        (flag == LEFT ||
+         flag == TOP_LEFT ||
+         flag == BOTTOM_LEFT)) {
+        return true;
+    }
+
+    if (id%width == width-1 &&
+        (flag == RIGHT ||
+         flag == TOP_RIGHT ||
+         flag == BOTTOM_RIGHT)) {
+        return true;
+    }
+
+    if (id >= width*(height - 1) &&
+        (flag == BOTTOM ||
+         flag == BOTTOM_LEFT ||
+         flag == BOTTOM_RIGHT)) {
+        return true;
+    }
+
+    return false;
+}
+
 
 bool RWFloodAlgorithm::isDirectedOutsideTerrainBoundary(runnel::Point* point)
 {
@@ -338,14 +377,32 @@ int RWFloodAlgorithm::getNextPointId(runnel::Point* point)
     int id = point->ident;
     int width = ter->width;
 
-    if (point->isFlagsOn(TOP_LEFT)) return (id - width - 1);
-    if (point->isFlagsOn(TOP)) return (id - width);
-    if (point->isFlagsOn(TOP_RIGHT)) return (id - width + 1);
-    if (point->isFlagsOn(LEFT)) return (id - 1);
-    if (point->isFlagsOn(RIGHT)) return (id + 1);
-    if (point->isFlagsOn(BOTTOM_LEFT)) return (id + width - 1);
-    if (point->isFlagsOn(BOTTOM)) return (id + width);
-    if (point->isFlagsOn(BOTTOM_RIGHT)) return (id + width + 1);
+    if (point->flags == TOP_LEFT) return (id - width - 1);
+    if (point->flags == TOP) return (id - width);
+    if (point->flags == TOP_RIGHT) return (id - width + 1);
+    if (point->flags == LEFT) return (id - 1);
+    if (point->flags == RIGHT) return (id + 1);
+    if (point->flags == BOTTOM_LEFT) return (id + width - 1);
+    if (point->flags == BOTTOM) return (id + width);
+    if (point->flags == BOTTOM_RIGHT) return (id + width + 1);
+
+    return -1;
+}
+
+
+int RWFloodAlgorithm::getNextPointId(int id, char flag)
+{
+    // Pre-condition: !isDirectedOutsideTerrainBoundary(point) == true
+    int width = ter->width;
+
+    if (flag == TOP_LEFT) return (id - width - 1);
+    if (flag == TOP) return (id - width);
+    if (flag == TOP_RIGHT) return (id - width + 1);
+    if (flag == LEFT) return (id - 1);
+    if (flag == RIGHT) return (id + 1);
+    if (flag == BOTTOM_LEFT) return (id + width - 1);
+    if (flag == BOTTOM) return (id + width);
+    if (flag == BOTTOM_RIGHT) return (id + width + 1);
 
     return -1;
 }
