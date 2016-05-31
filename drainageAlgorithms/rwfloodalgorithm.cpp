@@ -47,6 +47,262 @@ void RWFloodAlgorithm::run(Terrain *ter)
     this->shader->fillBuffers(this->drainagePoints, this->drainageColors);
 }
 
+void RWFloodAlgorithm::runParallel(Terrain *ter)
+{
+    this->ter = ter;
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+    cl_int error = CL_SUCCESS;
+
+    cl_uint platformIdCount = 0;
+    error = clGetPlatformIDs(0, NULL, &platformIdCount);
+    checkError(error, "Finding amount of platforms");
+
+    //TODO: Be able to choose among all platforms, only fail if there is no platform
+    if(platformIdCount != 1) {
+        printf("Found %d platforms (only one platform was expected)\n", platformIdCount);
+        exit(EXIT_FAILURE);
+    }
+    cl_platform_id platformIds[platformIdCount];
+    error = clGetPlatformIDs (platformIdCount, platformIds, NULL);
+    checkError(error, "Getting platforms");
+
+    cl_uint deviceIdCount = 0;
+    //TODO: Should select all devices
+    error = clGetDeviceIDs (platformIds[0], CL_DEVICE_TYPE_CPU, 0, NULL, &deviceIdCount);
+    checkError(error, "Finding devices");
+    //TODO: Be able to choose among all devices, only fail if there is no platform
+    if(deviceIdCount != 1) {
+        printf("Found %d devices (only one device was expected)\n", deviceIdCount);
+        exit(EXIT_FAILURE);
+    }
+    cl_device_id deviceIds[deviceIdCount];
+    //TODO: Should use all devices
+    error = clGetDeviceIDs (platformIds [0], CL_DEVICE_TYPE_CPU, deviceIdCount, deviceIds, NULL);
+    checkError(error, "Getting devices");
+
+    //TODO: Should use the selected devices, not the first one on the array
+    cl_context context = clCreateContext(NULL, 1, deviceIds, NULL, NULL, &error);
+    checkError(error, "Creating context");
+
+    cl_command_queue commandQueue = clCreateCommandQueue(context, deviceIds[0], 0, &error);
+    checkError(error, "Creating command queue");
+
+    const char* kernelSource = loadKernel("rwflood.cl");
+    cl_program rwFloodProgram = clCreateProgramWithSource(context, 1, &kernelSource, NULL, &error);
+    checkError(error, "Creating program");
+    free((char*)kernelSource);
+
+    error = clBuildProgram(rwFloodProgram, 0, NULL,
+                           "-D TOP=1 -D TOP_LEFT=2 -D TOP_RIGHT=3 -D BOTTOM=4 -D BOTTOM_LEFT=5 -D BOTTOM_RIGHT=6 -D RIGHT=7 -D LEFT=8", NULL, NULL);
+    checkError(error, "Building program\n");
+
+    const int maxElev = (int)(ter->max_bounding.z);
+    const int minElev = (int)(ter->min_bounding.z);
+    int width = ter->width;
+    int height = ter->height;
+
+    int queueArrayMemorySize = width*height*sizeof(float);
+    int flagsMemorySize = width*height*sizeof(char);
+    int pointIsVisitedMemorySize = width*height*sizeof(char);
+    int coordszMemorySize = width*height*sizeof(float);
+    int inboundDegreeMemorySize = width*height*sizeof(int);
+    int waterValueMemorySize = width*height*sizeof(int);
+
+    //TODO: Should try to change this, too much memory alloction
+    float* queueArray = (float*)malloc(queueArrayMemorySize);
+    char* flags = (char*)malloc(flagsMemorySize);
+    char* pointIsVisited = (char*)malloc(pointIsVisitedMemorySize);
+    float* coordsz = (float*)malloc(coordszMemorySize);
+    int* inboundDegree = (int*)malloc(inboundDegreeMemorySize);
+    int* waterValues = (int*)malloc(waterValueMemorySize);
+
+    std::vector<runnel::Point*>& points = ter->struct_point;
+    for(int i = 0; i < width*height; i++){
+        coordsz[i] = points[i]->coord.z;
+        queueArray[i] = -1.0;
+    }
+
+    for (int i = 0; i < width; i++) {
+
+        queueArray[i] = coordsz[i];
+        queueArray[width*(height-1) + i ] = coordsz[width*(height-1) + i];
+    }
+
+    for(int i = 0; i < height; i++) {
+        queueArray[i*width] = coordsz[i*width];
+        queueArray[width*(1+i)-1] = coordsz[width*(1+i)-1];
+    }
+
+    cl_mem d_coordsz = clCreateBuffer(context, CL_MEM_READ_ONLY, coordszMemorySize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_currentHeight = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int), NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_shouldRepeat = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(char), NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_queueArray = clCreateBuffer(context, CL_MEM_READ_WRITE, queueArrayMemorySize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_width = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int), NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_height = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int), NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_flags = clCreateBuffer(context, CL_MEM_READ_WRITE, flagsMemorySize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_inboundDegree= clCreateBuffer(context, CL_MEM_READ_WRITE, inboundDegreeMemorySize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_waterValues = clCreateBuffer(context, CL_MEM_READ_WRITE, waterValueMemorySize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_pointIsVisited = clCreateBuffer(context, CL_MEM_READ_WRITE, pointIsVisitedMemorySize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+
+    error = clEnqueueWriteBuffer(commandQueue, d_coordsz, CL_TRUE, 0, coordszMemorySize, coordsz, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+    error = clEnqueueWriteBuffer(commandQueue, d_queueArray, CL_TRUE, 0, queueArrayMemorySize, queueArray, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+    error = clEnqueueWriteBuffer(commandQueue, d_width, CL_TRUE, 0, sizeof(int), &width, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+    error = clEnqueueWriteBuffer(commandQueue, d_height, CL_TRUE, 0, sizeof(int), &height, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+
+    cl_kernel initializePointsKernel = clCreateKernel(rwFloodProgram, "initializePoints", &error);
+    checkError(error, "Creating initializePoints kernel");
+    error = clSetKernelArg(initializePointsKernel, 0, sizeof(cl_mem), (void*)&d_flags);
+    checkError(error, "Setting the first argument of the initializePoints Kernel");
+    error = clSetKernelArg(initializePointsKernel, 1, sizeof(cl_mem), (void*)&d_width);
+    checkError(error, "Setting the second argument of the initializePoints Kernel");
+    error = clSetKernelArg(initializePointsKernel, 2, sizeof(cl_mem), (void*)&d_height);
+    checkError(error, "Setting the third argument of the initializePoints Kernel");
+    error = clSetKernelArg(initializePointsKernel, 3, sizeof(cl_mem), (void*)&d_pointIsVisited);
+    checkError(error, "Setting the fourth argument of the initializePoints Kernel");
+    error = clSetKernelArg(initializePointsKernel, 4, sizeof(cl_mem), (void*)&d_inboundDegree);
+    checkError(error, "Setting the fourth argument of the initializePoints Kernel");
+    error = clSetKernelArg(initializePointsKernel, 5, sizeof(cl_mem), (void*)&d_waterValues);
+    checkError(error, "Setting the fourth argument of the initializePoints Kernel");
+
+    size_t localWorkSizeX;
+    clGetKernelWorkGroupInfo(initializePointsKernel, deviceIds[0], CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE, sizeof(size_t), &localWorkSizeX, NULL);
+    int globalWorkSizeX = height*width;
+    globalWorkSizeX = globalWorkSizeX - (globalWorkSizeX%localWorkSizeX) + localWorkSizeX;
+    const size_t globalWorkSize [] = { globalWorkSizeX, 0, 0 };
+    const size_t localWorkSize [] = { localWorkSizeX, 0, 0 };
+
+    error = clEnqueueNDRangeKernel(commandQueue, initializePointsKernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL,  NULL);
+    checkError(error, "Running initializePointsKernel");
+
+    cl_kernel iterateQueuesKernel = clCreateKernel(rwFloodProgram, "iterateQueues", &error);
+    checkError(error, "Creating iterateQueues kernel");
+
+    for (int  z = minElev; z <= maxElev; ++z)
+    {
+        error = clEnqueueWriteBuffer(commandQueue, d_currentHeight, CL_TRUE, 0, sizeof(int), &z, 0, 0, NULL);
+        checkError(error, "Writing from cpu to device\n");
+
+        char shouldRepeat = 1;
+        while(shouldRepeat == 1) {
+            shouldRepeat = 0;
+            error = clEnqueueWriteBuffer(commandQueue, d_shouldRepeat, CL_TRUE, 0, sizeof(char), &shouldRepeat, 0, 0, NULL);
+            checkError(error, "Writing from cpu to device\n");
+
+            error = clSetKernelArg(iterateQueuesKernel, 0, sizeof(cl_mem), (void*)&d_flags);
+            checkError(error, "Setting the first argument of the iterateQueues Kernel");
+            error = clSetKernelArg(iterateQueuesKernel, 1, sizeof(cl_mem), (void*)&d_coordsz);
+            checkError(error, "Setting the second argument of the iterateQueues Kernel");
+            error = clSetKernelArg(iterateQueuesKernel, 2, sizeof(cl_mem), (void*)&d_width);
+            checkError(error, "Setting the third argument of the iterateQueues Kernel");
+            error = clSetKernelArg(iterateQueuesKernel, 3, sizeof(cl_mem), (void*)&d_height);
+            checkError(error, "Setting the fourth argument of the iterateQueues Kernel");
+            error = clSetKernelArg(iterateQueuesKernel, 4, sizeof(cl_mem), (void*)&d_queueArray);
+            checkError(error, "Setting the fifth argument of the iterateQueues Kernel");
+            error = clSetKernelArg(iterateQueuesKernel, 5, sizeof(cl_mem), (void*)&d_currentHeight);
+            checkError(error, "Setting the sixth argument of the iterateQueues Kernel");
+            error = clSetKernelArg(iterateQueuesKernel, 6, sizeof(cl_mem), (void*)&d_shouldRepeat);
+            checkError(error, "Setting the seventh argument of the iterateQueues Kernel");
+
+            error = clEnqueueNDRangeKernel(commandQueue, iterateQueuesKernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL,  NULL);
+            checkError(error, "Running initializePointsKernel");
+
+            clEnqueueReadBuffer(commandQueue, d_shouldRepeat, CL_TRUE, 0, sizeof(char), &shouldRepeat, 0, NULL, NULL);
+        }
+    }
+
+    clReleaseMemObject(d_shouldRepeat);
+    clReleaseMemObject(d_currentHeight);
+    clReleaseMemObject(d_queueArray);
+
+    int maxWaterCount = 1;
+
+    cl_kernel setInboundDegreeKernel = clCreateKernel(rwFloodProgram, "setInboundDegree", &error);
+    checkError(error, "Creating setInboundDegree kernel");
+    error = clSetKernelArg(setInboundDegreeKernel, 0, sizeof(cl_mem), (void*)&d_flags);
+    checkError(error, "Setting the first argument of the initializePoints Kernel");
+    error = clSetKernelArg(setInboundDegreeKernel, 1, sizeof(cl_mem), (void*)&d_width);
+    checkError(error, "Setting the second argument of the initializePoints Kernel");
+    error = clSetKernelArg(setInboundDegreeKernel, 2, sizeof(cl_mem), (void*)&d_height);
+    checkError(error, "Setting the third argument of the initializePoints Kernel");
+    error = clSetKernelArg(setInboundDegreeKernel, 3, sizeof(cl_mem), (void*)&d_inboundDegree);
+    checkError(error, "Setting the fourth argument of the initializePoints Kernel");
+
+    error = clEnqueueNDRangeKernel(commandQueue, setInboundDegreeKernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
+    checkError(error, "Running setInboundDegreeKernel");
+
+    error = clEnqueueReadBuffer(commandQueue, d_inboundDegree, CL_TRUE, 0, inboundDegreeMemorySize, inboundDegree, 0, NULL, NULL);
+    checkError(error, "Reading inboundDegree from device");
+    error = clEnqueueReadBuffer(commandQueue, d_pointIsVisited, CL_TRUE, 0, pointIsVisitedMemorySize, pointIsVisited, 0, NULL, NULL);
+    checkError(error, "Reading pointIsVisited from device");
+    error = clEnqueueReadBuffer(commandQueue, d_waterValues, CL_TRUE, 0, waterValueMemorySize, waterValues, 0, NULL, NULL);
+    checkError(error, "Reading waterValues from device");
+    error = clEnqueueReadBuffer(commandQueue, d_flags, CL_TRUE, 0, flagsMemorySize, flags, 0, NULL, NULL);
+    checkError(error, "Reading flags from device");
+
+    clReleaseMemObject(d_coordsz);
+    clReleaseMemObject(d_width);
+    clReleaseMemObject(d_height);
+    clReleaseMemObject(d_flags);
+    clReleaseMemObject(d_inboundDegree);
+    clReleaseMemObject(d_waterValues);
+    clReleaseMemObject(d_pointIsVisited);
+
+    for (int id = 0; id < width*height; ++id)
+    {
+        if (!pointIsVisited[id]) {
+            int currentId = id;
+            while (inboundDegree[currentId] == 0) {
+                pointIsVisited[currentId] = 1;
+                if (isDirectedOutsideTerrainBoundary(currentId, flags[currentId])) break;
+                int nextPointId = getNextPointId(currentId, flags[currentId]);
+                waterValues[nextPointId] += waterValues[currentId];
+                if (waterValues[nextPointId] > maxWaterCount) {
+                    maxWaterCount = waterValues[nextPointId];
+                }
+                inboundDegree[nextPointId]--;
+                currentId = nextPointId;
+            }
+        }
+    }
+
+    this->maxWaterCount = maxWaterCount;
+
+    for(int i = 0; i < width*height; i++){
+        points[i]->water_value = waterValues[i];
+    }
+
+    free(inboundDegree);
+    free(pointIsVisited);
+    free(queueArray);
+    free(flags);
+    free(waterValues);
+
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>( t2 - t1 ).count();
+    cout << "Elapsed time on rwflood: " <<  duration/1000 << " miliseg" << endl;
+
+    drainageColors.clear();
+    drainagePoints.clear();
+    this->getDrainagePoints();
+    this->shader->fillBuffers(this->drainagePoints, this->drainageColors);
+
+    }
+
 void RWFloodAlgorithm::glewReady()
 {
     this->shader = new ShaderRWFlood();
