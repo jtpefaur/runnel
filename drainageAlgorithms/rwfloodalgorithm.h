@@ -29,14 +29,14 @@ private:
     std::vector<glm::vec3> drainagePoints;
     std::vector<glm::vec3> drainageColors;
     enum Direction {
-        TOP_LEFT,
-        TOP,
-        TOP_RIGHT,
-        LEFT,
-        RIGHT,
-        BOTTOM_LEFT,
-        BOTTOM,
-        BOTTOM_RIGHT
+        TOP = 1,
+        TOP_LEFT = 2,
+        TOP_RIGHT = 3,
+        BOTTOM = 4,
+        BOTTOM_LEFT = 5,
+        BOTTOM_RIGHT = 6,
+        RIGHT = 7,
+        LEFT = 8
     };
 
     void flood(std::vector<runnel::Point*>&);
