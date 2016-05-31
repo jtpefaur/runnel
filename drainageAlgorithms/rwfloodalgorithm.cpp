@@ -184,22 +184,22 @@ bool RWFloodAlgorithm::initializeDirection(std::vector<runnel::Point*>& points,
     int height = ter->height;
     if (id == 0) {
         /*Top-left corner of raster*/
-        points[id]->setFlagsOn(TOP_LEFT);
+        points[id]->flags = TOP_LEFT;
     } else if (id < width - 1) {
-        points[id]->setFlagsOn(TOP);
+        points[id]->flags = TOP;
     } else if (id == width - 1) {
-        points[id]->setFlagsOn(TOP_RIGHT);
+        points[id]->flags = TOP_RIGHT;
     } else if (id == width*(height - 1)) {
-        points[id]->setFlagsOn(BOTTOM_LEFT);
+        points[id]->flags = BOTTOM_LEFT;
     } else if (id > width*(height - 1) &&
                id < width*height - 1) {
-        points[id]->setFlagsOn(BOTTOM);
+        points[id]->flags = BOTTOM;
     } else if (id == width*height - 1) {
-        points[id]->setFlagsOn(BOTTOM_RIGHT);
+        points[id]->flags = BOTTOM_RIGHT;
     } else if (id%width == 0) {
-        points[id]->setFlagsOn(LEFT);
+        points[id]->flags = LEFT;
     } else if (id%width == width - 1) {
-        points[id]->setFlagsOn(RIGHT);
+        points[id]->flags = RIGHT;
     } else {
         /*Not a boundary point; set a null direction and return*/
         points[id]->flags = 0;
@@ -302,30 +302,30 @@ bool RWFloodAlgorithm::isDirectedOutsideTerrainBoundary(runnel::Point* point)
     int width = ter->width;
 
     if (id < width &&
-        (point->isFlagsOn(TOP) ||
-         point->isFlagsOn(TOP_LEFT) ||
-         point->isFlagsOn(TOP_RIGHT))) {
+        (point->flags == TOP ||
+         point->flags == TOP_LEFT ||
+         point->flags == TOP_RIGHT )) {
         return true;
     }
 
     if (id%width == 0 &&
-        (point->isFlagsOn(LEFT) ||
-         point->isFlagsOn(TOP_LEFT) ||
-         point->isFlagsOn(BOTTOM_LEFT))) {
+        (point->flags == LEFT ||
+         point->flags == TOP_LEFT ||
+         point->flags == BOTTOM_LEFT)) {
         return true;
     }
 
     if (id%width == width-1 &&
-        (point->isFlagsOn(RIGHT) ||
-         point->isFlagsOn(TOP_RIGHT) ||
-         point->isFlagsOn(BOTTOM_RIGHT))) {
+        (point->flags == RIGHT ||
+         point->flags == TOP_RIGHT ||
+         point->flags == BOTTOM_RIGHT)) {
         return true;
     }
 
     if (id >= width*(height - 1) &&
-        (point->isFlagsOn(BOTTOM) ||
-         point->isFlagsOn(BOTTOM_LEFT) ||
-         point->isFlagsOn(BOTTOM_RIGHT))){
+        (point->flags == BOTTOM ||
+         point->flags == BOTTOM_LEFT ||
+         point->flags == BOTTOM_RIGHT)){
         return true;
     }
 
