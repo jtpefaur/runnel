@@ -330,7 +330,8 @@ OTHER_FILES += \
     shaders/terrace.vert \
     shaders/terrace.frag \
     drainageAlgorithms/kernels/peucker.cl \
-    drainageAlgorithms/kernels/callaghan.cl
+    drainageAlgorithms/kernels/callaghan.cl \
+    drainageAlgorithms/kernels/rwflood.cl
 
 DISTFILES += \
     resources/rwflood.vert
