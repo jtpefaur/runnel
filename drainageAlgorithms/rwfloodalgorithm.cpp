@@ -33,8 +33,14 @@ RWFloodAlgorithm::~RWFloodAlgorithm()
 void RWFloodAlgorithm::run(Terrain *ter)
 {
     this->ter = ter;
+
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     this->flood(this->ter->struct_point);
     this->calculateWaterAccumulation(this->ter->struct_point);
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>( t2 - t1 ).count();
+    cout << "Elapsed time on rwflood: " <<  duration/1000 << " miliseg" << endl;
+
     drainageColors.clear();
     drainagePoints.clear();
     this->getDrainagePoints();
@@ -107,6 +113,7 @@ void RWFloodAlgorithm::flood(std::vector<runnel::Point*>& points)
             }
         }
     }
+
 
     // Restore modified z-coordinate values to their original values.
     for (auto &entry : zValueStore) {
