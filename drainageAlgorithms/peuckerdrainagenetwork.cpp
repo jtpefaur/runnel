@@ -384,7 +384,7 @@ void PeuckerDrainageNetwork::calculateGrid(Terrain *ter){
 
         for(runnel::Point* pto: points){
             if(pto->coord.z == max_point->coord.z){
-                pto->setFlagsOn(runnel::Point::PEUCKER);
+                pto->flags = runnel::Point::PEUCKER;
             }
         }
     }
@@ -401,8 +401,8 @@ std::vector<glm::vec3> PeuckerDrainageNetwork::getDrainageColor(){
 
         runnel::Point* p1 = terr->struct_point[ed->id1];
         runnel::Point* p2 = terr->struct_point[ed->id2];
-        float color_p1 = (p1->isFlagsOn(p1->PEUCKER))? 1.0f : 0.0f;
-        float color_p2 = (p2->isFlagsOn(p2->PEUCKER))? 1.0f : 0.0f;
+        float color_p1 = (p1->flags == (p1->PEUCKER))? 1.0f : 0.0f;
+        float color_p2 = (p2->flags == (p2->PEUCKER))? 1.0f : 0.0f;
         if((color_p1==0.0f && color_p2==0.0f) ){
             color.push_back(glm::vec3(0.0f,0.0f,1.0f));
             color.push_back(glm::vec3(0.0f,0.0f,1.0f));

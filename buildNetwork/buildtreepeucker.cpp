@@ -105,7 +105,7 @@ void BuildTreePeucker::createTree(arbol* ar) {
 
         runnel::Point* p = t->struct_point[position];
 
-        if (!p->isFlagsOn(p->PEUCKER)) {
+        if (!p->flags == (p->PEUCKER)) {
             if (point_counter_peucker[p->ident] == 0) {
                 arbol *child = new arbol(p);
                 ar->hijos.push_back(child);
@@ -125,7 +125,7 @@ void BuildTreePeucker::reviewPoints() {
         if (point_counter_peucker[pto->ident] == 1) { //ya fue utilizado
             continue;
         } else {
-            if (!pto->isFlagsOn(pto->PEUCKER)) {
+            if (!pto->flags == (pto->PEUCKER)) {
                 arbol* pa = new arbol(pto);
                 point_counter_peucker[pto->ident] = 1;
                 this->createTree(pa);
@@ -173,7 +173,7 @@ void BuildTreePeucker::calculateGrid(Terrain *ter) {
 
         for (runnel::Point* pto: points) {
             if (pto->coord.z == max_point->coord.z) {
-                max_point->setFlagsOn(runnel::Point::PEUCKER);
+                max_point->flags =runnel::Point::PEUCKER;
             }
         }
     }
