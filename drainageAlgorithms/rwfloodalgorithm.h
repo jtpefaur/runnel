@@ -13,6 +13,7 @@ public:
     RWFloodAlgorithm();
     ~RWFloodAlgorithm();
     virtual void run(Terrain *ter);
+    virtual void runParallel(Terrain *ter);
     virtual void glewReady();
     virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color);
     virtual QString getName();
@@ -48,7 +49,9 @@ private:
                                           runnel::Point*,
                                           runnel::Point*);
     bool isDirectedOutsideTerrainBoundary(runnel::Point*);
+    bool isDirectedOutsideTerrainBoundary(int, char);
     int getNextPointId(runnel::Point*);
+    int getNextPointId(int, char);
 
 public slots:
     void changeAttr();
