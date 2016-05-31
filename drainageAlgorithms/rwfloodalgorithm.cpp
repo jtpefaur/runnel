@@ -1,5 +1,16 @@
 #include "rwfloodalgorithm.h"
 #include <queue>
+#include "CL/cl.h"
+#include <chrono>
+#include <iostream>
+
+using namespace std;
+using namespace std::chrono;
+
+extern "C"
+{
+    #include "openclutils.h"
+}
 
 RWFloodAlgorithm::RWFloodAlgorithm():
     DrainageAlgorithms()
