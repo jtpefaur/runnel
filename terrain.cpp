@@ -123,7 +123,7 @@ void Terrain::calculateNeightbour(){
 
 }
 
-std::vector<glm::vec3> Terrain::calculateNeightbourByEdges(){
+std::vector<glm::vec3> Terrain::calculateNeighbourByEdges(){
     std::vector<glm::vec3> angles;
     for(runnel::Triangle* t : struct_triangle){
         glm::vec3 value;
@@ -160,7 +160,7 @@ std::vector<glm::vec3> Terrain::calculateNeightbourByEdges(){
 
 }
 
-std::vector<glm::vec3> Terrain::calculateHeigtArray(){
+std::vector<glm::vec3> Terrain::calculateHeightArray(){
     std::vector<glm::vec3> heig;
     for(runnel::Triangle* t : struct_triangle){
         t->calculateHeight();

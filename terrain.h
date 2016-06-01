@@ -49,8 +49,8 @@ class Terrain
         std::vector<runnel::Point*> getPoints();
         std::vector<glm::vec3> getVectorPoints();
         std::vector<glm::vec3> getVectorNormals();
-        std::vector<glm::vec3> calculateNeightbourByEdges();
-        std::vector<glm::vec3> calculateHeigtArray();
+        std::vector<glm::vec3> calculateNeighbourByEdges();
+        std::vector<glm::vec3> calculateHeightArray();
         std::vector<glm::vec3> getDrainageColor();
         std::vector<glm::vec3> getPointsEdgeDrainage();
         std::vector<glm::vec3> getGradientDirectionVector();
