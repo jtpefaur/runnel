@@ -27,7 +27,6 @@ void runnel::Edge::calculateAngleDiedro(){
         if(sameDirection)
             angulo_diedro = -angulo_diedro;
     }
-    calculate_angulo_diendro = 1;
 
     //std::cout << "angulo diedro " << angulo_diedro << std::endl;
 }

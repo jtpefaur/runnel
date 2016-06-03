@@ -123,9 +123,8 @@ std::vector<glm::vec3> Terrain::calculateNeighbourByEdges(){
     for(runnel::Triangle* t : struct_triangle){
         glm::vec3 value;
         for (runnel::Edge* e : t->edges){
-            if(e->calculate_angulo_diendro == 0){
-                e->calculateAngleDiedro();
-            }
+
+            e->calculateAngleDiedro();
             if(t->points[0]->ident == e->id1 && t->points[1]->ident == e->id2 ){
                 value.x = e->angulo_diedro;
             }
