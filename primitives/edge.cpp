@@ -6,8 +6,7 @@
 
 runnel::Edge::Edge(runnel::Point* value1, runnel::Point* value2)
 {
-    edge_vector = value2->coord - value1->coord;
-    calculate_angulo_diendro = 0;
+    edge_vector = value1->coord - value2->coord ;
     id1 = value1->ident;
     id2 = value2->ident;
 }
@@ -23,9 +22,8 @@ void runnel::Edge::calculateAngleDiedro(){
         runnel::Triangle *t2 = neighbour_triangle[1];
         //std::cout << "Producto punto normales : " << glm::dot(t1->normal, t2->normal)<<" "<<std::hex << glm::dot(t1->normal, t2->normal)<<std::dec<<std::endl;
         angulo_diedro = glm::acos(glm::dot(t1->normal, t2->normal))*180.0 / PI;
-        glm::vec3 edge = getEdgeVector(t1);
         glm::vec3 crossProduct = glm::cross(t1->normal, t2->normal);
-        bool sameDirection = glm::dot(crossProduct, edge) >= 0;
+        bool sameDirection = glm::dot(crossProduct, edge_vector) >= 0;
         if(sameDirection)
             angulo_diedro = -angulo_diedro;
     }
