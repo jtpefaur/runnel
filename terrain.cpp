@@ -103,13 +103,9 @@ void Terrain::calculateNeightbour(){
     mayor_mayor = -1*std::numeric_limits<float>::max();
 
     for( runnel::Triangle* tri: struct_triangle){
-        std::vector<float> lala;
         float a = Terrain::minumum(neigh[tri->points[0]->ident], tri);
         float b = Terrain::minumum(neigh[tri->points[1]->ident], tri);
         float c = Terrain::minumum(neigh[tri->points[2]->ident], tri);
-        lala.push_back(a);
-        lala.push_back(b);
-        lala.push_back(c);
 
         menor_menor = std::min(a, menor_menor);
         menor_menor = std::min(b, menor_menor);
@@ -117,7 +113,6 @@ void Terrain::calculateNeightbour(){
         mayor_mayor = std::max(a, mayor_mayor);
         mayor_mayor = std::max(b, mayor_mayor);
         mayor_mayor = std::max(c, mayor_mayor);
-        tri->minimun_value_angle_point = lala;
     }
     std::cout << "mayor "<< mayor_mayor << "menor " << menor_menor << std::endl;
 
@@ -163,10 +158,10 @@ std::vector<glm::vec3> Terrain::calculateNeighbourByEdges(){
 std::vector<glm::vec3> Terrain::calculateHeightArray(){
     std::vector<glm::vec3> heig;
     for(runnel::Triangle* t : struct_triangle){
-        t->calculateHeight();
-        heig.push_back(glm::vec3(0, t->height.y, 0));
-        heig.push_back(glm::vec3(0, 0, t->height.z));
-        heig.push_back(glm::vec3(t->height.x, 0, 0));
+        glm::vec3 triangleHeight = t->calculateHeight();
+        heig.push_back(glm::vec3(0, triangleHeight.y, 0));
+        heig.push_back(glm::vec3(0, 0, triangleHeight.z));
+        heig.push_back(glm::vec3(triangleHeight.x, 0, 0));
     }
     return heig;
 }

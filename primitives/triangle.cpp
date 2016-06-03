@@ -16,10 +16,6 @@ void runnel::Triangle::addGroupPoints(runnel::Point* p1, runnel::Point* p2, runn
     this->addPoint(p3);
 }
 
-void runnel::Triangle::addPositionPoint(int x){
-    position.push_back(x);
-}
-
 void runnel::Triangle::addEdge(runnel::Edge* e){
     edges.push_back(e);
 }
@@ -40,18 +36,21 @@ void runnel::Triangle::calculateIncentroPoint(){
 
 }
 
-void runnel::Triangle::calculateHeight(){
+glm::vec3 runnel::Triangle::calculateHeight(){
     glm::vec3 vec_a = points[1]->coord - points[0]->coord;
     glm::vec3 vec_b = points[2]->coord - points[1]->coord;
     glm::vec3 vec_c = points[0]->coord - points[2]->coord;
 
+    glm::vec3 sides;
     sides.x = std::sqrt(vec_a.x*vec_a.x + vec_a.y*vec_a.y + vec_a.z*vec_a.z);
     sides.y = std::sqrt(vec_b.x*vec_b.x + vec_b.y*vec_b.y + vec_b.z*vec_b.z);
     sides.z = std::sqrt(vec_c.x*vec_c.x + vec_c.y*vec_c.y + vec_c.z*vec_c.z);
     float s = sides.x + sides.y + sides.z;
+    glm::vec3 height;
     height.x = 2*std::sqrt(s*(s - sides.x)*(s - sides.y)*(s - sides.z))/sides.x;
     height.y = 2*std::sqrt(s*(s - sides.x)*(s - sides.y)*(s - sides.z))/sides.y;
     height.z = 2*std::sqrt(s*(s - sides.x)*(s - sides.y)*(s - sides.z))/sides.z;
+    return height;
 
 }
 void runnel::Triangle::calculateLineHorizontal(){
