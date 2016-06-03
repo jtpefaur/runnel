@@ -11,7 +11,6 @@ BuilderTerrain::BuilderTerrain()
 
 void BuilderTerrain::runTriangulation(Terrain* ter){
     std::cout << "Creando estructura con la triangulacion" << std::endl;
-    std::unordered_map<int, std::vector< runnel::Triangle*> > neighbours;
     std::unordered_map< int, std::unordered_map<int, runnel::Edge*> > edges_neigh;
     int triangle_count = 0;
     for(int h = 0; h<ter->height-1;h++){
@@ -25,7 +24,6 @@ void BuilderTerrain::runTriangulation(Terrain* ter){
             runnel::Triangle *trian = new runnel::Triangle(triangle_count);
             this->buildStruct(ter, trian, p21, p12, p11);
 
-            std::vector<int> pto { p21, p12, p11 };
             this->buildNeighbourhoodByEdges(ter, trian, edges_neigh, p21, p12);
             this->buildNeighbourhoodByEdges(ter, trian, edges_neigh, p12, p11);
             this->buildNeighbourhoodByEdges(ter, trian, edges_neigh, p11, p21);
@@ -35,7 +33,6 @@ void BuilderTerrain::runTriangulation(Terrain* ter){
             trian = new runnel::Triangle(triangle_count);
             this->buildStruct(ter, trian, p22, p12, p21);
 
-            std::vector<int> pto2 { p22, p12, p21 };
 
             this->buildNeighbourhoodByEdges(ter, trian, edges_neigh, p22, p12);
             this->buildNeighbourhoodByEdges(ter, trian, edges_neigh, p12, p21);
