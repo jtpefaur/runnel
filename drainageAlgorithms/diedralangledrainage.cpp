@@ -45,6 +45,336 @@ void DiedralAngleDrainage::run(Terrain *ter){
     shader->fillPositionBuffer(position_terrain, angle_value_edge, height );
 }
 
+void DiedralAngleDrainage::runParallel(Terrain *ter){
+    terr = ter;
+
+    high_resolution_clock::time_point t1;
+    high_resolution_clock::time_point t2;
+    high_resolution_clock::time_point t3;
+    high_resolution_clock::time_point t4;
+
+    t1 = high_resolution_clock::now();
+    //std::vector<glm::vec3> height = ter->calculateHeightArray();
+
+
+    cl_int error = CL_SUCCESS;
+
+    cl_uint platformIdCount = 0;
+    error = clGetPlatformIDs(0, NULL, &platformIdCount);
+    checkError(error, "Finding amount of platforms");
+
+    //TODO: Be able to choose among all platforms, only fail if there is no platform
+    if(platformIdCount != 1) {
+        printf("Found %d platforms (only one platform was expected)\n", platformIdCount);
+        exit(EXIT_FAILURE);
+    }
+    cl_platform_id platformIds[platformIdCount];
+    error = clGetPlatformIDs (platformIdCount, platformIds, NULL);
+    checkError(error, "Getting platforms");
+
+    cl_uint deviceIdCount = 0;
+    //TODO: Should select all devices
+    error = clGetDeviceIDs (platformIds[0], CL_DEVICE_TYPE_CPU, 0, NULL, &deviceIdCount);
+    checkError(error, "Finding devices");
+    //TODO: Be able to choose among all devices, only fail if there is no platform
+    if(deviceIdCount != 1) {
+        printf("Found %d devices (only one device was expected)\n", deviceIdCount);
+        exit(EXIT_FAILURE);
+    }
+    cl_device_id deviceIds[deviceIdCount];
+    //TODO: Should use all devices
+    error = clGetDeviceIDs (platformIds [0], CL_DEVICE_TYPE_CPU, deviceIdCount, deviceIds, NULL);
+    checkError(error, "Getting devices");
+
+    //TODO: Should use the selected devices, not the first one on the array
+    cl_context context = clCreateContext(NULL, 1, deviceIds, NULL, NULL, &error);
+    checkError(error, "Creating context");
+
+    cl_command_queue commandQueue = clCreateCommandQueue(context, deviceIds[0], 0, &error);
+    checkError(error, "Creating command queue");
+
+    const char* kernelSource = loadKernel("diedral.cl");
+    cl_program diedralProgram = clCreateProgramWithSource(context, 1, &kernelSource, NULL, &error);
+    checkError(error, "Creating program");
+    free((char*)kernelSource);
+
+    std::vector<runnel::Triangle*> &triangles = ter->struct_triangle;
+    int trianglesSize = triangles.size();
+
+    //Por triangulo hay 3 coordenadas xyz
+    int trianglePointsCoordsSize = trianglesSize * sizeof(cl_float3)*3;
+    //Por triangulo hay 3 alturas, una por cada punto
+    int triangleHeightSize = trianglesSize * sizeof(cl_float3)*3;
+
+    //Por triangulo hay 3 ids (hay 3 puntos)
+    int trianglePointsIdSize = trianglesSize * sizeof(cl_int3);
+    //Por triangulo hay 3 edges, cada uno con 2 ids (uno de cada punto)
+    int triangleEdgesIdSize = trianglesSize * sizeof(cl_int2) * 3;
+    //Por triangulo hay 3 edges, donde cada uno puede corresponder a
+    //uno o dos triangulos
+    int neighbourTrianglesSize = trianglesSize * sizeof(cl_int)*3;
+    //Por triangulo hay 3 edges, donde si el edge corresponde
+    //a un edge compartido por dos triangulo, cada uno de esos triangulos tiene
+    //una normal (3floats)
+    int neighbourTrianglesNormalSize = trianglesSize*sizeof(cl_float3)*3*2;
+    //Por triangulo hay 3 edges, donde cada uno se puede representar
+    //como un vector (3float)
+    int edgeVectorsSize = trianglesSize*sizeof(cl_float3)*3;
+    //Por triangulo hay 3 edges y cada uno de esos tiene
+    int anglesSize = trianglesSize*sizeof(cl_float3)*3;
+
+    cl_float3* trianglePointsCoords = (cl_float3*)malloc(trianglePointsCoordsSize);
+    cl_float3* triangleHeight = (cl_float3*)malloc(triangleHeightSize);
+
+    cl_int3* trianglePointsId = (cl_int3*)malloc(trianglePointsIdSize);
+    cl_int2* triangleEdgesId= (cl_int2*)malloc(triangleEdgesIdSize);
+    cl_int* neighbourTriangles = (cl_int*)malloc(neighbourTrianglesSize);
+    cl_float3* neighbourTrianglesNormal = (cl_float3*)malloc(neighbourTrianglesNormalSize);
+    cl_float3* edgeVectors = (cl_float3*)malloc(edgeVectorsSize);
+    cl_float3* angles = (cl_float3*)malloc(anglesSize);
+
+    t3 = high_resolution_clock::now();
+    for(int i = 0; i <triangles.size(); i++) {
+        runnel::Triangle& currentTriangle =*triangles[i];
+
+        int j = i*3;
+        trianglePointsCoords[j] = {triangles[i]->points[0]->coord.x, triangles[i]->points[0]->coord.y, triangles[i]->points[0]->coord.z};
+
+        trianglePointsCoords[j+1] = {triangles[i]->points[1]->coord.x, triangles[i]->points[1]->coord.y, triangles[i]->points[1]->coord.z};
+
+        trianglePointsCoords[j+2] = {triangles[i]->points[2]->coord.x, triangles[i]->points[2]->coord.y, triangles[i]->points[2]->coord.z};
+
+
+        trianglePointsId[i] = {currentTriangle.points[0]->ident,
+                               currentTriangle.points[1]->ident,
+                               currentTriangle.points[2]->ident};
+
+        int triangleEdgesIndex = i*3;
+        triangleEdgesId[triangleEdgesIndex] = {currentTriangle.edges[0]->id1,
+                                               currentTriangle.edges[0]->id2};
+        triangleEdgesId[triangleEdgesIndex+1] = {currentTriangle.edges[1]->id1,
+                                               currentTriangle.edges[1]->id2};
+        triangleEdgesId[triangleEdgesIndex+2] = {currentTriangle.edges[2]->id1,
+                                               currentTriangle.edges[2]->id2};
+
+        int neighbourTrianglesIndex = i*3;
+        neighbourTriangles[neighbourTrianglesIndex] = currentTriangle.edges[0]->neighbour_triangle.size();
+        neighbourTriangles[neighbourTrianglesIndex+1] = currentTriangle.edges[1]->neighbour_triangle.size();
+        neighbourTriangles[neighbourTrianglesIndex+2] = currentTriangle.edges[2]->neighbour_triangle.size();
+
+        int neighbourTrianglesNormalIndex = i*6;
+        if(neighbourTriangles[neighbourTrianglesIndex] == 2) {
+            neighbourTrianglesNormal[neighbourTrianglesNormalIndex] = {currentTriangle.edges[0]->neighbour_triangle[0]->normal.x,
+                                                                       currentTriangle.edges[0]->neighbour_triangle[0]->normal.y,
+                                                                       currentTriangle.edges[0]->neighbour_triangle[0]->normal.z};
+
+            neighbourTrianglesNormal[neighbourTrianglesNormalIndex+1] = {currentTriangle.edges[0]->neighbour_triangle[1]->normal.x,
+                                                                       currentTriangle.edges[0]->neighbour_triangle[1]->normal.y,
+                                                                       currentTriangle.edges[0]->neighbour_triangle[1]->normal.z};
+        }
+
+        if(neighbourTriangles[neighbourTrianglesIndex+1] == 2) {
+            neighbourTrianglesNormal[neighbourTrianglesNormalIndex+2] = {currentTriangle.edges[1]->neighbour_triangle[0]->normal.x,
+                                                                       currentTriangle.edges[1]->neighbour_triangle[0]->normal.y,
+                                                                       currentTriangle.edges[1]->neighbour_triangle[0]->normal.z};
+
+            neighbourTrianglesNormal[neighbourTrianglesNormalIndex+3] = {currentTriangle.edges[1]->neighbour_triangle[1]->normal.x,
+                                                                       currentTriangle.edges[1]->neighbour_triangle[1]->normal.y,
+                                                                       currentTriangle.edges[1]->neighbour_triangle[1]->normal.z};
+        }
+
+        if(neighbourTriangles[neighbourTrianglesIndex+2] == 2) {
+            neighbourTrianglesNormal[neighbourTrianglesNormalIndex+4] = {currentTriangle.edges[2]->neighbour_triangle[0]->normal.x,
+                                                                       currentTriangle.edges[2]->neighbour_triangle[0]->normal.y,
+                                                                       currentTriangle.edges[2]->neighbour_triangle[0]->normal.z};
+
+            neighbourTrianglesNormal[neighbourTrianglesNormalIndex+5] = {currentTriangle.edges[2]->neighbour_triangle[1]->normal.x,
+                                                                       currentTriangle.edges[2]->neighbour_triangle[1]->normal.y,
+                                                                       currentTriangle.edges[2]->neighbour_triangle[1]->normal.z};
+        }
+
+        int edgeVectorIndex = i*3;
+        edgeVectors[edgeVectorIndex] = {currentTriangle.edges[0]->edge_vector.x,
+                                        currentTriangle.edges[0]->edge_vector.y,
+                                        currentTriangle.edges[0]->edge_vector.z};
+
+        edgeVectors[edgeVectorIndex+1] = {currentTriangle.edges[1]->edge_vector.x,
+                                        currentTriangle.edges[1]->edge_vector.y,
+                                        currentTriangle.edges[1]->edge_vector.z};
+
+        edgeVectors[edgeVectorIndex+2] = {currentTriangle.edges[2]->edge_vector.x,
+                                        currentTriangle.edges[2]->edge_vector.y,
+                                        currentTriangle.edges[2]->edge_vector.z};
+
+    }
+    t4 = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>( t4 - t3 ).count();
+    cout << "Elapsed time on setting everything for calculateNeighbourhoodByEdges: " <<  duration/1000 << " miliseg" << endl;
+
+    cl_mem d_trianglePointsCoords = clCreateBuffer(context, CL_MEM_READ_ONLY, trianglePointsCoordsSize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_trianglesSize = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int), NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_triangleHeight = clCreateBuffer(context, CL_MEM_WRITE_ONLY, triangleHeightSize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+
+    cl_mem d_trianglePointsId = clCreateBuffer(context, CL_MEM_READ_ONLY, trianglePointsIdSize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_triangleEdgesId = clCreateBuffer(context, CL_MEM_READ_ONLY, triangleEdgesIdSize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_neighbourTriangles = clCreateBuffer(context, CL_MEM_READ_ONLY, neighbourTrianglesSize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_neighbourTrianglesNormal = clCreateBuffer(context, CL_MEM_READ_ONLY, neighbourTrianglesNormalSize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_edgeVectors = clCreateBuffer(context, CL_MEM_READ_ONLY, edgeVectorsSize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+    cl_mem d_angles = clCreateBuffer(context, CL_MEM_WRITE_ONLY, anglesSize, NULL, &error);
+    checkError(error, "Allocating memory in the device\n");
+
+    error = clEnqueueWriteBuffer(commandQueue, d_trianglePointsCoords, CL_TRUE, 0, trianglePointsCoordsSize, trianglePointsCoords, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+    error = clEnqueueWriteBuffer(commandQueue, d_trianglesSize, CL_TRUE, 0, sizeof(int), &trianglesSize, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+
+    error = clEnqueueWriteBuffer(commandQueue, d_trianglePointsId, CL_TRUE, 0, trianglePointsIdSize, trianglePointsId, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+    error = clEnqueueWriteBuffer(commandQueue, d_triangleEdgesId, CL_TRUE, 0, triangleEdgesIdSize, triangleEdgesId, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+    error = clEnqueueWriteBuffer(commandQueue, d_neighbourTriangles, CL_TRUE, 0, neighbourTrianglesSize, neighbourTriangles, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+    error = clEnqueueWriteBuffer(commandQueue, d_neighbourTrianglesNormal, CL_TRUE, 0, neighbourTrianglesNormalSize, neighbourTrianglesNormal, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+    error = clEnqueueWriteBuffer(commandQueue, d_edgeVectors, CL_TRUE, 0, edgeVectorsSize, edgeVectors, 0, 0, NULL);
+    checkError(error, "Writing from cpu to device\n");
+
+    error = clBuildProgram(diedralProgram, 0, NULL, "-Werror", NULL, NULL);
+    checkError(error, "Building program\n");
+
+    cl_kernel calculateHeightArrayKernel = clCreateKernel(diedralProgram, "calculateHeightArray", &error);
+    checkError(error, "Creating calculateHeightArray Kernel");
+    error = clSetKernelArg(calculateHeightArrayKernel, 0, sizeof(cl_mem), (void*)&d_trianglePointsCoords);
+    checkError(error, "Setting first argument of the calculateHeightArray kernel");
+    error = clSetKernelArg(calculateHeightArrayKernel, 1, sizeof(cl_mem), (void*)&d_trianglesSize);
+    checkError(error, "Setting second argument of the calculateHeightArray kernel");
+    error = clSetKernelArg(calculateHeightArrayKernel, 2, sizeof(cl_mem), (void*)&d_triangleHeight);
+    checkError(error, "Setting third argument of the calculateHeightArray kernel");
+
+    cl_kernel calculateNeighbourByEdgesKernel = clCreateKernel(diedralProgram, "calculateNeighbourByEdges", &error);
+    checkError(error, "Creating calculateNeighbourByEdges Kernel");
+    error = clSetKernelArg(calculateNeighbourByEdgesKernel, 0, sizeof(cl_mem), (void*)&d_trianglePointsId);
+    checkError(error, "Setting first argument of the calculateNeighbourByEdges kernel");
+    error = clSetKernelArg(calculateNeighbourByEdgesKernel, 1, sizeof(cl_mem), (void*)&d_triangleEdgesId);
+    checkError(error, "Setting second argument of the calculateNeighbourByEdges kernel");
+    error = clSetKernelArg(calculateNeighbourByEdgesKernel, 2, sizeof(cl_mem), (void*)&d_neighbourTriangles);
+    checkError(error, "Setting third argument of the calculateNeighbourByEdges kernel");
+    error = clSetKernelArg(calculateNeighbourByEdgesKernel, 3, sizeof(cl_mem), (void*)&d_neighbourTrianglesNormal);
+    checkError(error, "Setting fourth argument of the calculateNeighbourByEdges kernel");
+    error = clSetKernelArg(calculateNeighbourByEdgesKernel, 4, sizeof(cl_mem), (void*)&d_edgeVectors);
+    checkError(error, "Setting fifth argument of the calculateNeighbourByEdges kernel");
+    error = clSetKernelArg(calculateNeighbourByEdgesKernel, 5, sizeof(cl_mem), (void*)&d_trianglesSize);
+    checkError(error, "Setting sixth argument of the calculateNeighbourByEdges kernel");
+    error = clSetKernelArg(calculateNeighbourByEdgesKernel, 6, sizeof(cl_mem), (void*)&d_angles);
+    checkError(error, "Setting seventh argument of the calculateNeighbourByEdges kernel");
+
+    size_t localWorkSizeX;
+    clGetKernelWorkGroupInfo(calculateNeighbourByEdgesKernel, deviceIds[0], CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE, sizeof(size_t), &localWorkSizeX, NULL);
+    int globalWorkSizeX = triangles.size();
+    globalWorkSizeX = globalWorkSizeX - (globalWorkSizeX%localWorkSizeX) + localWorkSizeX;
+    const size_t globalWorkSize [] = { globalWorkSizeX, 0, 0 };
+    const size_t localWorkSize [] = { localWorkSizeX, 0, 0 };
+
+    error = clEnqueueNDRangeKernel(commandQueue, calculateHeightArrayKernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL,  NULL);
+    checkError(error, "Running calculateHeightArray kernel\n");
+    error = clEnqueueNDRangeKernel(commandQueue, calculateNeighbourByEdgesKernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL,  NULL);
+    checkError(error, "Running calculateNeighbourByEdges kernel\n");
+
+    error = clEnqueueReadBuffer(commandQueue, d_triangleHeight, CL_TRUE, 0, triangleHeightSize, triangleHeight, 0, NULL, NULL);
+    checkError(error, "Reading from device to cpu");
+    error = clEnqueueReadBuffer(commandQueue, d_angles, CL_TRUE, 0, anglesSize, angles, 0, NULL, NULL);
+    checkError(error, "Reading from device to cpu");
+
+    std::vector<glm::vec3> height;
+    t3 = high_resolution_clock::now();
+    for(int i = 0; i<triangleHeightSize/sizeof(cl_float3); i++) {
+        height.push_back(glm::vec3(triangleHeight[i].s[0], triangleHeight[i].s[1], triangleHeight[i].s[2]));
+    }
+    t4 = high_resolution_clock::now();
+    duration = duration_cast<microseconds>( t4 - t3 ).count();
+    cout << "Elapsed time on getting the height back: " <<  duration/1000 << " miliseg" << endl;
+
+    std::vector<glm::vec3> angle_value_edge;
+    t3 = high_resolution_clock::now();
+    for(int i = 0; i<anglesSize/sizeof(cl_float3); i=i+3) {
+        angle_value_edge.push_back(glm::vec3(angles[i].s[0]   , angles[i].s[1], angles[i].s[2]));
+        angle_value_edge.push_back(glm::vec3(angles[i+1].s[0], angles[i+1].s[1], angles[i+1].s[2]));
+        angle_value_edge.push_back(glm::vec3(angles[i+2].s[0], angles[i+2].s[1], angles[i+2].s[2]));
+    }
+    t4 = high_resolution_clock::now();
+    duration = duration_cast<microseconds>( t4 - t3 ).count();
+    cout << "Elapsed time on getting angle values back: " <<  duration/1000 << " miliseg" << endl;
+
+
+    free(trianglePointsCoords);
+    free(triangleHeight);
+
+    free(trianglePointsId);
+    free(triangleEdgesId);
+    free(neighbourTriangles);
+    free(neighbourTrianglesNormal);
+    free(edgeVectors);
+    free(angles);
+
+    error = clReleaseMemObject(d_triangleHeight);
+    checkError(error, "Releasing memory from device");
+    error = clReleaseMemObject(d_trianglesSize);
+    checkError(error, "Releasing memory from device");
+    error = clReleaseMemObject(d_trianglePointsCoords);
+    checkError(error, "Releasing memory from device");
+
+    error = clReleaseMemObject(d_trianglePointsId);
+    checkError(error, "Releasing memory from device");
+    error = clReleaseMemObject(d_triangleEdgesId);
+    checkError(error, "Releasing memory from device");
+    error = clReleaseMemObject(d_neighbourTriangles);
+    checkError(error, "Releasing memory from device");
+    error = clReleaseMemObject(d_neighbourTrianglesNormal);
+    checkError(error, "Releasing memory from device");
+    error = clReleaseMemObject(d_edgeVectors);
+    checkError(error, "Releasing memory from device");
+    error = clReleaseMemObject(d_angles);
+    checkError(error, "Releasing memory from device");
+
+//    std::vector<glm::vec3> height2 = ter->calculateheightarray();
+//    if(height.size() != height2.size()) cout << "error, distintos sizes" << endl;
+//    for(int i=0; i<height2.size(); i++) {
+//        if(height[i] != height2[i]) {
+//            cout << "error en indice: " << i << endl;
+//            cout << height[i].x << " vs " << height2[i].x << endl;
+//            cout << height[i].y << " vs "<< height2[i].y << endl;
+//            cout << height[i].z << " vs "<< height2[i].z << endl;
+//        }
+
+//    }
+
+//    std::vector<glm::vec3> angle_value_edge2 = ter->calculateneighbourbyedges();
+//    if(angle_value_edge.size() != angle_value_edge2.size()) cout << "error, distintos sizes" << endl;
+//    for(int i=0; i<angle_value_edge2.size(); i++) {
+//        if(angle_value_edge[i] != angle_value_edge2[i]) {
+//            cout << "error en indice: " << i << endl;
+//            cout << angle_value_edge[i].x << " vs " << angle_value_edge2[i].x << endl;
+//            cout << angle_value_edge[i].y << " vs "<< angle_value_edge2[i].y << endl;
+//            cout << angle_value_edge[i].z << " vs "<< angle_value_edge2[i].z << endl;
+//        }
+//    }
+
+    t2 = high_resolution_clock::now();
+    duration = duration_cast<microseconds>( t2 - t1 ).count();
+    cout << "Elapsed time on parallel diedral: " <<  duration/1000 << " miliseg" << endl;
+
+    position_terrain = ter->getVectorPoints();
+    shader->fillPositionBuffer(position_terrain, angle_value_edge, height);
+}
+
 void DiedralAngleDrainage::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
     float min_angle = conf.getMinAngle();
     float max_angle = conf.getMaxAngle();
