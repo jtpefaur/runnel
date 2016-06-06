@@ -90,7 +90,7 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     cl_context context = clCreateContext(NULL, 1, deviceIds, NULL, NULL, &error);
     checkError(error, "Creating context");
 
-    cl_command_queue commandQueue = clCreateCommandQueue(context, deviceIds[0], 0, &error);
+    cl_command_queue commandQueue = clCreateCommandQueue(context, deviceIds[0], CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE  , &error);
     checkError(error, "Creating command queue");
 
     const char* kernelSource = loadKernel("diedral.cl");
@@ -231,20 +231,29 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     cl_mem d_angles = clCreateBuffer(context, CL_MEM_WRITE_ONLY, anglesSize, NULL, &error);
     checkError(error, "Allocating memory in the device\n");
 
-    error = clEnqueueWriteBuffer(commandQueue, d_trianglePointsCoords, CL_TRUE, 0, trianglePointsCoordsSize, trianglePointsCoords, 0, 0, NULL);
+    cl_event writeTrianglePointsCoordsEvent;
+    cl_event writeTrianglesSizeEvent;
+
+    error = clEnqueueWriteBuffer(commandQueue, d_trianglePointsCoords, CL_TRUE, 0, trianglePointsCoordsSize, trianglePointsCoords, 0, 0, &writeTrianglePointsCoordsEvent);
     checkError(error, "Writing from cpu to device\n");
-    error = clEnqueueWriteBuffer(commandQueue, d_trianglesSize, CL_TRUE, 0, sizeof(int), &trianglesSize, 0, 0, NULL);
+    error = clEnqueueWriteBuffer(commandQueue, d_trianglesSize, CL_TRUE, 0, sizeof(int), &trianglesSize, 0, 0, &writeTrianglesSizeEvent);
     checkError(error, "Writing from cpu to device\n");
 
-    error = clEnqueueWriteBuffer(commandQueue, d_trianglePointsId, CL_TRUE, 0, trianglePointsIdSize, trianglePointsId, 0, 0, NULL);
+    cl_event writeTrianglePointsIdEvent;
+    cl_event writeTriangleEdgesIdEvent;
+    cl_event writeNeighbourTrianglesEvent;
+    cl_event writeNeighbourTrianglesNormalEvent;
+    cl_event writeEdgeVectorsEvent;
+
+    error = clEnqueueWriteBuffer(commandQueue, d_trianglePointsId, CL_TRUE, 0, trianglePointsIdSize, trianglePointsId, 0, 0, &writeTrianglePointsIdEvent);
     checkError(error, "Writing from cpu to device\n");
-    error = clEnqueueWriteBuffer(commandQueue, d_triangleEdgesId, CL_TRUE, 0, triangleEdgesIdSize, triangleEdgesId, 0, 0, NULL);
+    error = clEnqueueWriteBuffer(commandQueue, d_triangleEdgesId, CL_TRUE, 0, triangleEdgesIdSize, triangleEdgesId, 0, 0, &writeTriangleEdgesIdEvent);
     checkError(error, "Writing from cpu to device\n");
-    error = clEnqueueWriteBuffer(commandQueue, d_neighbourTriangles, CL_TRUE, 0, neighbourTrianglesSize, neighbourTriangles, 0, 0, NULL);
+    error = clEnqueueWriteBuffer(commandQueue, d_neighbourTriangles, CL_TRUE, 0, neighbourTrianglesSize, neighbourTriangles, 0, 0, &writeNeighbourTrianglesEvent);
     checkError(error, "Writing from cpu to device\n");
-    error = clEnqueueWriteBuffer(commandQueue, d_neighbourTrianglesNormal, CL_TRUE, 0, neighbourTrianglesNormalSize, neighbourTrianglesNormal, 0, 0, NULL);
+    error = clEnqueueWriteBuffer(commandQueue, d_neighbourTrianglesNormal, CL_TRUE, 0, neighbourTrianglesNormalSize, neighbourTrianglesNormal, 0, 0, &writeNeighbourTrianglesNormalEvent);
     checkError(error, "Writing from cpu to device\n");
-    error = clEnqueueWriteBuffer(commandQueue, d_edgeVectors, CL_TRUE, 0, edgeVectorsSize, edgeVectors, 0, 0, NULL);
+    error = clEnqueueWriteBuffer(commandQueue, d_edgeVectors, CL_TRUE, 0, edgeVectorsSize, edgeVectors, 0, 0, &writeEdgeVectorsEvent);
     checkError(error, "Writing from cpu to device\n");
 
     error = clBuildProgram(diedralProgram, 0, NULL, "-Werror", NULL, NULL);
@@ -283,14 +292,25 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     const size_t globalWorkSize [] = { globalWorkSizeX, 0, 0 };
     const size_t localWorkSize [] = { localWorkSizeX, 0, 0 };
 
-    error = clEnqueueNDRangeKernel(commandQueue, calculateHeightArrayKernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL,  NULL);
+    cl_event calculateHeightArrayEvent;
+    cl_event calculateNeighbourByEdgesEvent;
+
+    cl_event calculateHeightArrayWaitingList[] = {writeTrianglePointsCoordsEvent,
+                                                  writeTrianglesSizeEvent};
+    error = clEnqueueNDRangeKernel(commandQueue, calculateHeightArrayKernel, 1, NULL, globalWorkSize, localWorkSize, 2, calculateHeightArrayWaitingList,  &calculateHeightArrayEvent);
     checkError(error, "Running calculateHeightArray kernel\n");
-    error = clEnqueueNDRangeKernel(commandQueue, calculateNeighbourByEdgesKernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL,  NULL);
+    cl_event calculateNeighbourByEdgesWaitingList[] = {writeTrianglePointsIdEvent,
+                                                       writeTriangleEdgesIdEvent,
+                                                       writeNeighbourTrianglesEvent,
+                                                       writeNeighbourTrianglesNormalEvent,
+                                                       writeEdgeVectorsEvent,
+                                                       writeTrianglesSizeEvent};
+    error = clEnqueueNDRangeKernel(commandQueue, calculateNeighbourByEdgesKernel, 1, NULL, globalWorkSize, localWorkSize, 6, calculateNeighbourByEdgesWaitingList,  &calculateNeighbourByEdgesEvent);
     checkError(error, "Running calculateNeighbourByEdges kernel\n");
 
-    error = clEnqueueReadBuffer(commandQueue, d_triangleHeight, CL_TRUE, 0, triangleHeightSize, triangleHeight, 0, NULL, NULL);
+    error = clEnqueueReadBuffer(commandQueue, d_triangleHeight, CL_TRUE, 0, triangleHeightSize, triangleHeight, 1, &calculateHeightArrayEvent, NULL);
     checkError(error, "Reading from device to cpu");
-    error = clEnqueueReadBuffer(commandQueue, d_angles, CL_TRUE, 0, anglesSize, angles, 0, NULL, NULL);
+    error = clEnqueueReadBuffer(commandQueue, d_angles, CL_TRUE, 0, anglesSize, angles, 1, &calculateNeighbourByEdgesEvent, NULL);
     checkError(error, "Reading from device to cpu");
 
     std::vector<glm::vec3> height;
