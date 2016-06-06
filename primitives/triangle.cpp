@@ -64,7 +64,6 @@ void runnel::Triangle::calculateLineHorizontal(){
     vector_a = -vector_a*value/3.0f;
     gradient.push_back(this->incentro);
     gradient.push_back(this->incentro + vector_a);
-    gradient_vector = vector_a;
 }
 
 

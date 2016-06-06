@@ -16,8 +16,6 @@ namespace runnel {
             std::vector<glm::vec3> gradient;
             glm::vec3 normal;
             glm::vec3 incentro;
-            //TODO: Remove gradient_vector, not necessary
-            glm::vec3 gradient_vector;
             int ident;
             void addPoint(runnel::Point* p);
             void addGroupPoints(runnel::Point* p1, runnel::Point* p2, runnel::Point* p3);
