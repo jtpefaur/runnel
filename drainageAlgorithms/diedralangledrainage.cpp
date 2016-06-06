@@ -1,4 +1,15 @@
 #include "diedralangledrainage.h"
+#include "CL/cl.h"
+#include <chrono>
+#include <iostream>
+
+using namespace std;
+using namespace std::chrono;
+
+extern "C"
+{
+    #include "openclutils.h"
+}
 
 DiedralAngleDrainage::DiedralAngleDrainage(){
     QObject::connect(&conf, SIGNAL(changeAttr()), this, SLOT(changeAttr()));
