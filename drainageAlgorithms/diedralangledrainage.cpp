@@ -24,8 +24,23 @@ DiedralAngleDrainage::~DiedralAngleDrainage(){
 
 void DiedralAngleDrainage::run(Terrain *ter){
     terr = ter;
-    std::vector<glm::vec3> angle_value_edge = ter->calculateNeightbourByEdges();
-    std::vector<glm::vec3> height = ter->calculateHeigtArray();
+
+    high_resolution_clock::time_point t1;
+    high_resolution_clock::time_point t2;
+
+    t1 = high_resolution_clock::now();
+    std::vector<glm::vec3> angle_value_edge = ter->calculateNeighbourByEdges();
+    t2 = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>( t2 - t1 ).count();
+    cout << "Elapsed time on calculateNeighbourByEdges: " <<  duration/1000 << " miliseg" << endl;
+
+    t1 = high_resolution_clock::now();
+    //std::vector<glm::vec3> height;
+    std::vector<glm::vec3> height = ter->calculateHeightArray();
+    t2 = high_resolution_clock::now();
+    duration = duration_cast<microseconds>( t2 - t1 ).count();
+    cout << "Elapsed time on calculateHeightArray: " <<  duration/1000 << " miliseg" << endl;
+
     position_terrain = ter->getVectorPoints();
     shader->fillPositionBuffer(position_terrain, angle_value_edge, height );
 }
