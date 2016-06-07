@@ -104,7 +104,7 @@ void DiedralAngleDrainage::run(Terrain *ter){
     //Por triangulo hay 3 coordenadas xyz
     int trianglePointsCoordsSize = trianglesSize * sizeof(cl_float3)*3;
     //Por triangulo hay 3 alturas, una por cada punto
-    int triangleHeightSize = trianglesSize * sizeof(cl_float3)*3;
+    int triangleHeightSize = trianglesSize * sizeof(glm::vec3)*3;
 
     //Por triangulo hay 3 ids (hay 3 puntos)
     int trianglePointsIdSize = trianglesSize * sizeof(cl_int3);
@@ -121,17 +121,17 @@ void DiedralAngleDrainage::run(Terrain *ter){
     //como un vector (3float)
     int edgeVectorsSize = trianglesSize*sizeof(cl_float3)*3;
     //Por triangulo hay 3 edges y cada uno de esos tiene
-    int anglesSize = trianglesSize*sizeof(cl_float3)*3;
+    int anglesSize = trianglesSize*sizeof(glm::vec3)*3;
 
     cl_float3* trianglePointsCoords = (cl_float3*)malloc(trianglePointsCoordsSize);
-    cl_float3* triangleHeight = (cl_float3*)malloc(triangleHeightSize);
+    glm::vec3* triangleHeight = (glm::vec3*)malloc(triangleHeightSize);
 
     cl_int3* trianglePointsId = (cl_int3*)malloc(trianglePointsIdSize);
     cl_int2* triangleEdgesId= (cl_int2*)malloc(triangleEdgesIdSize);
     cl_int* neighbourTriangles = (cl_int*)malloc(neighbourTrianglesSize);
     cl_float3* neighbourTrianglesNormal = (cl_float3*)malloc(neighbourTrianglesNormalSize);
     cl_float3* edgeVectors = (cl_float3*)malloc(edgeVectorsSize);
-    cl_float3* angles = (cl_float3*)malloc(anglesSize);
+    glm::vec3* angles = (glm::vec3*)malloc(anglesSize);
 
     t3 = high_resolution_clock::now();
     for(int i = 0; i <triangles.size(); i++) {
@@ -316,9 +316,9 @@ void DiedralAngleDrainage::run(Terrain *ter){
     std::vector<glm::vec3> angle_value_edge;
     std::vector<glm::vec3> height;
     t3 = high_resolution_clock::now();
-    for(int i = 0; i<anglesSize/sizeof(cl_float3); i++) {
-        angle_value_edge.push_back(glm::vec3(angles[i].s[0]   , angles[i].s[1], angles[i].s[2]));
-        height.push_back(glm::vec3(triangleHeight[i].s[0], triangleHeight[i].s[1], triangleHeight[i].s[2]));
+    for(int i = 0; i<anglesSize/sizeof(glm::vec3); i++) {
+        angle_value_edge.push_back(angles[i]);
+        height.push_back(triangleHeight[i]);
     }
     t4 = high_resolution_clock::now();
     duration = duration_cast<microseconds>( t4 - t3 ).count();
