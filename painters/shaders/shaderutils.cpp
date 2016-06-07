@@ -153,6 +153,13 @@ void ShaderUtils::bufferCreate(GLuint& number, std::vector<float>& content){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void ShaderUtils::bufferCreate(GLuint& number, glm::vec3* content, int contentSize){
+    glGenBuffers(1, &number);
+    glBindBuffer(GL_ARRAY_BUFFER, number);
+    glBufferData(GL_ARRAY_BUFFER, contentSize*sizeof(glm::vec3), content, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void ShaderUtils::saveAttribute(std::string name){
     GLuint number;
     number = glGetAttribLocation (theProgram, name.c_str());

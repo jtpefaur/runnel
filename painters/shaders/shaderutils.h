@@ -25,6 +25,7 @@ class ShaderUtils
         bool setUniform(const char* uniformName, glm::vec3 val);
         void bufferCreate(GLuint& number, std::vector<glm::vec3>& content);
         void bufferCreate(GLuint& number, std::vector<float>& content);
+        void bufferCreate(GLuint& number, glm::vec3* content, int contentSize);
         void linkBufferWithAttr(GLuint& buffer, std::string attr_name, int large);
 };
 
