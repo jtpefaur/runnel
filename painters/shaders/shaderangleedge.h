@@ -11,6 +11,7 @@ class ShaderAngleEdge : public ShaderUtils
         GLuint angle_buffer;
         int data_buffer_size;
         void fillPositionBuffer(std::vector<glm::vec3>& data, std::vector<glm::vec3>& angle, std::vector<glm::vec3>& height);
+        void fillPositionBuffer(std::vector<glm::vec3>& data, glm::vec3* angle, int anglesSize, glm::vec3* height, int heightSize);
         void render(glm::mat4 matrix, float exag_z,float min_angle, float max_angle, float width_line, glm::vec3 color_min, glm::vec3 color_max);
 };
 
