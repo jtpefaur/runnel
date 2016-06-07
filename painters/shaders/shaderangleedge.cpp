@@ -15,7 +15,6 @@ ShaderAngleEdge::ShaderAngleEdge():
     height_buffer = 0;
 }
 
-
 void ShaderAngleEdge::fillPositionBuffer(std::vector<glm::vec3>& data, std::vector<glm::vec3>& angle, std::vector<glm::vec3>& height){
 
     if(position_buffer != 0){
@@ -34,6 +33,27 @@ void ShaderAngleEdge::fillPositionBuffer(std::vector<glm::vec3>& data, std::vect
     this->bufferCreate(position_buffer, data);
     this->bufferCreate(angle_buffer, angle);
     this->bufferCreate(height_buffer, height);
+
+}
+
+void ShaderAngleEdge::fillPositionBuffer(std::vector<glm::vec3>& data, glm::vec3* angle, int anglesSize, glm::vec3* height, int heightSize){
+
+    if(position_buffer != 0){
+        glDeleteBuffers(1, &position_buffer );
+        position_buffer = 0;
+    }
+    if(angle_buffer != 0){
+        glDeleteBuffers(1, &angle_buffer );
+        angle_buffer = 0;
+    }
+    if(height_buffer != 0){
+        glDeleteBuffers(1, &height_buffer );
+        height_buffer = 0;
+    }
+    data_buffer_size = data.size();
+    this->bufferCreate(position_buffer, data);
+    this->bufferCreate(angle_buffer, angle, anglesSize);
+    this->bufferCreate(height_buffer, height, heightSize);
 }
 
 void ShaderAngleEdge::render(glm::mat4 matrix, float exag_z,float min_angle, float max_angle, float width_line, glm::vec3 color_min, glm::vec3 color_max){
