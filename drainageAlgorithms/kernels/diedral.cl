@@ -1,6 +1,13 @@
+typedef  __attribute__((__packed__)) struct {
+    float x;
+    float y;
+    float z;
+} float3Packed;
+
+
 __kernel void calculateHeightArray(__global float3* trianglePointsCoords,
                                    __global int* pTrianglesSize,
-                                   __global float3* triangleHeight) {
+                                   __global float3Packed* triangleHeight) {
     int id = get_global_id(0);
     int trianglesSize = *pTrianglesSize;
 
@@ -24,9 +31,12 @@ __kernel void calculateHeightArray(__global float3* trianglePointsCoords,
         float3 heightZ = (float3)(0.0f, 0.0f, 2*sqrt(s*(s - sides.x)*(s - sides.y)*(s - sides.z))/sides.z);
         float3 heightX = (float3)(2*sqrt(s*(s - sides.x)*(s - sides.y)*(s - sides.z))/sides.x, 0.0f, 0.0f);
 
-        triangleHeight[id] = heightY;
-        triangleHeight[id+1] = heightZ;
-        triangleHeight[id+2] = heightX;
+        //triangleHeight[id] = heightY;
+        //triangleHeight[id+1] = heightZ;
+        //triangleHeight[id+2] = heightX;
+        vstore3(heightY, 0, (float*)(triangleHeight+id));
+        vstore3(heightZ, 1, (float*)(triangleHeight+id));
+        vstore3(heightX, 2, (float*)(triangleHeight+id));
 
     }
 }
@@ -37,7 +47,7 @@ __kernel void calculateNeighbourByEdges(__global int3* trianglePointsId,
                                         __global float3* edgeNeighbourTrianglesNormal,
                                         __global float3* edgeVectors,
                                         __global int* pTrianglesSize,
-                                        __global float3* angles) {
+                                        __global float3Packed* angles) {
 
     int id = get_global_id(0);
     int trianglesSize = *pTrianglesSize;
@@ -88,9 +98,14 @@ __kernel void calculateNeighbourByEdges(__global int3* trianglePointsId,
             }
         }
 
-       angles[anglesIndex] = value;
-       angles[anglesIndex+1] = value;
-       angles[anglesIndex+2] = value;
+       //angles[anglesIndex] = value;
+       //angles[anglesIndex+1] = value;
+       //angles[anglesIndex+2] = value;
+
+       vstore3(value, 0, (float*)(angles+anglesIndex));
+       vstore3(value, 1, (float*)(angles+anglesIndex));
+       vstore3(value, 2, (float*)(angles+anglesIndex));
+
 
     }
 }
