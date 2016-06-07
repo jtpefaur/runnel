@@ -22,7 +22,7 @@ DiedralAngleDrainage::~DiedralAngleDrainage(){
     }
 }
 
-void DiedralAngleDrainage::run(Terrain *ter){
+void DiedralAngleDrainage::runParallel(Terrain *ter){
     terr = ter;
 
     high_resolution_clock::time_point t1;
@@ -45,7 +45,7 @@ void DiedralAngleDrainage::run(Terrain *ter){
     shader->fillPositionBuffer(position_terrain, angle_value_edge, height );
 }
 
-void DiedralAngleDrainage::runParallel(Terrain *ter){
+void DiedralAngleDrainage::run(Terrain *ter){
     terr = ter;
 
     high_resolution_clock::time_point t1;
@@ -53,7 +53,6 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     high_resolution_clock::time_point t3;
     high_resolution_clock::time_point t4;
 
-    t1 = high_resolution_clock::now();
     //std::vector<glm::vec3> height = ter->calculateHeightArray();
 
 
@@ -90,6 +89,7 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     cl_context context = clCreateContext(NULL, 1, deviceIds, NULL, NULL, &error);
     checkError(error, "Creating context");
 
+    t1 = high_resolution_clock::now();
     cl_command_queue commandQueue = clCreateCommandQueue(context, deviceIds[0], CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE  , &error);
     checkError(error, "Creating command queue");
 
@@ -313,21 +313,12 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     error = clEnqueueReadBuffer(commandQueue, d_angles, CL_TRUE, 0, anglesSize, angles, 1, &calculateNeighbourByEdgesEvent, NULL);
     checkError(error, "Reading from device to cpu");
 
+    std::vector<glm::vec3> angle_value_edge;
     std::vector<glm::vec3> height;
     t3 = high_resolution_clock::now();
-    for(int i = 0; i<triangleHeightSize/sizeof(cl_float3); i++) {
-        height.push_back(glm::vec3(triangleHeight[i].s[0], triangleHeight[i].s[1], triangleHeight[i].s[2]));
-    }
-    t4 = high_resolution_clock::now();
-    duration = duration_cast<microseconds>( t4 - t3 ).count();
-    cout << "Elapsed time on getting the height back: " <<  duration/1000 << " miliseg" << endl;
-
-    std::vector<glm::vec3> angle_value_edge;
-    t3 = high_resolution_clock::now();
-    for(int i = 0; i<anglesSize/sizeof(cl_float3); i=i+3) {
+    for(int i = 0; i<anglesSize/sizeof(cl_float3); i++) {
         angle_value_edge.push_back(glm::vec3(angles[i].s[0]   , angles[i].s[1], angles[i].s[2]));
-        angle_value_edge.push_back(glm::vec3(angles[i+1].s[0], angles[i+1].s[1], angles[i+1].s[2]));
-        angle_value_edge.push_back(glm::vec3(angles[i+2].s[0], angles[i+2].s[1], angles[i+2].s[2]));
+        height.push_back(glm::vec3(triangleHeight[i].s[0], triangleHeight[i].s[1], triangleHeight[i].s[2]));
     }
     t4 = high_resolution_clock::now();
     duration = duration_cast<microseconds>( t4 - t3 ).count();
