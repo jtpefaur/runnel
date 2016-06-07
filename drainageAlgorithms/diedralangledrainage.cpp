@@ -22,7 +22,7 @@ DiedralAngleDrainage::~DiedralAngleDrainage(){
     }
 }
 
-void DiedralAngleDrainage::runParallel(Terrain *ter){
+void DiedralAngleDrainage::run(Terrain *ter){
     terr = ter;
 
     high_resolution_clock::time_point t1;
@@ -45,16 +45,13 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     shader->fillPositionBuffer(position_terrain, angle_value_edge, height );
 }
 
-void DiedralAngleDrainage::run(Terrain *ter){
+void DiedralAngleDrainage::runParallel(Terrain *ter){
     terr = ter;
 
     high_resolution_clock::time_point t1;
     high_resolution_clock::time_point t2;
     high_resolution_clock::time_point t3;
     high_resolution_clock::time_point t4;
-
-    //std::vector<glm::vec3> height = ter->calculateHeightArray();
-
 
     cl_int error = CL_SUCCESS;
 
@@ -101,37 +98,25 @@ void DiedralAngleDrainage::run(Terrain *ter){
     std::vector<runnel::Triangle*> &triangles = ter->struct_triangle;
     int trianglesSize = triangles.size();
 
-    //Por triangulo hay 3 coordenadas xyz
     int trianglePointsCoordsSize = trianglesSize * sizeof(cl_float3)*3;
-    //Por triangulo hay 3 alturas, una por cada punto
-    int triangleHeightSize = trianglesSize * sizeof(glm::vec3)*3;
+    int triangleHeightBytes = trianglesSize * sizeof(glm::vec3)*3;
 
-    //Por triangulo hay 3 ids (hay 3 puntos)
     int trianglePointsIdSize = trianglesSize * sizeof(cl_int3);
-    //Por triangulo hay 3 edges, cada uno con 2 ids (uno de cada punto)
     int triangleEdgesIdSize = trianglesSize * sizeof(cl_int2) * 3;
-    //Por triangulo hay 3 edges, donde cada uno puede corresponder a
-    //uno o dos triangulos
     int neighbourTrianglesSize = trianglesSize * sizeof(cl_int)*3;
-    //Por triangulo hay 3 edges, donde si el edge corresponde
-    //a un edge compartido por dos triangulo, cada uno de esos triangulos tiene
-    //una normal (3floats)
     int neighbourTrianglesNormalSize = trianglesSize*sizeof(cl_float3)*3*2;
-    //Por triangulo hay 3 edges, donde cada uno se puede representar
-    //como un vector (3float)
     int edgeVectorsSize = trianglesSize*sizeof(cl_float3)*3;
-    //Por triangulo hay 3 edges y cada uno de esos tiene
-    int anglesSize = trianglesSize*sizeof(glm::vec3)*3;
+    int anglesBytes = trianglesSize*sizeof(glm::vec3)*3;
 
     cl_float3* trianglePointsCoords = (cl_float3*)malloc(trianglePointsCoordsSize);
-    glm::vec3* triangleHeight = (glm::vec3*)malloc(triangleHeightSize);
+    glm::vec3* triangleHeight = (glm::vec3*)malloc(triangleHeightBytes);
 
     cl_int3* trianglePointsId = (cl_int3*)malloc(trianglePointsIdSize);
     cl_int2* triangleEdgesId= (cl_int2*)malloc(triangleEdgesIdSize);
     cl_int* neighbourTriangles = (cl_int*)malloc(neighbourTrianglesSize);
     cl_float3* neighbourTrianglesNormal = (cl_float3*)malloc(neighbourTrianglesNormalSize);
     cl_float3* edgeVectors = (cl_float3*)malloc(edgeVectorsSize);
-    glm::vec3* angles = (glm::vec3*)malloc(anglesSize);
+    glm::vec3* angles = (glm::vec3*)malloc(anglesBytes);
 
     t3 = high_resolution_clock::now();
     for(int i = 0; i <triangles.size(); i++) {
@@ -211,11 +196,12 @@ void DiedralAngleDrainage::run(Terrain *ter){
     auto duration = duration_cast<microseconds>( t4 - t3 ).count();
     cout << "Elapsed time on setting everything for calculateNeighbourhoodByEdges: " <<  duration/1000 << " miliseg" << endl;
 
+    t1 = high_resolution_clock::now();
     cl_mem d_trianglePointsCoords = clCreateBuffer(context, CL_MEM_READ_ONLY, trianglePointsCoordsSize, NULL, &error);
     checkError(error, "Allocating memory in the device\n");
     cl_mem d_trianglesSize = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int), NULL, &error);
     checkError(error, "Allocating memory in the device\n");
-    cl_mem d_triangleHeight = clCreateBuffer(context, CL_MEM_WRITE_ONLY, triangleHeightSize, NULL, &error);
+    cl_mem d_triangleHeight = clCreateBuffer(context, CL_MEM_WRITE_ONLY, triangleHeightBytes, NULL, &error);
     checkError(error, "Allocating memory in the device\n");
 
     cl_mem d_trianglePointsId = clCreateBuffer(context, CL_MEM_READ_ONLY, trianglePointsIdSize, NULL, &error);
@@ -228,7 +214,7 @@ void DiedralAngleDrainage::run(Terrain *ter){
     checkError(error, "Allocating memory in the device\n");
     cl_mem d_edgeVectors = clCreateBuffer(context, CL_MEM_READ_ONLY, edgeVectorsSize, NULL, &error);
     checkError(error, "Allocating memory in the device\n");
-    cl_mem d_angles = clCreateBuffer(context, CL_MEM_WRITE_ONLY, anglesSize, NULL, &error);
+    cl_mem d_angles = clCreateBuffer(context, CL_MEM_WRITE_ONLY, anglesBytes, NULL, &error);
     checkError(error, "Allocating memory in the device\n");
 
     cl_event writeTrianglePointsCoordsEvent;
@@ -308,32 +294,18 @@ void DiedralAngleDrainage::run(Terrain *ter){
     error = clEnqueueNDRangeKernel(commandQueue, calculateNeighbourByEdgesKernel, 1, NULL, globalWorkSize, localWorkSize, 6, calculateNeighbourByEdgesWaitingList,  &calculateNeighbourByEdgesEvent);
     checkError(error, "Running calculateNeighbourByEdges kernel\n");
 
-    error = clEnqueueReadBuffer(commandQueue, d_triangleHeight, CL_TRUE, 0, triangleHeightSize, triangleHeight, 1, &calculateHeightArrayEvent, NULL);
+    error = clEnqueueReadBuffer(commandQueue, d_triangleHeight, CL_TRUE, 0, triangleHeightBytes, triangleHeight, 1, &calculateHeightArrayEvent, NULL);
     checkError(error, "Reading from device to cpu");
-    error = clEnqueueReadBuffer(commandQueue, d_angles, CL_TRUE, 0, anglesSize, angles, 1, &calculateNeighbourByEdgesEvent, NULL);
+    error = clEnqueueReadBuffer(commandQueue, d_angles, CL_TRUE, 0, anglesBytes, angles, 1, &calculateNeighbourByEdgesEvent, NULL);
     checkError(error, "Reading from device to cpu");
-
-    std::vector<glm::vec3> angle_value_edge;
-    std::vector<glm::vec3> height;
-    t3 = high_resolution_clock::now();
-    for(int i = 0; i<anglesSize/sizeof(glm::vec3); i++) {
-        angle_value_edge.push_back(angles[i]);
-        height.push_back(triangleHeight[i]);
-    }
-    t4 = high_resolution_clock::now();
-    duration = duration_cast<microseconds>( t4 - t3 ).count();
-    cout << "Elapsed time on getting angle values back: " <<  duration/1000 << " miliseg" << endl;
-
 
     free(trianglePointsCoords);
-    free(triangleHeight);
 
     free(trianglePointsId);
     free(triangleEdgesId);
     free(neighbourTriangles);
     free(neighbourTrianglesNormal);
     free(edgeVectors);
-    free(angles);
 
     error = clReleaseMemObject(d_triangleHeight);
     checkError(error, "Releasing memory from device");
