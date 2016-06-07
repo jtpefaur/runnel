@@ -86,7 +86,6 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     cl_context context = clCreateContext(NULL, 1, deviceIds, NULL, NULL, &error);
     checkError(error, "Creating context");
 
-    t1 = high_resolution_clock::now();
     cl_command_queue commandQueue = clCreateCommandQueue(context, deviceIds[0], CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE  , &error);
     checkError(error, "Creating command queue");
 
@@ -355,7 +354,9 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     cout << "Elapsed time on parallel diedral: " <<  duration/1000 << " miliseg" << endl;
 
     position_terrain = ter->getVectorPoints();
-    shader->fillPositionBuffer(position_terrain, angle_value_edge, height);
+    shader->fillPositionBuffer(position_terrain, angles, anglesBytes/sizeof(glm::vec3),  triangleHeight, triangleHeightBytes/sizeof(glm::vec3));
+    free(triangleHeight);
+    free(angles);
 }
 
 void DiedralAngleDrainage::render(glm::mat4 matrix, float exag_z, glm::vec3 color){
