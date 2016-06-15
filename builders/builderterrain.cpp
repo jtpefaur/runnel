@@ -3,6 +3,8 @@
 #include <iostream>
 #include "primitives/triangle.h"
 #include <unordered_map>
+#include <unordered_set>
+#include "lib/glm/gtc/constants.hpp"
 
 BuilderTerrain::BuilderTerrain()
 {
@@ -13,6 +15,8 @@ void BuilderTerrain::runTriangulation(Terrain* ter){
     std::cout << "Creando estructura con la triangulacion" << std::endl;
     std::unordered_map< int, std::unordered_map<int, runnel::Edge*> > edges_neigh;
     int triangle_count = 0;
+    float areaSum = 0;
+    float minArea = std::numeric_limits<float>::infinity();
     for(int h = 0; h<ter->height-1;h++){
         for(int w = 0; w<ter->width-1;w++){
             int topleft = h*ter->width+w;
@@ -29,6 +33,11 @@ void BuilderTerrain::runTriangulation(Terrain* ter){
             this->buildNeighbourhoodByEdges(ter, trian, edges_neigh, p11, p21);
             ter->addTriangle(trian);
 
+            float triangleArea = trian->getArea();
+            areaSum += triangleArea;
+            minArea = std::min(minArea, triangleArea);
+
+
             triangle_count++;
             trian = new runnel::Triangle(triangle_count);
             this->buildStruct(ter, trian, p22, p12, p21);
@@ -38,9 +47,18 @@ void BuilderTerrain::runTriangulation(Terrain* ter){
             this->buildNeighbourhoodByEdges(ter, trian, edges_neigh, p12, p21);
             this->buildNeighbourhoodByEdges(ter, trian, edges_neigh, p21, p22);
             ter->addTriangle(trian);
+
+            triangleArea = trian->getArea();
+            areaSum += triangleArea;
+            minArea = std::min(minArea, triangleArea);
             triangle_count++;
         }
     }
+    ter->trianglesAverageArea = areaSum/ter->struct_triangle.size();
+    ter->trianglesMinArea = minArea;
+
+}
+
 
 }
 
