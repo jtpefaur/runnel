@@ -135,6 +135,12 @@ runnel::Triangle* BuilderTerrain::getTriangleOpposedToPoint(runnel::Triangle* tr
     return opposedTriangle;
 }
 
+bool BuilderTerrain::areNeighbour(runnel::Triangle* triangle1, runnel::Triangle* triangle2){
+    if(triangle1 == nullptr || triangle2 == nullptr) return false;
+    for(runnel::Edge* edge : triangle1->edges) {
+        if(std::find(triangle2->edges.begin(), triangle2->edges.end(), edge) != triangle2->edges.end()) return true;
+    }
+    return false;
 
 }
 

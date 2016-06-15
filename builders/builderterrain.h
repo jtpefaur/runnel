@@ -23,6 +23,7 @@ class BuilderTerrain
 
         runnel::Edge* getEdgeOpposedToPoint(runnel::Triangle* triangle, runnel::Point* point);
         runnel::Triangle* getTriangleOpposedToPoint(runnel::Triangle* triangle, runnel::Point* point);
+        bool areNeighbour(runnel::Triangle* triangle1, runnel::Triangle* triangle2);
         int getIntersectingNeighbourPoints(runnel::Point* point1, runnel::Point* point2, Terrain* ter);
         std::vector<runnel::Triangle*> getTrianglesToModify(runnel::Edge* edgeToDelete, runnel::Point* pointToDelete, Terrain* ter);
 };
