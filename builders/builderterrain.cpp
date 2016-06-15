@@ -59,6 +59,53 @@ void BuilderTerrain::runTriangulation(Terrain* ter){
 
 }
 
+void BuilderTerrain::runSimplifedTriangulation(Terrain* ter){
+
+    bool thereMightBeAnEdgeLeftToCollapse = true;
+    std::vector<runnel::Triangle*> excluded;
+
+    std::cout << "Amount of triangles before simplification: " << ter->struct_triangle.size() <<  std::endl;
+    std::cout << "Average triangles area: " << ter->trianglesAverageArea << std::endl;
+    std::cout << "Min triangles area: " << ter->trianglesMinArea << std::endl;
+    while(thereMightBeAnEdgeLeftToCollapse) {
+        thereMightBeAnEdgeLeftToCollapse = false;
+        for(runnel::Triangle* triangle : ter->struct_triangle) {
+            //This will simplify the triangulation on the flat zones of the terrain
+            if(std::find(excluded.begin(), excluded.end(), triangle) == excluded.end() && triangle->getArea() < ter->trianglesMinArea*1.02){
+                if(simplifyTriangle(triangle, ter)) thereMightBeAnEdgeLeftToCollapse = true;
+                else excluded.push_back(triangle);
+            }
+        }
+    }
+    std::cout << "Amount of triangles after simplification: " << ter->struct_triangle.size() <<  std::endl;
+}
+
+bool BuilderTerrain::simplifyTriangle(runnel::Triangle* triangle, Terrain* ter){
+    assert(("Triangle to simplify was not part of the terrain",std::find(ter->struct_triangle.begin(), ter->struct_triangle.end(), triangle) != ter->struct_triangle.end()));
+    runnel::Edge* shortestEdge = triangle->getShortestEdge();
+    bool edgeWasCollapsed = edgeCollapse(shortestEdge, ter);
+    return edgeWasCollapsed;
+}
+
+bool BuilderTerrain::edgeCollapse(runnel::Edge* edge, Terrain* ter){
+
+    if(ter->isBorderEdge(edge)) {
+        return false;
+    }
+
+    runnel::Point* pointToDelete = edge->point1;
+    runnel::Point* pointToKeep = edge->point2;
+
+    if(ter->isBorderPoint(pointToDelete)) {
+        runnel::Point* aux = pointToKeep;
+        pointToKeep = pointToDelete;
+        pointToDelete = aux;
+    }
+
+    bool pointWasDeleted = pointDeletion(ter, edge, pointToDelete);
+    return pointWasDeleted;
+}
+
 int BuilderTerrain::getIntersectingNeighbourPoints(runnel::Point* point1, runnel::Point* point2, Terrain* ter) {
 
     std::unordered_set<runnel::Point*> neighbourPointsToPoint1;
@@ -92,6 +139,52 @@ int BuilderTerrain::getIntersectingNeighbourPoints(runnel::Point* point1, runnel
     return intersectingPoints;
 }
 
+void BuilderTerrain::removeEdgeFromTerrain(Terrain* ter, runnel::Edge* edge, runnel::Point* pointToKeep, runnel::Point* pointToDelete) {
+    assert(("Point to delete is not part of the edge to delete", edge->point1 == pointToDelete || edge->point2 == pointToDelete));
+    assert(("Point to delete is not part of the edge to delete", edge->point1 == pointToKeep || edge->point2 == pointToKeep));
+    runnel::Triangle* triangleToDelete1 = edge->neighbour_triangle[0];
+    runnel::Triangle* triangleToDelete2 = edge->neighbour_triangle[1];
+
+    runnel::Edge* edgeToDelete1 = getEdgeOpposedToPoint(triangleToDelete1, pointToKeep);
+    runnel::Edge* edgeToDelete2 = getEdgeOpposedToPoint(triangleToDelete2, pointToKeep);
+
+    runnel::Triangle* triangleToDelete1NeighbourToModify = getTriangleOpposedToPoint(triangleToDelete1, pointToKeep);
+    runnel::Triangle* triangleToDelete2NeighbourToModify = getTriangleOpposedToPoint(triangleToDelete2, pointToKeep);
+
+    //Delete edges from terrain
+    ter->struct_edge.erase(std::remove(ter->struct_edge.begin(), ter->struct_edge.end(), edgeToDelete1));
+    ter->struct_edge.erase(std::remove(ter->struct_edge.begin(), ter->struct_edge.end(), edgeToDelete2));
+    ter->struct_edge.erase(std::remove(ter->struct_edge.begin(), ter->struct_edge.end(), edge));
+    //Delete triangles from terrain
+    ter->struct_triangle.erase(std::remove(ter->struct_triangle.begin(), ter->struct_triangle.end(), triangleToDelete1));
+    ter->struct_triangle.erase(std::remove(ter->struct_triangle.begin(), ter->struct_triangle.end(), triangleToDelete2));
+    ter->trianglesContainingPoint[pointToKeep].erase(triangleToDelete1);
+    ter->trianglesContainingPoint[pointToKeep].erase(triangleToDelete2);
+
+    //Update edgesToKeep neighbour triangles
+    runnel::Edge* edgeToKeep1 = getEdgeOpposedToPoint(triangleToDelete1, pointToDelete);
+    runnel::Edge* edgeToKeep2 = getEdgeOpposedToPoint(triangleToDelete2, pointToDelete);
+    edgeToKeep1->neighbour_triangle.erase(std::remove(edgeToKeep1->neighbour_triangle.begin(), edgeToKeep1->neighbour_triangle.end(), triangleToDelete1));
+    edgeToKeep2->neighbour_triangle.erase(std::remove(edgeToKeep2->neighbour_triangle.begin(), edgeToKeep2->neighbour_triangle.end(), triangleToDelete2));
+    edgeToKeep1->neighbour_triangle.push_back(triangleToDelete1NeighbourToModify);
+    edgeToKeep2->neighbour_triangle.push_back(triangleToDelete2NeighbourToModify);
+
+    //Update points and edges of triangles to modify
+    std::vector<runnel::Triangle*> trianglesToModify = getTrianglesToModify(edge, pointToDelete, ter);
+    for(runnel::Triangle* triangle : trianglesToModify) {
+        std::replace(triangle->points.begin(), triangle->points.end(), pointToDelete, pointToKeep);
+        ter->trianglesContainingPoint[pointToKeep].insert(triangle);
+        std::replace(triangle->edges.begin(), triangle->edges.end(), edgeToDelete1, edgeToKeep1);
+        std::replace(triangle->edges.begin(), triangle->edges.end(), edgeToDelete2, edgeToKeep2);
+        for(runnel::Edge* edge : triangle->edges) {
+            if(edge->point1 == pointToDelete) edge->point1 = pointToKeep;
+            if(edge->point2 == pointToDelete) edge->point2= pointToKeep;
+        }
+        triangle->refresh();
+    }
+}
+
+
 std::vector<runnel::Triangle*> BuilderTerrain::getTrianglesToModify(runnel::Edge* edgeToDelete, runnel::Point* pointToDelete, Terrain* ter) {
     assert(("Point to delete is not part of the edge to delete", edgeToDelete->point1 == pointToDelete || edgeToDelete->point2 == pointToDelete));
     std::vector<runnel::Triangle*> trianglesToModify;
@@ -106,6 +199,53 @@ std::vector<runnel::Triangle*> BuilderTerrain::getTrianglesToModify(runnel::Edge
     }
     assert(("No triangles to modify", trianglesToModify.size() != 0));
     return trianglesToModify;
+}
+
+bool BuilderTerrain::triangleWouldFlipIfModified(runnel::Point* pointToModify, runnel::Triangle* triangle, glm::vec3 pointNewCoord) {
+        glm::vec3 oldNormal = triangle->normal;
+        glm::vec3 pointOldCoord = pointToModify->coord;
+
+        pointToModify->coord = pointNewCoord;
+        triangle->refresh();
+        glm::vec3 newNormal = triangle->normal;
+        float angle = glm::acos(glm::dot(oldNormal, newNormal)/(glm::length(oldNormal)*glm::length(newNormal)));
+        pointToModify->coord = pointOldCoord;
+        triangle->refresh();
+        if(angle > glm::half_pi<float>()) return true;
+        return false;
+}
+
+bool BuilderTerrain::pointDeletion(Terrain* ter, runnel::Edge* edge, runnel::Point* pointToDelete){
+
+    assert(("Point to delete is not part of the edge to delete", edge->point1 == pointToDelete || edge->point2 == pointToDelete));
+    runnel::Point* pointToKeep = edge->point1 == pointToDelete ? edge->point2 : edge->point1;
+
+    int intersectingPoints = getIntersectingNeighbourPoints(pointToKeep, pointToDelete, ter);
+    if(intersectingPoints > 4) {
+        return false;
+    }
+
+    runnel::Triangle* triangleToDelete1 = edge->neighbour_triangle[0];
+    runnel::Triangle* triangleToDelete2 = edge->neighbour_triangle[1];
+
+    runnel::Triangle* triangleToDelete1NeighbourToModify = getTriangleOpposedToPoint(triangleToDelete1, pointToKeep);
+    runnel::Triangle* triangleToDelete1NeighbourToKeep = getTriangleOpposedToPoint(triangleToDelete1, pointToDelete);
+    runnel::Triangle* triangleToDelete2NeighbourToModify = getTriangleOpposedToPoint(triangleToDelete2, pointToKeep);
+    runnel::Triangle* triangleToDelete2NeighbourToKeep = getTriangleOpposedToPoint(triangleToDelete2, pointToDelete);
+    if(areNeighbour(triangleToDelete1NeighbourToModify, triangleToDelete1NeighbourToKeep) ||
+            areNeighbour(triangleToDelete2NeighbourToModify, triangleToDelete2NeighbourToKeep)) {
+        //They would be the same triangle if the edge was deleted
+        return false;
+    }
+
+    std::vector<runnel::Triangle*> trianglesToModify = getTrianglesToModify(edge, pointToDelete, ter);
+    for(runnel::Triangle* triangle : trianglesToModify) {
+        if(triangleWouldFlipIfModified(pointToDelete, triangle, pointToDelete->coord)) return false;
+    }
+
+    removeEdgeFromTerrain(ter, edge, pointToKeep, pointToDelete);
+    return true;
+
 }
 
 runnel::Edge* BuilderTerrain::getEdgeOpposedToPoint(runnel::Triangle* triangle, runnel::Point* point){
