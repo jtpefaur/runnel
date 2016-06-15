@@ -399,8 +399,8 @@ std::vector<glm::vec3> PeuckerDrainageNetwork::getDrainageColor(){
     std::vector<glm::vec3> color;
     for( runnel::Edge* ed : terr->struct_edge){
 
-        runnel::Point* p1 = terr->struct_point[ed->id1];
-        runnel::Point* p2 = terr->struct_point[ed->id2];
+        runnel::Point* p1 = ed->point1;
+        runnel::Point* p2 = ed->point2;
         float color_p1 = (p1->flags == (p1->PEUCKER))? 1.0f : 0.0f;
         float color_p2 = (p2->flags == (p2->PEUCKER))? 1.0f : 0.0f;
         if((color_p1==0.0f && color_p2==0.0f) ){

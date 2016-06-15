@@ -12,13 +12,12 @@ class Edge
     public:
         std::vector< runnel::Triangle*> neighbour_triangle;
         glm::vec3 edge_vector;
-        int id1;
-        int id2;
-        float angulo_diedro;
+        runnel::Point* point1;
+        runnel::Point* point2;
         Edge(runnel::Point* value1, runnel::Point* value2);
         void addTriangle(runnel::Triangle* t);
-        void calculateAngleDiedro();
-        glm::vec3 getEdgeVector(runnel::Triangle* t1);
+        void calculateEdgeVector();
+        float calculateAngleDiedro();
 
 };
 }

@@ -419,8 +419,8 @@ void RWFloodAlgorithm::calculateWaterAccumulation(std::vector<runnel::Point*>& p
 void RWFloodAlgorithm::getDrainagePoints()
 {
     for (runnel::Edge* edge : ter->struct_edge) {
-        runnel::Point* p1 = ter->struct_point[edge->id1];
-        runnel::Point* p2 = ter->struct_point[edge->id2];
+        runnel::Point* p1 = edge->point1;
+        runnel::Point* p2 = edge->point2;
         if (p1->water_value >= waterThreshold && p2->water_value >= waterThreshold) {
             float water1 = (float)p1->water_value / (float)maxWaterCount;
             float water2 = (float)p2->water_value / (float)maxWaterCount;

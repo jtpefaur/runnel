@@ -143,6 +143,7 @@ void buildTreeCallaghan::reviewPoints(){
         }else{
             arbol* pa = new arbol(pto);
             point_counter[pto->ident] = 0;
+            //TODO aca crear el water_parent, asi no es necesario que exista en los puntos
             this->createTree(pa);
             arbolitos.push_back(pa);
         }
@@ -184,8 +185,8 @@ std::vector<glm::vec3> buildTreeCallaghan::getPathTree(){
 void buildTreeCallaghan::getMoreWaterPoint(){
 
     for (runnel::Edge* edge: this->terr->struct_edge){
-        float water_1 = this->terr->struct_point[edge->id1]->water_value;
-        float water_2 = this->terr->struct_point[edge->id2]->water_value;
+        float water_1 = edge->point1->water_value;
+        float water_2 = edge->point2->water_value;
         float value_water =  std::max(water_1, water_2);
         max_value_water = std::max(max_value_water,value_water);
     }

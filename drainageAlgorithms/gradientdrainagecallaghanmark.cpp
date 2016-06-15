@@ -329,13 +329,13 @@ std::vector<glm::vec3> GradientDrainageCallaghanMark::getPathTree(){
 void GradientDrainageCallaghanMark::getMoreWaterPoint(){
 
     for (runnel::Edge* edge: this->ter->struct_edge){
-        float water_1 = this->ter->struct_point[edge->id1]->water_value;
-        float water_2 = this->ter->struct_point[edge->id2]->water_value;
+        float water_1 = edge->point1->water_value;
+        float water_2 = edge->point2->water_value;
         float value_water =  std::max(water_1, water_2);
         max_value_water = std::max(max_value_water,value_water);
         count_water.push_back(value_water);
         count_water.push_back(value_water);
-        position_water_points.push_back(this->ter->struct_point[edge->id1]->coord);
-        position_water_points.push_back(this->ter->struct_point[edge->id2]->coord);
+        position_water_points.push_back(edge->point1->coord);
+        position_water_points.push_back(edge->point2->coord);
     }
 }

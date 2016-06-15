@@ -6,17 +6,21 @@
 
 runnel::Edge::Edge(runnel::Point* value1, runnel::Point* value2)
 {
-    edge_vector = value1->coord - value2->coord ;
-    id1 = value1->ident;
-    id2 = value2->ident;
+    point1 = value1;
+    point2 = value2;
+    calculateEdgeVector();
 }
 
 void runnel::Edge::addTriangle(runnel::Triangle *t){
     neighbour_triangle.push_back(t);
 }
 
-void runnel::Edge::calculateAngleDiedro(){
-    angulo_diedro = 180;
+void runnel::Edge::calculateEdgeVector(){
+    edge_vector = point1->coord - point2->coord;
+}
+
+float runnel::Edge::calculateAngleDiedro(){
+    float angulo_diedro = 180;
     if(neighbour_triangle.size() == 2){
         runnel::Triangle *t1 = neighbour_triangle[0];
         runnel::Triangle *t2 = neighbour_triangle[1];
@@ -27,16 +31,6 @@ void runnel::Edge::calculateAngleDiedro(){
         if(sameDirection)
             angulo_diedro = -angulo_diedro;
     }
-
+    return angulo_diedro;
     //std::cout << "angulo diedro " << angulo_diedro << std::endl;
-}
-
-glm::vec3 runnel::Edge::getEdgeVector(runnel::Triangle* t1){
-    for(int i = 0;i<3;i++){
-        if((t1->points[i]->ident == id1 && t1->points[(i+1)%3]->ident == id2)
-           || (t1->points[i]->ident == id2 && t1->points[(i+1)%3]->ident == id1)){
-            return t1->points[(i+1)%3]->coord - t1->points[i]->coord;
-        }
-    }
-    return glm::vec3();
 }

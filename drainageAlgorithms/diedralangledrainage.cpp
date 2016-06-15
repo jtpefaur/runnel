@@ -134,12 +134,12 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
                                currentTriangle.points[2]->ident};
 
         int triangleEdgesIndex = i*3;
-        triangleEdgesId[triangleEdgesIndex] = {currentTriangle.edges[0]->id1,
-                                               currentTriangle.edges[0]->id2};
-        triangleEdgesId[triangleEdgesIndex+1] = {currentTriangle.edges[1]->id1,
-                                               currentTriangle.edges[1]->id2};
-        triangleEdgesId[triangleEdgesIndex+2] = {currentTriangle.edges[2]->id1,
-                                               currentTriangle.edges[2]->id2};
+        triangleEdgesId[triangleEdgesIndex] = {currentTriangle.edges[0]->point1->ident,
+                                               currentTriangle.edges[0]->point2->ident};
+        triangleEdgesId[triangleEdgesIndex+1] = {currentTriangle.edges[1]->point1->ident,
+                                               currentTriangle.edges[1]->point2->ident};
+        triangleEdgesId[triangleEdgesIndex+2] = {currentTriangle.edges[2]->point1->ident,
+                                               currentTriangle.edges[2]->point2->ident};
 
         int neighbourTrianglesIndex = i*3;
         neighbourTriangles[neighbourTrianglesIndex] = currentTriangle.edges[0]->neighbour_triangle.size();

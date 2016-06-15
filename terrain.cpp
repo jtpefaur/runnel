@@ -124,24 +124,24 @@ std::vector<glm::vec3> Terrain::calculateNeighbourByEdges(){
         glm::vec3 value;
         for (runnel::Edge* e : t->edges){
 
-            e->calculateAngleDiedro();
-            if(t->points[0]->ident == e->id1 && t->points[1]->ident == e->id2 ){
-                value.x = e->angulo_diedro;
+            float angulo_diedro = e->calculateAngleDiedro();
+            if(t->points[0] == e->point1 && t->points[1] == e->point2 ){
+                value.x = angulo_diedro;
             }
-            if(t->points[1]->ident == e->id1 && t->points[0]->ident == e->id2 ){
-                value.x = e->angulo_diedro;
+            if(t->points[1] == e->point1 && t->points[0] == e->point2 ){
+                value.x = angulo_diedro;
             }
-            if(t->points[2]->ident == e->id1 && t->points[1]->ident == e->id2 ){
-                value.y = e->angulo_diedro;
+            if(t->points[2] == e->point1 && t->points[1] == e->point2 ){
+                value.y = angulo_diedro;
             }
-            if(t->points[1]->ident == e->id1 && t->points[2]->ident == e->id2 ){
-                value.y = e->angulo_diedro;
+            if(t->points[1] == e->point1 && t->points[2] == e->point2 ){
+                value.y = angulo_diedro;
             }
-            if(t->points[2]->ident == e->id1 && t->points[0]->ident == e->id2 ){
-                value.z = e->angulo_diedro;
+            if(t->points[2] == e->point1 && t->points[0] == e->point2 ){
+                value.z = angulo_diedro;
             }
-            if(t->points[0]->ident == e->id1 && t->points[2]->ident == e->id2 ){
-                value.z = e->angulo_diedro;
+            if(t->points[0] == e->point1 && t->points[2] == e->point2 ){
+                value.z = angulo_diedro;
             }
 
         }
