@@ -66,3 +66,31 @@ std::vector<runnel::Triangle*> runnel::Triangle::getNeighbours(){
     }
     return neighbour;
 }
+
+void runnel::Triangle::refresh(){
+    for(runnel::Edge* edge : edges) {
+        edge->calculateEdgeVector();
+    }
+    calculateIncentroPoint();
+    calculateNormalVector();
+}
+
+runnel::Edge* runnel::Triangle::getShortestEdge(){
+    runnel::Edge* shortestEdge = edges.front();
+    for(runnel::Edge* edge : edges) {
+        if(glm::length(shortestEdge->edge_vector) > glm::length(edge->edge_vector)) {
+            shortestEdge = edge;
+        }
+    }
+    return shortestEdge;
+}
+
+float runnel::Triangle::getArea(){
+    float a = glm::length(edges[0]->edge_vector);
+    float b = glm::length(edges[1]->edge_vector);
+    float c = glm::length(edges[2]->edge_vector);
+
+    float semiPerimeter = 0.5*(a+b+c);
+    float area = std::sqrt(semiPerimeter*(semiPerimeter-a)*(semiPerimeter-b)*(semiPerimeter-c));
+    return area;
+}

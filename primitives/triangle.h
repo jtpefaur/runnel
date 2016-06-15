@@ -22,8 +22,11 @@ namespace runnel {
             void addGroupEdges(runnel::Edge* e1, runnel::Edge* e2, runnel::Edge* e3);
             void calculateNormalVector();
             void calculateIncentroPoint();
+            void refresh();
             glm::vec3 calculateHeight();
             std::vector<Triangle*> getNeighbours();
+            runnel::Edge* getShortestEdge();
+            float getArea();
     };
 }
 #endif // TRIANGLE_H
