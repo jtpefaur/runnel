@@ -92,31 +92,6 @@ float Terrain::minumum(std::vector<runnel::Triangle *> list_triangle, runnel::Tr
     }
     return menor;
 }
-void Terrain::addNeighbourPoint(std::unordered_map<int, std::vector<runnel::Triangle*> > n){
-    neigh = n;
-    Terrain::calculateNeightbour();
-}
-void Terrain::calculateNeightbour(){
-    std::cout << "calculando vecinos" << std::endl;
-
-    menor_menor = std::numeric_limits<float>::max();
-    mayor_mayor = -1*std::numeric_limits<float>::max();
-
-    for( runnel::Triangle* tri: struct_triangle){
-        float a = Terrain::minumum(neigh[tri->points[0]->ident], tri);
-        float b = Terrain::minumum(neigh[tri->points[1]->ident], tri);
-        float c = Terrain::minumum(neigh[tri->points[2]->ident], tri);
-
-        menor_menor = std::min(a, menor_menor);
-        menor_menor = std::min(b, menor_menor);
-        menor_menor = std::min(c, menor_menor);
-        mayor_mayor = std::max(a, mayor_mayor);
-        mayor_mayor = std::max(b, mayor_mayor);
-        mayor_mayor = std::max(c, mayor_mayor);
-    }
-    std::cout << "mayor "<< mayor_mayor << "menor " << menor_menor << std::endl;
-
-}
 
 std::vector<glm::vec3> Terrain::calculateNeighbourByEdges(){
     std::vector<glm::vec3> angles;
@@ -175,21 +150,6 @@ void Terrain::setBoundingBox(glm::vec3 coords)
 void Terrain::addEdge(runnel::Edge* ed){
     struct_edge.push_back(ed);
 }
-
-std::vector<glm::vec3> Terrain::getGradientDirectionVector(){
-    std::vector<glm::vec3> vector_gradient;
-
-    for (runnel::Triangle* trian : this->struct_triangle){
-        trian->calculateLineHorizontal();
-        vector_gradient.push_back(trian->gradient[0]);
-        vector_gradient_color.push_back(glm::vec3(1.0f,0.0f, 1.0f));
-        vector_gradient.push_back(trian->gradient[1]);
-        vector_gradient_color.push_back(glm::vec3(0.0f, 1.0f, 1.0f));
-    }
-    return vector_gradient;
-}
-
-
 
 std::vector< glm::vec3 > Terrain::getCoordinateAxis(){
     std::vector< glm::vec3 > position_coordinates;

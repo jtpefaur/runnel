@@ -13,7 +13,6 @@ namespace runnel {
             Triangle(int id);
             std::vector< runnel::Point*> points;
             std::vector< runnel::Edge*> edges;
-            std::vector<glm::vec3> gradient;
             glm::vec3 normal;
             glm::vec3 incentro;
             int ident;
@@ -25,8 +24,6 @@ namespace runnel {
             void calculateIncentroPoint();
             glm::vec3 calculateHeight();
             std::vector<Triangle*> getNeighbours();
-
-            void calculateLineHorizontal();
     };
 }
 #endif // TRIANGLE_H

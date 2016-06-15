@@ -53,19 +53,6 @@ glm::vec3 runnel::Triangle::calculateHeight(){
     return height;
 
 }
-void runnel::Triangle::calculateLineHorizontal(){
-    glm::vec3 vector_z = glm::vec3(0,0,-1);
-    glm::vec3 vector_b = glm::dot(this->normal, vector_z)*this->normal;
-    glm::vec3 vector_a = glm::normalize(vector_z - vector_b);
-    float value = 0;
-    for(runnel::Edge*ed : this->edges){
-        value += std::sqrt(glm::dot(ed->edge_vector,ed->edge_vector));
-    }
-    vector_a = -vector_a*value/3.0f;
-    gradient.push_back(this->incentro);
-    gradient.push_back(this->incentro + vector_a);
-}
-
 
 std::vector<runnel::Triangle*> runnel::Triangle::getNeighbours(){
     std::vector<Triangle*> neighbour;

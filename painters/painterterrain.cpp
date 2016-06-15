@@ -272,20 +272,6 @@ void PainterTerrain::changeAttrConf(std::string name, glm::vec3 value){
     this->changeConf();
 }
 
-
-void PainterTerrain::showRenderGradientVector(bool value){
-    render_gradient = value;
-    if (render_gradient){
-        std::vector<glm::vec3> vectors_gradient = ter->getGradientDirectionVector();
-        std::vector<glm::vec3> color_gradient = ter->vector_gradient_color;
-        shader_gradient->fillPositionBuffer(vectors_gradient, color_gradient);
-        if ( this->ter->signalPaintGoogle ){
-            emit drawGoogleEarth(vectors_gradient);
-        }
-    }
-    this->GLWidget::updateGL();
-}
-
 void PainterTerrain::showRenderNormalVector(bool value){
     render_normal = value;
     if (render_normal){

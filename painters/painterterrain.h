@@ -72,7 +72,6 @@ class PainterTerrain : public GLWidget {
     public slots:
         void changeModelTerrain(int index);
         void changeExag(int number);
-        void showRenderGradientVector(bool value);
         void showRenderNormalVector(bool value);
         void showRenderCoordinateAxis(bool value);
     signals:
