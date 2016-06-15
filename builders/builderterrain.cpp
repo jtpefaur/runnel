@@ -92,6 +92,22 @@ int BuilderTerrain::getIntersectingNeighbourPoints(runnel::Point* point1, runnel
     return intersectingPoints;
 }
 
+std::vector<runnel::Triangle*> BuilderTerrain::getTrianglesToModify(runnel::Edge* edgeToDelete, runnel::Point* pointToDelete, Terrain* ter) {
+    assert(("Point to delete is not part of the edge to delete", edgeToDelete->point1 == pointToDelete || edgeToDelete->point2 == pointToDelete));
+    std::vector<runnel::Triangle*> trianglesToModify;
+    runnel::Triangle* triangleToDelete1 = edgeToDelete->neighbour_triangle[0];
+    runnel::Triangle* triangleToDelete2 = edgeToDelete->neighbour_triangle[1];
+
+    std::unordered_set<runnel::Triangle*> trianglesContainingPointToDelete = ter->trianglesContainingPoint[pointToDelete];
+    for(runnel::Triangle* neighbourTriangle : trianglesContainingPointToDelete) {
+        if(neighbourTriangle != triangleToDelete1 && neighbourTriangle != triangleToDelete2){
+            trianglesToModify.push_back(neighbourTriangle);
+        }
+    }
+    assert(("No triangles to modify", trianglesToModify.size() != 0));
+    return trianglesToModify;
+}
+
 
 }
 
