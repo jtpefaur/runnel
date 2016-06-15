@@ -21,6 +21,8 @@ class BuilderTerrain
         void buildNeighbourhood(Terrain* ter, std::unordered_map<int, std::vector< runnel::Triangle*> >& neigh, runnel::Triangle *trian, std::vector< int> pto );
         void buildNeighbourhoodByEdges(Terrain* ter, runnel::Triangle* trian, std::unordered_map< int, std::unordered_map<int, runnel::Edge*> > & edges_neigh, int pto0, int pto1);
 
+        runnel::Edge* getEdgeOpposedToPoint(runnel::Triangle* triangle, runnel::Point* point);
+        runnel::Triangle* getTriangleOpposedToPoint(runnel::Triangle* triangle, runnel::Point* point);
         int getIntersectingNeighbourPoints(runnel::Point* point1, runnel::Point* point2, Terrain* ter);
         std::vector<runnel::Triangle*> getTrianglesToModify(runnel::Edge* edgeToDelete, runnel::Point* pointToDelete, Terrain* ter);
 };

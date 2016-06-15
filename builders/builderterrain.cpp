@@ -108,6 +108,33 @@ std::vector<runnel::Triangle*> BuilderTerrain::getTrianglesToModify(runnel::Edge
     return trianglesToModify;
 }
 
+runnel::Edge* BuilderTerrain::getEdgeOpposedToPoint(runnel::Triangle* triangle, runnel::Point* point){
+    if(std::find(triangle->points.begin(), triangle->points.end(), point) == triangle->points.end()){
+        std::cout << "Point is not on the vertex of the triangle" << std::endl;
+        for(runnel::Point* p : triangle->points) {
+            std::cout << "Triangle point id: " << p->ident << std::endl;
+        }
+        std::cout << "Point id: " << point->ident << std::endl;
+    }
+    assert(("Point is not one of the vertex of the triangle", std::find(triangle->points.begin(), triangle->points.end(), point) != triangle->points.end()));
+    for(runnel::Edge* edge : triangle->edges) {
+        if(edge->point1 != point && edge->point2 != point) {
+            return edge;
+        }
+    }
+    assert(("You should never get here",false));
+    return nullptr;
+}
+
+runnel::Triangle* BuilderTerrain::getTriangleOpposedToPoint(runnel::Triangle* triangle, runnel::Point* point){
+    runnel::Edge* opposedEdge = getEdgeOpposedToPoint(triangle, point);
+    if(opposedEdge->neighbour_triangle.size() < 2) return nullptr;
+    runnel::Triangle* opposedTriangle =
+            opposedEdge->neighbour_triangle[0] == triangle ?
+                opposedEdge->neighbour_triangle[1] : opposedEdge->neighbour_triangle[0];
+    return opposedTriangle;
+}
+
 
 }
 
