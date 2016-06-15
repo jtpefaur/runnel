@@ -25,6 +25,9 @@ void Terrain::addPoint(runnel::Point* p){
 }
 void Terrain::addTriangle(runnel::Triangle* t){
     struct_triangle.push_back(t);
+    trianglesContainingPoint[t->points[0]].insert(t);
+    trianglesContainingPoint[t->points[1]].insert(t);
+    trianglesContainingPoint[t->points[2]].insert(t);
 }
 
 std::vector<runnel::Point*> Terrain::getPoints(){

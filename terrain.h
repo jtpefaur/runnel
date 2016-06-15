@@ -6,6 +6,7 @@
 #include "primitives/triangle.h"
 #include "lib/glm/glm.hpp"
 #include "unordered_map"
+#include <unordered_set>
 
 
 class Terrain
@@ -28,6 +29,7 @@ class Terrain
         std::vector<runnel::Triangle*> struct_triangle;
         std::vector<runnel::Edge*> struct_edge;
         std::vector<glm::vec3> vector_gradient_color;
+        std::unordered_map< runnel::Point*, std::unordered_set<runnel::Triangle*>> trianglesContainingPoint;
 
 
         void addPoint(runnel::Point* p);
