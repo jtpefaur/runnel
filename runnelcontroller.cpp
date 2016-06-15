@@ -83,6 +83,7 @@ void RunnelController::buildTerrain(){
     pterrain.initGL();
     BuilderTerrain bt;
     bt.runTriangulation(ter);
+    bt.runSimplifedTriangulation(ter);
     std::cout << "Finish Triangulation..." << std::endl;
     ter->normalize();
     pterrain.setTerrain(ter);
