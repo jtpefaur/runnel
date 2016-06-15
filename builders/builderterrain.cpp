@@ -59,6 +59,39 @@ void BuilderTerrain::runTriangulation(Terrain* ter){
 
 }
 
+int BuilderTerrain::getIntersectingNeighbourPoints(runnel::Point* point1, runnel::Point* point2, Terrain* ter) {
+
+    std::unordered_set<runnel::Point*> neighbourPointsToPoint1;
+    std::unordered_set<runnel::Point*> neighbourPointsToPoint2;
+
+    std::unordered_set<runnel::Triangle*> trianglesContainingPoint1 = ter->trianglesContainingPoint[point1];
+    assert(("There are no triangles containing point to keep", trianglesContainingPoint1.size() !=0));
+    std::unordered_set<runnel::Triangle*> trianglesContainingPoint2 = ter->trianglesContainingPoint[point2];
+    assert(("There are no triangles containing point to delete", trianglesContainingPoint2.size() !=0));
+
+    for(runnel::Triangle* triangle : trianglesContainingPoint1) {
+        neighbourPointsToPoint1.insert(triangle->points[0]);
+        neighbourPointsToPoint1.insert(triangle->points[1]);
+        neighbourPointsToPoint1.insert(triangle->points[2]);
+    }
+
+
+    for(runnel::Triangle* triangle : trianglesContainingPoint2) {
+        neighbourPointsToPoint2.insert(triangle->points[0]);
+        neighbourPointsToPoint2.insert(triangle->points[1]);
+        neighbourPointsToPoint2.insert(triangle->points[2]);
+    }
+
+    int intersectingPoints = 0;
+    for(runnel::Point* point : neighbourPointsToPoint1) {
+
+        if(neighbourPointsToPoint2.find(point) != neighbourPointsToPoint2.end()) {
+            intersectingPoints++;
+        }
+    }
+    return intersectingPoints;
+}
+
 
 }
 

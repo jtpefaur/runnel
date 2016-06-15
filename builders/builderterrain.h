@@ -20,6 +20,8 @@ class BuilderTerrain
         void buildStruct(Terrain* ter, runnel::Triangle *trian, int pto1, int pto2, int pto3);
         void buildNeighbourhood(Terrain* ter, std::unordered_map<int, std::vector< runnel::Triangle*> >& neigh, runnel::Triangle *trian, std::vector< int> pto );
         void buildNeighbourhoodByEdges(Terrain* ter, runnel::Triangle* trian, std::unordered_map< int, std::unordered_map<int, runnel::Edge*> > & edges_neigh, int pto0, int pto1);
+
+        int getIntersectingNeighbourPoints(runnel::Point* point1, runnel::Point* point2, Terrain* ter);
 };
 
 #endif // BUILDERTERRAIN_H
