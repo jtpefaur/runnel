@@ -52,6 +52,8 @@ class Terrain
         void setMapPixel(int ancho_pix, int largo_pix);
         void setRatio();
         runnel::Triangle* getClosestTriangle(glm::vec3 p);
+        bool isBorderPoint(runnel::Point* point);
+        bool isBorderEdge(runnel::Edge* edge);
 };
 
 #endif // TERRAIN_H

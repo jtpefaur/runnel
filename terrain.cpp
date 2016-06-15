@@ -181,3 +181,18 @@ runnel::Triangle* Terrain::getClosestTriangle(glm::vec3 point){
     }
     return closest_triangle;
 }
+
+bool Terrain::isBorderPoint(runnel::Point* point){
+    int pointId = point->ident;
+    if(pointId < width || pointId%width == 0 || (pointId%width) == (width-1) || pointId >= width*(height-1)) {
+        return true;
+    }
+    return false;
+}
+
+bool Terrain::isBorderEdge(runnel::Edge* edge){
+    if(isBorderPoint(edge->point1) && isBorderPoint(edge->point2)) {
+        return true;
+    }
+    return false;
+}
