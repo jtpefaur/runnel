@@ -20,6 +20,8 @@ class Terrain
         float lat0;
         float lng0;
         float ratio;
+        float trianglesAverageArea;
+        float trianglesMinArea;
         glm::mat4 matrix_esc;
         glm::vec3 max_bounding;
         glm::vec3 min_bounding;
