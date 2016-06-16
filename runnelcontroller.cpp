@@ -82,9 +82,12 @@ void RunnelController::saveData(QString fileName){
 void RunnelController::buildTerrain(){
     pterrain.initGL();
     BuilderTerrain bt;
+    std::cout << "Triangulation started..." << std::endl;
     bt.runTriangulation(ter);
+    std::cout << "Triangulation finished." << std::endl;
+    std::cout << "Triangulation simplification started..." << std::endl;
     bt.runSimplifedTriangulation(ter);
-    std::cout << "Finish Triangulation..." << std::endl;
+    std::cout << "Triangulation simplification finished." << std::endl;
     ter->normalize();
     pterrain.setTerrain(ter);
 
