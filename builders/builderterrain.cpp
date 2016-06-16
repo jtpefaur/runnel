@@ -161,8 +161,12 @@ void BuilderTerrain::removeEdgeFromTerrain(Terrain* ter, runnel::Edge* edge, run
     //Delete triangles from terrain
     ter->struct_triangle.erase(triangleToDelete1);
     ter->struct_triangle.erase(triangleToDelete2);
-    ter->trianglesContainingPoint[pointToKeep].erase(triangleToDelete1);
-    ter->trianglesContainingPoint[pointToKeep].erase(triangleToDelete2);
+    for(runnel::Point* point : triangleToDelete1->points) {
+        ter->trianglesContainingPoint[point].erase(triangleToDelete1);
+    }
+    for(runnel::Point* point : triangleToDelete2->points) {
+        ter->trianglesContainingPoint[point].erase(triangleToDelete2);
+    }
 
     //Update edgesToKeep neighbour triangles
     runnel::Edge* edgeToKeep1 = getEdgeOpposedToPoint(triangleToDelete1, pointToDelete);
@@ -185,6 +189,11 @@ void BuilderTerrain::removeEdgeFromTerrain(Terrain* ter, runnel::Edge* edge, run
         }
         triangle->refresh();
     }
+    delete triangleToDelete1;
+    delete triangleToDelete2;
+    delete edge;
+    delete edgeToDelete1;
+    delete edgeToDelete2;
 }
 
 
