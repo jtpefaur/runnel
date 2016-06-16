@@ -1,4 +1,4 @@
-#version 400
+#version 130
 in float color;
 uniform float linewater;
 uniform float maxwater;

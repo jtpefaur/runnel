@@ -1,4 +1,4 @@
-#version 400
+#version 130
 out vec4 outputColor;
 uniform vec3 color_terrain;
 in float heigthColor;

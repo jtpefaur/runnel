@@ -1,4 +1,4 @@
-#version 400
+#version 130
 in vec3 position;
 uniform vec3 valuecolor;
 uniform mat4 mvp;

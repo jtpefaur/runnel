@@ -1,4 +1,4 @@
-#version 400
+#version 130
 in vec3 position;
 in vec3 height_angle;
 in vec3 angle_edge;

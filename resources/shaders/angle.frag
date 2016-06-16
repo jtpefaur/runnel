@@ -1,4 +1,4 @@
-#version 400
+#version 130
 in float color;
 uniform vec3 color_angle_point;
 out vec4 outputColor;

@@ -1,5 +1,5 @@
 
-#version 400
+#version 130
 in vec3 position;
 uniform mat4 mvp;
 uniform float promz;
