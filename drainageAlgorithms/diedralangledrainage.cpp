@@ -94,7 +94,7 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     checkError(error, "Creating program");
     free((char*)kernelSource);
 
-    std::vector<runnel::Triangle*> &triangles = ter->struct_triangle;
+    std::unordered_set <runnel::Triangle*>  &triangles = ter->struct_triangle;
     int trianglesSize = triangles.size();
 
     int trianglePointsCoordsSize = trianglesSize * sizeof(cl_float3)*3;
@@ -118,22 +118,23 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     glm::vec3* angles = (glm::vec3*)malloc(anglesBytes);
 
     t3 = high_resolution_clock::now();
-    for(int i = 0; i <triangles.size(); i++) {
-        runnel::Triangle& currentTriangle =*triangles[i];
+    int triangleIndex = 0;
+    for(runnel::Triangle* triangle : triangles) {
+        runnel::Triangle& currentTriangle =*triangle;
 
-        int j = i*3;
-        trianglePointsCoords[j] = {triangles[i]->points[0]->coord.x, triangles[i]->points[0]->coord.y, triangles[i]->points[0]->coord.z};
+        int j = triangleIndex*3;
+        trianglePointsCoords[j] = {currentTriangle.points[0]->coord.x, currentTriangle.points[0]->coord.y, currentTriangle.points[0]->coord.z};
 
-        trianglePointsCoords[j+1] = {triangles[i]->points[1]->coord.x, triangles[i]->points[1]->coord.y, triangles[i]->points[1]->coord.z};
+        trianglePointsCoords[j+1] = {currentTriangle.points[1]->coord.x, currentTriangle.points[1]->coord.y, currentTriangle.points[1]->coord.z};
 
-        trianglePointsCoords[j+2] = {triangles[i]->points[2]->coord.x, triangles[i]->points[2]->coord.y, triangles[i]->points[2]->coord.z};
+        trianglePointsCoords[j+2] = {currentTriangle.points[2]->coord.x, currentTriangle.points[2]->coord.y, currentTriangle.points[2]->coord.z};
 
 
-        trianglePointsId[i] = {currentTriangle.points[0]->ident,
+        trianglePointsId[triangleIndex] = {currentTriangle.points[0]->ident,
                                currentTriangle.points[1]->ident,
                                currentTriangle.points[2]->ident};
 
-        int triangleEdgesIndex = i*3;
+        int triangleEdgesIndex = triangleIndex*3;
         triangleEdgesId[triangleEdgesIndex] = {currentTriangle.edges[0]->point1->ident,
                                                currentTriangle.edges[0]->point2->ident};
         triangleEdgesId[triangleEdgesIndex+1] = {currentTriangle.edges[1]->point1->ident,
@@ -141,12 +142,12 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
         triangleEdgesId[triangleEdgesIndex+2] = {currentTriangle.edges[2]->point1->ident,
                                                currentTriangle.edges[2]->point2->ident};
 
-        int neighbourTrianglesIndex = i*3;
+        int neighbourTrianglesIndex = triangleIndex*3;
         neighbourTriangles[neighbourTrianglesIndex] = currentTriangle.edges[0]->neighbour_triangle.size();
         neighbourTriangles[neighbourTrianglesIndex+1] = currentTriangle.edges[1]->neighbour_triangle.size();
         neighbourTriangles[neighbourTrianglesIndex+2] = currentTriangle.edges[2]->neighbour_triangle.size();
 
-        int neighbourTrianglesNormalIndex = i*6;
+        int neighbourTrianglesNormalIndex = triangleIndex*6;
         if(neighbourTriangles[neighbourTrianglesIndex] == 2) {
             neighbourTrianglesNormal[neighbourTrianglesNormalIndex] = {currentTriangle.edges[0]->neighbour_triangle[0]->normal.x,
                                                                        currentTriangle.edges[0]->neighbour_triangle[0]->normal.y,
@@ -177,7 +178,7 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
                                                                        currentTriangle.edges[2]->neighbour_triangle[1]->normal.z};
         }
 
-        int edgeVectorIndex = i*3;
+        int edgeVectorIndex = triangleIndex*3;
         edgeVectors[edgeVectorIndex] = {currentTriangle.edges[0]->edge_vector.x,
                                         currentTriangle.edges[0]->edge_vector.y,
                                         currentTriangle.edges[0]->edge_vector.z};
@@ -189,6 +190,7 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
         edgeVectors[edgeVectorIndex+2] = {currentTriangle.edges[2]->edge_vector.x,
                                         currentTriangle.edges[2]->edge_vector.y,
                                         currentTriangle.edges[2]->edge_vector.z};
+        triangleIndex++;
 
     }
     t4 = high_resolution_clock::now();

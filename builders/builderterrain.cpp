@@ -67,9 +67,12 @@ void BuilderTerrain::runSimplifedTriangulation(Terrain* ter){
     std::cout << "Amount of triangles before simplification: " << ter->struct_triangle.size() <<  std::endl;
     std::cout << "Average triangles area: " << ter->trianglesAverageArea << std::endl;
     std::cout << "Min triangles area: " << ter->trianglesMinArea << std::endl;
+
+    std::unordered_set <runnel::Triangle*> trianglesCopy = ter->struct_triangle;
     while(thereMightBeAnEdgeLeftToCollapse) {
         thereMightBeAnEdgeLeftToCollapse = false;
-        for(runnel::Triangle* triangle : ter->struct_triangle) {
+        for(runnel::Triangle* triangle : trianglesCopy) {
+            if(ter->struct_triangle.find(triangle) ==  ter->struct_triangle.end()) continue;
             //This will simplify the triangulation on the flat zones of the terrain
             if(std::find(excluded.begin(), excluded.end(), triangle) == excluded.end() && triangle->getArea() < ter->trianglesMinArea*1.02){
                 if(simplifyTriangle(triangle, ter)) thereMightBeAnEdgeLeftToCollapse = true;
@@ -81,7 +84,7 @@ void BuilderTerrain::runSimplifedTriangulation(Terrain* ter){
 }
 
 bool BuilderTerrain::simplifyTriangle(runnel::Triangle* triangle, Terrain* ter){
-    assert(("Triangle to simplify was not part of the terrain",std::find(ter->struct_triangle.begin(), ter->struct_triangle.end(), triangle) != ter->struct_triangle.end()));
+    assert(("Triangle to simplify was not part of the terrain",ter->struct_triangle.find(triangle) != ter->struct_triangle.end()));
     runnel::Edge* shortestEdge = triangle->getShortestEdge();
     bool edgeWasCollapsed = edgeCollapse(shortestEdge, ter);
     return edgeWasCollapsed;
@@ -152,12 +155,12 @@ void BuilderTerrain::removeEdgeFromTerrain(Terrain* ter, runnel::Edge* edge, run
     runnel::Triangle* triangleToDelete2NeighbourToModify = getTriangleOpposedToPoint(triangleToDelete2, pointToKeep);
 
     //Delete edges from terrain
-    ter->struct_edge.erase(std::remove(ter->struct_edge.begin(), ter->struct_edge.end(), edgeToDelete1));
-    ter->struct_edge.erase(std::remove(ter->struct_edge.begin(), ter->struct_edge.end(), edgeToDelete2));
-    ter->struct_edge.erase(std::remove(ter->struct_edge.begin(), ter->struct_edge.end(), edge));
+    ter->struct_edge.erase(edgeToDelete1);
+    ter->struct_edge.erase(edgeToDelete2);
+    ter->struct_edge.erase(edge);
     //Delete triangles from terrain
-    ter->struct_triangle.erase(std::remove(ter->struct_triangle.begin(), ter->struct_triangle.end(), triangleToDelete1));
-    ter->struct_triangle.erase(std::remove(ter->struct_triangle.begin(), ter->struct_triangle.end(), triangleToDelete2));
+    ter->struct_triangle.erase(triangleToDelete1);
+    ter->struct_triangle.erase(triangleToDelete2);
     ter->trianglesContainingPoint[pointToKeep].erase(triangleToDelete1);
     ter->trianglesContainingPoint[pointToKeep].erase(triangleToDelete2);
 

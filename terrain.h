@@ -28,8 +28,8 @@ class Terrain
         glm::vec3 sigma;
         glm::vec3 media;
         std::vector<runnel::Point*> struct_point;
-        std::vector<runnel::Triangle*> struct_triangle;
-        std::vector<runnel::Edge*> struct_edge;
+        std::unordered_set <runnel::Triangle*> struct_triangle;
+        std::unordered_set <runnel::Edge*> struct_edge;
         std::vector<glm::vec3> vector_gradient_color;
         std::unordered_map< runnel::Point*, std::unordered_set<runnel::Triangle*>> trianglesContainingPoint;
 

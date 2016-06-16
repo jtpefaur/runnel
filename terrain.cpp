@@ -24,7 +24,7 @@ void Terrain::addPoint(runnel::Point* p){
     struct_point.push_back(p);
 }
 void Terrain::addTriangle(runnel::Triangle* t){
-    struct_triangle.push_back(t);
+    struct_triangle.insert(t);
     trianglesContainingPoint[t->points[0]].insert(t);
     trianglesContainingPoint[t->points[1]].insert(t);
     trianglesContainingPoint[t->points[2]].insert(t);
@@ -151,7 +151,7 @@ void Terrain::setBoundingBox(glm::vec3 coords)
 
 
 void Terrain::addEdge(runnel::Edge* ed){
-    struct_edge.push_back(ed);
+    struct_edge.insert(ed);
 }
 
 std::vector< glm::vec3 > Terrain::getCoordinateAxis(){
@@ -173,8 +173,8 @@ std::vector< glm::vec3 > Terrain::getCoordinateAxis(){
 }
 
 runnel::Triangle* Terrain::getClosestTriangle(glm::vec3 point){
-    float min_distance = glm::distance(struct_triangle[0]->incentro, point);
-    runnel::Triangle* closest_triangle = struct_triangle[0];
+    float min_distance = glm::distance((*(struct_triangle.begin()))->incentro, point);
+    runnel::Triangle* closest_triangle = *(struct_triangle.begin());
     for(runnel::Triangle* t : struct_triangle){
         float distance = glm::distance(t->incentro, point);
         if( distance < min_distance ){

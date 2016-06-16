@@ -38,8 +38,8 @@ QWidget* PathWaterGradientAlgorithm::getConf(){
 }
 
 runnel::Triangle* PathWaterGradientAlgorithm::getTriangleOfPoint(glm::vec3 coords){
-    float minimum_distance = glm::distance(this->ter->struct_triangle[0]->incentro, coords);
-    runnel::Triangle* triangle_minimum_distance = this->ter->struct_triangle[0];
+    float minimum_distance = glm::distance((*(this->ter->struct_triangle.begin()))->incentro, coords);
+    runnel::Triangle* triangle_minimum_distance = *(this->ter->struct_triangle.begin());
     for(runnel::Triangle* trian : this->ter->struct_triangle){
         float distance = glm::distance(trian->incentro, coords);
         if( distance < minimum_distance){
