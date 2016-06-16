@@ -62,7 +62,7 @@ void BuilderTerrain::runTriangulation(Terrain* ter){
 void BuilderTerrain::runSimplifedTriangulation(Terrain* ter){
 
     bool thereMightBeAnEdgeLeftToCollapse = true;
-    std::vector<runnel::Triangle*> excluded;
+    std::unordered_set <runnel::Triangle*> excluded;
 
     std::cout << "Amount of triangles before simplification: " << ter->struct_triangle.size() <<  std::endl;
     std::cout << "Average triangles area: " << ter->trianglesAverageArea << std::endl;
@@ -74,9 +74,9 @@ void BuilderTerrain::runSimplifedTriangulation(Terrain* ter){
         for(runnel::Triangle* triangle : trianglesCopy) {
             if(ter->struct_triangle.find(triangle) ==  ter->struct_triangle.end()) continue;
             //This will simplify the triangulation on the flat zones of the terrain
-            if(std::find(excluded.begin(), excluded.end(), triangle) == excluded.end() && triangle->getArea() < ter->trianglesMinArea*1.02){
+            if(excluded.find(triangle) == excluded.end() && triangle->getArea() < ter->trianglesMinArea*1.02){
                 if(simplifyTriangle(triangle, ter)) thereMightBeAnEdgeLeftToCollapse = true;
-                else excluded.push_back(triangle);
+                else excluded.insert(triangle);
             }
         }
     }
