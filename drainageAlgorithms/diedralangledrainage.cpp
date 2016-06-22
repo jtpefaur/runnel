@@ -25,21 +25,12 @@ DiedralAngleDrainage::~DiedralAngleDrainage(){
 void DiedralAngleDrainage::run(Terrain *ter){
     terr = ter;
 
-    high_resolution_clock::time_point t1;
-    high_resolution_clock::time_point t2;
-
-    t1 = high_resolution_clock::now();
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     std::vector<glm::vec3> angle_value_edge = ter->calculateNeighbourByEdges();
-    t2 = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>( t2 - t1 ).count();
-    cout << "Elapsed time on calculateNeighbourByEdges: " <<  duration/1000 << " miliseg" << endl;
-
-    t1 = high_resolution_clock::now();
-    //std::vector<glm::vec3> height;
     std::vector<glm::vec3> height = ter->calculateHeightArray();
-    t2 = high_resolution_clock::now();
-    duration = duration_cast<microseconds>( t2 - t1 ).count();
-    cout << "Elapsed time on calculateHeightArray: " <<  duration/1000 << " miliseg" << endl;
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>( t2 - t1 ).count();
+    cout << "Elapsed time on Sequential Diedral: " <<  duration/1000 << " miliseg" << endl;
 
     position_terrain = ter->getVectorPoints();
     shader->fillPositionBuffer(position_terrain, angle_value_edge, height );
@@ -328,32 +319,9 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     error = clReleaseMemObject(d_angles);
     checkError(error, "Releasing memory from device");
 
-//    std::vector<glm::vec3> height2 = ter->calculateheightarray();
-//    if(height.size() != height2.size()) cout << "error, distintos sizes" << endl;
-//    for(int i=0; i<height2.size(); i++) {
-//        if(height[i] != height2[i]) {
-//            cout << "error en indice: " << i << endl;
-//            cout << height[i].x << " vs " << height2[i].x << endl;
-//            cout << height[i].y << " vs "<< height2[i].y << endl;
-//            cout << height[i].z << " vs "<< height2[i].z << endl;
-//        }
-
-//    }
-
-//    std::vector<glm::vec3> angle_value_edge2 = ter->calculateneighbourbyedges();
-//    if(angle_value_edge.size() != angle_value_edge2.size()) cout << "error, distintos sizes" << endl;
-//    for(int i=0; i<angle_value_edge2.size(); i++) {
-//        if(angle_value_edge[i] != angle_value_edge2[i]) {
-//            cout << "error en indice: " << i << endl;
-//            cout << angle_value_edge[i].x << " vs " << angle_value_edge2[i].x << endl;
-//            cout << angle_value_edge[i].y << " vs "<< angle_value_edge2[i].y << endl;
-//            cout << angle_value_edge[i].z << " vs "<< angle_value_edge2[i].z << endl;
-//        }
-//    }
-
     t2 = high_resolution_clock::now();
     duration = duration_cast<microseconds>( t2 - t1 ).count();
-    cout << "Elapsed time on parallel diedral: " <<  duration/1000 << " miliseg" << endl;
+    cout << "Elapsed time on Parallel Diedral: " <<  duration/1000 << " miliseg" << endl;
 
     position_terrain = ter->getVectorPoints();
     shader->fillPositionBuffer(position_terrain, angles, anglesBytes/sizeof(glm::vec3),  triangleHeight, triangleHeightBytes/sizeof(glm::vec3));
