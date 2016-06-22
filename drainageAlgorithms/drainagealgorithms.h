@@ -11,6 +11,7 @@ class DrainageAlgorithms : public QObject
         DrainageAlgorithms();
         virtual ~DrainageAlgorithms();
         virtual void run(Terrain *ter) = 0;
+        virtual void runParallel(Terrain *ter) = 0;
         virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color) = 0;
         virtual void glewReady() = 0;
         virtual QString getName() = 0;

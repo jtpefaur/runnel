@@ -9,6 +9,7 @@ class NoneDrainageAlgorithm : public DrainageAlgorithms
         NoneDrainageAlgorithm();
         virtual ~NoneDrainageAlgorithm();
         virtual void run(Terrain *);
+        virtual void runParallel(Terrain *);
         virtual void render(glm::mat4 matrix, float, glm::vec3);
         virtual void glewReady();
         virtual QString getName();

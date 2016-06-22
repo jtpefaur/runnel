@@ -34,7 +34,15 @@ void PeuckerDrainageNetwork::run(Terrain *ter){
     this->calculateGrid(ter);
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
-    cout << "Elapsed time on peucker: " <<  duration/1000 << " miliseg" << endl;
+    cout << "Elapsed time on Sequential Peucker: " <<  duration/1000 << " miliseg" << endl;
+    points_edge.clear();
+    std::vector<glm::vec3> color = this->getDrainageColor();
+    shader->fillPositionBuffer(points_edge, color);
+}
+
+void PeuckerDrainageNetwork::runParallel(Terrain *ter){
+    terr = ter;
+    this->calculateGridParallel(ter);
     points_edge.clear();
     std::vector<glm::vec3> color = this->getDrainageColor();
     shader->fillPositionBuffer(points_edge, color);
@@ -104,14 +112,11 @@ void PeuckerDrainageNetwork::calculateGridParallel(Terrain *ter){
     int coordszMemorySize = (ter->width)*(ter->height)*sizeof(float);
     int flagsMemorySize = (ter->width)*(ter->height)*sizeof(char);
 
-    float* coordsz = (float*)malloc(coordszMemorySize);
+    float* coordsz = ter->pointsCoordZ.data();
     char* flags = (char*)malloc(flagsMemorySize);
 
-    std::vector<runnel::Point*>& points = ter->struct_point;
-    for(int i = 0; i < (ter->width)*(ter->height); i++){
-        coordsz[i] = points[i]->coord.z;
-    }
 
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     cl_mem d_coordsz = clCreateBuffer(context, CL_MEM_READ_WRITE, coordszMemorySize, NULL, &error);
     checkError(error, "Allocating memory in the device\n");
 
@@ -172,6 +177,7 @@ void PeuckerDrainageNetwork::calculateGridParallel(Terrain *ter){
     error = clEnqueueReadBuffer(commandQueue, d_flags, CL_TRUE, 0, flagsMemorySize, flags, 0, NULL, NULL);
     checkError(error, "Reading from device to cpu");
 
+    std::vector<runnel::Point*>& points = ter->struct_point;
     for (int i = 0; i < ter->height*ter->width; i++) {
         points[i]->flags = flags[i];
     }
@@ -186,6 +192,11 @@ void PeuckerDrainageNetwork::calculateGridParallel(Terrain *ter){
     checkError(error, "Releasing memory from device");
     error = clReleaseMemObject(d_height);
     checkError(error, "Releasing memory from device");
+
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>( t2 - t1 ).count();
+    cout << "Elapsed time on Parallel Peucker: " <<  duration/1000 << " miliseg" << endl;
+
 
 }
 void PeuckerDrainageNetwork::calculateGridParallelProfiler(Terrain *ter){

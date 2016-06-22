@@ -12,6 +12,7 @@ class PeuckerDrainageNetwork : public DrainageAlgorithms
         PeuckerDrainageNetwork();
         virtual ~PeuckerDrainageNetwork();
         virtual void run(Terrain *ter);
+        virtual void runParallel(Terrain *ter);
         virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color);
         virtual void glewReady();
         virtual QString getName();

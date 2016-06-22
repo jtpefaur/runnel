@@ -14,6 +14,10 @@ void NoneDrainageAlgorithm::run(Terrain *){
 
 }
 
+void NoneDrainageAlgorithm::runParallel(Terrain *){
+
+}
+
 void NoneDrainageAlgorithm::render(glm::mat4, float, glm::vec3){
 
 }
