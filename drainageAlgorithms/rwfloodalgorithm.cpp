@@ -39,7 +39,7 @@ void RWFloodAlgorithm::run(Terrain *ter)
     this->calculateWaterAccumulation(this->ter->struct_point);
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
-    cout << "Elapsed time on rwflood: " <<  duration/1000 << " miliseg" << endl;
+    cout << "Elapsed time Sequential RWflood: " <<  duration/1000 << " miliseg" << endl;
 
     drainageColors.clear();
     drainagePoints.clear();
@@ -50,7 +50,6 @@ void RWFloodAlgorithm::run(Terrain *ter)
 void RWFloodAlgorithm::runParallel(Terrain *ter)
 {
     this->ter = ter;
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
     cl_int error = CL_SUCCESS;
 
@@ -113,13 +112,12 @@ void RWFloodAlgorithm::runParallel(Terrain *ter)
     float* queueArray = (float*)malloc(queueArrayMemorySize);
     char* flags = (char*)malloc(flagsMemorySize);
     char* pointIsVisited = (char*)malloc(pointIsVisitedMemorySize);
-    float* coordsz = (float*)malloc(coordszMemorySize);
+    float* coordsz = ter->pointsCoordZ.data();
     int* inboundDegree = (int*)malloc(inboundDegreeMemorySize);
     int* waterValues = (int*)malloc(waterValueMemorySize);
 
     std::vector<runnel::Point*>& points = ter->struct_point;
     for(int i = 0; i < width*height; i++){
-        coordsz[i] = points[i]->coord.z;
         queueArray[i] = -1.0;
     }
 
@@ -129,6 +127,7 @@ void RWFloodAlgorithm::runParallel(Terrain *ter)
         queueArray[width*(height-1) + i ] = coordsz[width*(height-1) + i];
     }
 
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     for(int i = 0; i < height; i++) {
         queueArray[i*width] = coordsz[i*width];
         queueArray[width*(1+i)-1] = coordsz[width*(1+i)-1];
@@ -294,7 +293,7 @@ void RWFloodAlgorithm::runParallel(Terrain *ter)
 
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
-    cout << "Elapsed time on rwflood: " <<  duration/1000 << " miliseg" << endl;
+    cout << "Elapsed time Parallel RWflood: " <<  duration/1000 << " miliseg" << endl;
 
     drainageColors.clear();
     drainagePoints.clear();
