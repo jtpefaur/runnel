@@ -22,6 +22,7 @@ Terrain::Terrain():
 
 void Terrain::addPoint(runnel::Point* p){
     struct_point.push_back(p);
+    pointsCoordZ.push_back(p->coord.z);
 }
 void Terrain::addTriangle(runnel::Triangle* t){
     struct_triangle.insert(t);
