@@ -69,7 +69,7 @@ void GradientDrainageCallaghanMark::run(Terrain* ter){
     }
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
-    cout << "Elapsed time on callaghan: " <<  duration/1000 << " miliseg" << endl;
+    cout << "Elapsed time Sequential Callaghan: " <<  duration/1000 << " miliseg" << endl;
 
     this->getMoreWaterPoint();
     max_water = max_value_water;
@@ -81,7 +81,6 @@ void GradientDrainageCallaghanMark::run(Terrain* ter){
 void GradientDrainageCallaghanMark::runParallel(Terrain* ter){
     this->ter = ter;
 
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     cl_int error = CL_SUCCESS;
 
     cl_uint platformIdCount = 0;
@@ -140,13 +139,13 @@ void GradientDrainageCallaghanMark::runParallel(Terrain* ter){
     int maxNeighboursMemorySize = (ter->width)*(ter->height)*sizeof(int);
     int waterValuesMemorySize = (ter->width)*(ter->height)*sizeof(int);
 
-    float* coordsz = (float*)malloc(coordszMemorySize);
+    float* coordsz = ter->pointsCoordZ.data();
     int* waterValues = (int*)malloc(waterValuesMemorySize);
     int* maxNeighbours = (int*)malloc(waterValuesMemorySize);
 
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     std::vector<runnel::Point*>& points = ter->struct_point;
     for(int i = 0; i < (ter->width)*(ter->height); i++){
-        coordsz[i] = points[i]->coord.z;
         waterValues[i] = 0;
     }
 
@@ -246,7 +245,7 @@ void GradientDrainageCallaghanMark::runParallel(Terrain* ter){
 
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
-    cout << "Elapsed time on callaghan: " <<  duration/1000 << " miliseg" << endl;
+    cout << "Elapsed time on Parallel Callaghan: " <<  duration/1000 << " miliseg" << endl;
 
     this->getMoreWaterPoint();
     max_water = max_value_water;
