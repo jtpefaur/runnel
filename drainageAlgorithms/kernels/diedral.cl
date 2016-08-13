@@ -1,8 +1,8 @@
-typedef  __attribute__((__packed__)) struct {
+typedef struct {
     float x;
     float y;
     float z;
-} float3Packed;
+} __attribute__((__packed__)) float3Packed;
 
 
 __kernel void calculateHeightArray(__global float3* trianglePointsCoords,
@@ -31,12 +31,17 @@ __kernel void calculateHeightArray(__global float3* trianglePointsCoords,
         float3 heightZ = (float3)(0.0f, 0.0f, 2*sqrt(s*(s - sides.x)*(s - sides.y)*(s - sides.z))/sides.z);
         float3 heightX = (float3)(2*sqrt(s*(s - sides.x)*(s - sides.y)*(s - sides.z))/sides.x, 0.0f, 0.0f);
 
-        //triangleHeight[id] = heightY;
-        //triangleHeight[id+1] = heightZ;
-        //triangleHeight[id+2] = heightX;
-        vstore3(heightY, 0, (float*)(triangleHeight+id));
-        vstore3(heightZ, 1, (float*)(triangleHeight+id));
-        vstore3(heightX, 2, (float*)(triangleHeight+id));
+        triangleHeight[id].x = heightY.x;
+        triangleHeight[id].y = heightY.y;
+        triangleHeight[id].z = heightY.z;
+
+        triangleHeight[id+1].x = heightZ.x;
+        triangleHeight[id+1].y = heightZ.y;
+        triangleHeight[id+1].z = heightZ.z;
+
+        triangleHeight[id+2].x = heightX.x;
+        triangleHeight[id+2].y = heightX.y;
+        triangleHeight[id+2].z = heightX.z;
 
     }
 }
@@ -98,13 +103,17 @@ __kernel void calculateNeighbourByEdges(__global int3* trianglePointsId,
             }
         }
 
-       //angles[anglesIndex] = value;
-       //angles[anglesIndex+1] = value;
-       //angles[anglesIndex+2] = value;
+       angles[anglesIndex].x = value.x;
+       angles[anglesIndex].y = value.y;
+       angles[anglesIndex].z = value.z;
 
-       vstore3(value, 0, (float*)(angles+anglesIndex));
-       vstore3(value, 1, (float*)(angles+anglesIndex));
-       vstore3(value, 2, (float*)(angles+anglesIndex));
+       angles[anglesIndex+1].x = value.x;
+       angles[anglesIndex+1].y = value.y;
+       angles[anglesIndex+1].z = value.z;
+
+       angles[anglesIndex+2].x = value.x;
+       angles[anglesIndex+2].y = value.y;
+       angles[anglesIndex+2].z = value.z;
 
 
     }
