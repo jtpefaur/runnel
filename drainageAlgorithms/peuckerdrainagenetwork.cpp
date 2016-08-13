@@ -181,8 +181,9 @@ void PeuckerDrainageNetwork::calculateGridParallel(Terrain *ter){
     for (int i = 0; i < ter->height*ter->width; i++) {
         points[i]->flags = flags[i];
     }
-    free(coordsz);
+
     free(flags);
+
 
     error = clReleaseMemObject(d_coordsz);
     checkError(error, "Releasing memory from device");

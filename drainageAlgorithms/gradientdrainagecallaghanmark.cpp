@@ -226,7 +226,6 @@ void GradientDrainageCallaghanMark::runParallel(Terrain* ter){
         if(maxNeighbours[i] != -1) points[maxNeighbours[i]]->water_parent.push_back(points[i]);
         points[i]->water_value = waterValues[i];
     }
-    free(coordsz);
     free(waterValues);
     free(maxNeighbours);
 
