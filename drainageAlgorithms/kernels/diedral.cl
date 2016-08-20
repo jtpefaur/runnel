@@ -15,7 +15,7 @@ __kernel void calculateHeightArray(__global float3* trianglePointsCoords,
         id = id*3;
         float3 point0 = trianglePointsCoords[id];
         float3 point1 = trianglePointsCoords[id+1];
-        float3 point2 = trianglePointsCoords[id+3];
+        float3 point2 = trianglePointsCoords[id+2];
 
         float3 vec_a = point1 - point0;
         float3 vec_b = point2 - point1;
