@@ -14,8 +14,8 @@ class GradientDrainageCallaghanMark : public DrainageAlgorithms
     public:
         GradientDrainageCallaghanMark();
         virtual ~GradientDrainageCallaghanMark();
-        virtual void run(Terrain *ter);
-        virtual void runParallel(Terrain* ter);
+        virtual void run(Terrain *terrain);
+        virtual void runParallel(Terrain* terrain);
         virtual void glewReady();
         virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color);
         virtual QString getName();
@@ -31,7 +31,7 @@ class GradientDrainageCallaghanMark : public DrainageAlgorithms
         ShaderCallaghan* shader_callaghan;
         int w;
         int h;
-        Terrain* ter;
+        Terrain* terrain;
         std::vector<float> count_water;
         float max_value_water;
         std::vector<glm::vec3> position_water_points;

@@ -10,8 +10,8 @@ class DiedralAngleDrainage : public DrainageAlgorithms
     public:
         DiedralAngleDrainage();
         virtual ~DiedralAngleDrainage();
-        virtual void run(Terrain *ter);
-        virtual void runParallel(Terrain *ter);
+        virtual void run(Terrain *terrain);
+        virtual void runParallel(Terrain *terrain);
         virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color);
         virtual void glewReady();
         virtual QString getName();
@@ -24,7 +24,7 @@ class DiedralAngleDrainage : public DrainageAlgorithms
     private:
         std::vector<glm::vec3> position_terrain;
         ShaderAngleEdge* shader;
-        Terrain* terr;
+        Terrain* terrain;
         AngleDiedralConf conf;
 };
 

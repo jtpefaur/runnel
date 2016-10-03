@@ -12,8 +12,8 @@ class RWFloodAlgorithm : public DrainageAlgorithms
 public:
     RWFloodAlgorithm();
     ~RWFloodAlgorithm();
-    virtual void run(Terrain *ter);
-    virtual void runParallel(Terrain *ter);
+    virtual void run(Terrain *terrain);
+    virtual void runParallel(Terrain *terrain);
     virtual void glewReady();
     virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color);
     virtual QString getName();
@@ -21,7 +21,7 @@ public:
     virtual std::vector<glm::vec3> getPathTree();
 
 private:
-    Terrain* ter;
+    Terrain* terrain;
     ShaderRWFlood* shader;
     RWFloodConf conf;
     int maxWaterCount;

@@ -11,8 +11,8 @@ class PeuckerDrainageNetwork : public DrainageAlgorithms
     public:
         PeuckerDrainageNetwork();
         virtual ~PeuckerDrainageNetwork();
-        virtual void run(Terrain *ter);
-        virtual void runParallel(Terrain *ter);
+        virtual void run(Terrain *terrain);
+        virtual void runParallel(Terrain *terrain);
         virtual void render(glm::mat4 matrix, float exag_z, glm::vec3 color);
         virtual void glewReady();
         virtual QString getName();
@@ -26,7 +26,7 @@ class PeuckerDrainageNetwork : public DrainageAlgorithms
        std::vector<glm::vec3> getDrainageColor();
        std::vector<glm::vec3> points_edge;
        PeuckerConf conf;
-       Terrain* terr;
+       Terrain* terrain;
        ShaderDrainage* shader;
 };
 

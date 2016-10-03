@@ -15,7 +15,7 @@ extern "C"
 RWFloodAlgorithm::RWFloodAlgorithm():
     DrainageAlgorithms()
 {
-    this->ter = 0;
+    this->terrain = 0;
     this->shader = 0;
     this->maxWaterCount = 0;
     this->waterThreshold = 100;
@@ -30,13 +30,13 @@ RWFloodAlgorithm::~RWFloodAlgorithm()
     }
 }
 
-void RWFloodAlgorithm::run(Terrain *ter)
+void RWFloodAlgorithm::run(Terrain *terrain)
 {
-    this->ter = ter;
+    this->terrain = terrain;
 
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
-    this->flood(this->ter->struct_point);
-    this->calculateWaterAccumulation(this->ter->struct_point);
+    this->flood(this->terrain->struct_point);
+    this->calculateWaterAccumulation(this->terrain->struct_point);
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
     cout << "Elapsed time Sequential RWflood: " <<  duration/1000 << " miliseg" << endl;
@@ -47,9 +47,9 @@ void RWFloodAlgorithm::run(Terrain *ter)
     this->shader->fillBuffers(this->drainagePoints, this->drainageColors);
 }
 
-void RWFloodAlgorithm::runParallel(Terrain *ter)
+void RWFloodAlgorithm::runParallel(Terrain *terrain)
 {
-    this->ter = ter;
+    this->terrain = terrain;
 
     cl_int error = CL_SUCCESS;
 
@@ -96,10 +96,10 @@ void RWFloodAlgorithm::runParallel(Terrain *ter)
                            "-D TOP=1 -D TOP_LEFT=2 -D TOP_RIGHT=3 -D BOTTOM=4 -D BOTTOM_LEFT=5 -D BOTTOM_RIGHT=6 -D RIGHT=7 -D LEFT=8", NULL, NULL);
     checkError(error, "Building program\n");
 
-    const int maxElev = (int)(ter->max_bounding.z);
-    const int minElev = (int)(ter->min_bounding.z);
-    int width = ter->width;
-    int height = ter->height;
+    const int maxElev = (int)(this->terrain->max_bounding.z);
+    const int minElev = (int)(this->terrain->min_bounding.z);
+    int width = terrain->width;
+    int height = terrain->height;
 
     int queueArrayMemorySize = width*height*sizeof(float);
     int flagsMemorySize = width*height*sizeof(char);
@@ -112,11 +112,11 @@ void RWFloodAlgorithm::runParallel(Terrain *ter)
     float* queueArray = (float*)malloc(queueArrayMemorySize);
     char* flags = (char*)malloc(flagsMemorySize);
     char* pointIsVisited = (char*)malloc(pointIsVisitedMemorySize);
-    float* coordsz = ter->pointsCoordZ.data();
+    float* coordsz = terrain->pointsCoordZ.data();
     int* inboundDegree = (int*)malloc(inboundDegreeMemorySize);
     int* waterValues = (int*)malloc(waterValueMemorySize);
 
-    std::vector<runnel::Point*>& points = ter->struct_point;
+    std::vector<runnel::Point*>& points = terrain->struct_point;
     for(int i = 0; i < width*height; i++){
         queueArray[i] = -1.0;
     }
@@ -332,8 +332,8 @@ std::vector<glm::vec3> RWFloodAlgorithm::getPathTree()
 
 void RWFloodAlgorithm::flood(std::vector<runnel::Point*>& points)
 {
-    const int maxElev = (int)(ter->max_bounding.z);
-    const int minElev = (int)(ter->min_bounding.z);
+    const int maxElev = (int)(terrain->max_bounding.z);
+    const int minElev = (int)(terrain->min_bounding.z);
     const std::size_t arraySize = maxElev - minElev + 1;
 
     std::vector<std::queue<runnel::Point*>> queueArray(arraySize,
@@ -417,7 +417,7 @@ void RWFloodAlgorithm::calculateWaterAccumulation(std::vector<runnel::Point*>& p
 
 void RWFloodAlgorithm::getDrainagePoints()
 {
-    for (runnel::Edge* edge : ter->struct_edge) {
+    for (runnel::Edge* edge : terrain->struct_edge) {
         runnel::Point* p1 = edge->point1;
         runnel::Point* p2 = edge->point2;
         if (p1->water_value >= waterThreshold && p2->water_value >= waterThreshold) {
@@ -435,8 +435,8 @@ bool RWFloodAlgorithm::initializeDirection(std::vector<runnel::Point*>& points,
                                            runnel::Point* point)
 {
     int id = point->ident;
-    int width = ter->width;
-    int height = ter->height;
+    int width = terrain->width;
+    int height = terrain->height;
     if (id == 0) {
         /*Top-left corner of raster*/
         points[id]->flags = TOP_LEFT;
@@ -467,58 +467,58 @@ std::vector<runnel::Point*> RWFloodAlgorithm::computeNeighborhood(runnel::Point*
 {
     std::vector<runnel::Point*> neighborhood;
     int id = point->ident;
-    int width = ter->width;
-    int height = ter->height;
+    int width = terrain->width;
+    int height = terrain->height;
 
     if (id == 0) {
-        neighborhood.push_back(ter->struct_point[id + 1]);
-        neighborhood.push_back(ter->struct_point[id + width]);
-        neighborhood.push_back(ter->struct_point[id + width + 1]);
+        neighborhood.push_back(terrain->struct_point[id + 1]);
+        neighborhood.push_back(terrain->struct_point[id + width]);
+        neighborhood.push_back(terrain->struct_point[id + width + 1]);
     } else if (id < width - 1) {
-        neighborhood.push_back(ter->struct_point[id - 1]);
-        neighborhood.push_back(ter->struct_point[id + 1]);
-        neighborhood.push_back(ter->struct_point[id + width - 1]);
-        neighborhood.push_back(ter->struct_point[id + width]);
-        neighborhood.push_back(ter->struct_point[id + width + 1]);
+        neighborhood.push_back(terrain->struct_point[id - 1]);
+        neighborhood.push_back(terrain->struct_point[id + 1]);
+        neighborhood.push_back(terrain->struct_point[id + width - 1]);
+        neighborhood.push_back(terrain->struct_point[id + width]);
+        neighborhood.push_back(terrain->struct_point[id + width + 1]);
     } else if (id == width - 1) {
-        neighborhood.push_back(ter->struct_point[id - 1]);
-        neighborhood.push_back(ter->struct_point[id + width - 1]);
-        neighborhood.push_back(ter->struct_point[id + width]);
+        neighborhood.push_back(terrain->struct_point[id - 1]);
+        neighborhood.push_back(terrain->struct_point[id + width - 1]);
+        neighborhood.push_back(terrain->struct_point[id + width]);
     } else if (id == width*(height - 1)) {
-        neighborhood.push_back(ter->struct_point[id - width]);
-        neighborhood.push_back(ter->struct_point[id - width + 1]);
-        neighborhood.push_back(ter->struct_point[id + 1]);
+        neighborhood.push_back(terrain->struct_point[id - width]);
+        neighborhood.push_back(terrain->struct_point[id - width + 1]);
+        neighborhood.push_back(terrain->struct_point[id + 1]);
     } else if (id > width*(height - 1) && id < width*height - 1) {
-        neighborhood.push_back(ter->struct_point[id - width - 1]);
-        neighborhood.push_back(ter->struct_point[id - width]);
-        neighborhood.push_back(ter->struct_point[id - width + 1]);
-        neighborhood.push_back(ter->struct_point[id - 1]);
-        neighborhood.push_back(ter->struct_point[id + 1]);
+        neighborhood.push_back(terrain->struct_point[id - width - 1]);
+        neighborhood.push_back(terrain->struct_point[id - width]);
+        neighborhood.push_back(terrain->struct_point[id - width + 1]);
+        neighborhood.push_back(terrain->struct_point[id - 1]);
+        neighborhood.push_back(terrain->struct_point[id + 1]);
     } else if (id == width*height - 1) {
-        neighborhood.push_back(ter->struct_point[id - width - 1]);
-        neighborhood.push_back(ter->struct_point[id - width]);
-        neighborhood.push_back(ter->struct_point[id - 1]);
+        neighborhood.push_back(terrain->struct_point[id - width - 1]);
+        neighborhood.push_back(terrain->struct_point[id - width]);
+        neighborhood.push_back(terrain->struct_point[id - 1]);
     } else if (id%width == 0) {
-        neighborhood.push_back(ter->struct_point[id - width]);
-        neighborhood.push_back(ter->struct_point[id - width + 1]);
-        neighborhood.push_back(ter->struct_point[id + 1]);
-        neighborhood.push_back(ter->struct_point[id + width]);
-        neighborhood.push_back(ter->struct_point[id + width + 1]);
+        neighborhood.push_back(terrain->struct_point[id - width]);
+        neighborhood.push_back(terrain->struct_point[id - width + 1]);
+        neighborhood.push_back(terrain->struct_point[id + 1]);
+        neighborhood.push_back(terrain->struct_point[id + width]);
+        neighborhood.push_back(terrain->struct_point[id + width + 1]);
     } else if (id%width == width - 1) {
-        neighborhood.push_back(ter->struct_point[id - width - 1]);
-        neighborhood.push_back(ter->struct_point[id - width]);
-        neighborhood.push_back(ter->struct_point[id - 1]);
-        neighborhood.push_back(ter->struct_point[id + width - 1]);
-        neighborhood.push_back(ter->struct_point[id + width]);
+        neighborhood.push_back(terrain->struct_point[id - width - 1]);
+        neighborhood.push_back(terrain->struct_point[id - width]);
+        neighborhood.push_back(terrain->struct_point[id - 1]);
+        neighborhood.push_back(terrain->struct_point[id + width - 1]);
+        neighborhood.push_back(terrain->struct_point[id + width]);
     } else {
-        neighborhood.push_back(ter->struct_point[id - width - 1]);
-        neighborhood.push_back(ter->struct_point[id - width]);
-        neighborhood.push_back(ter->struct_point[id - width + 1]);
-        neighborhood.push_back(ter->struct_point[id - 1]);
-        neighborhood.push_back(ter->struct_point[id + 1]);
-        neighborhood.push_back(ter->struct_point[id + width - 1]);
-        neighborhood.push_back(ter->struct_point[id + width]);
-        neighborhood.push_back(ter->struct_point[id + width + 1]);
+        neighborhood.push_back(terrain->struct_point[id - width - 1]);
+        neighborhood.push_back(terrain->struct_point[id - width]);
+        neighborhood.push_back(terrain->struct_point[id - width + 1]);
+        neighborhood.push_back(terrain->struct_point[id - 1]);
+        neighborhood.push_back(terrain->struct_point[id + 1]);
+        neighborhood.push_back(terrain->struct_point[id + width - 1]);
+        neighborhood.push_back(terrain->struct_point[id + width]);
+        neighborhood.push_back(terrain->struct_point[id + width + 1]);
     }
     neighborhood.shrink_to_fit();
     return neighborhood;
@@ -528,7 +528,7 @@ void RWFloodAlgorithm::setDirectionTowardsAdjacentPoint(std::vector<runnel::Poin
 {
     int sourceId = source->ident;
     int diff = destination->ident - source->ident;
-    int width = ter->width;
+    int width = terrain->width;
 
     if (diff == -width - 1) {
         points[sourceId]->flags = TOP_LEFT;
@@ -553,8 +553,8 @@ void RWFloodAlgorithm::setDirectionTowardsAdjacentPoint(std::vector<runnel::Poin
 bool RWFloodAlgorithm::isDirectedOutsideTerrainBoundary(int id, char flag)
 {
     // Pre-condition: point->flags != 0 (a direction must be set.)
-    int height = ter->height;
-    int width = ter->width;
+    int height = terrain->height;
+    int width = terrain->width;
 
     if (id < width &&
         (flag == TOP ||
@@ -592,8 +592,8 @@ bool RWFloodAlgorithm::isDirectedOutsideTerrainBoundary(runnel::Point* point)
 {
     // Pre-condition: point->flags != 0 (a direction must be set.)
     int id = point->ident;
-    int height = ter->height;
-    int width = ter->width;
+    int height = terrain->height;
+    int width = terrain->width;
 
     if (id < width &&
         (point->flags == TOP ||
@@ -630,7 +630,7 @@ int RWFloodAlgorithm::getNextPointId(runnel::Point* point)
 {
     // Pre-condition: !isDirectedOutsideTerrainBoundary(point) == true
     int id = point->ident;
-    int width = ter->width;
+    int width = terrain->width;
 
     if (point->flags == TOP_LEFT) return (id - width - 1);
     if (point->flags == TOP) return (id - width);
@@ -648,7 +648,7 @@ int RWFloodAlgorithm::getNextPointId(runnel::Point* point)
 int RWFloodAlgorithm::getNextPointId(int id, char flag)
 {
     // Pre-condition: !isDirectedOutsideTerrainBoundary(point) == true
-    int width = ter->width;
+    int width = terrain->width;
 
     if (flag == TOP_LEFT) return (id - width - 1);
     if (flag == TOP) return (id - width);
@@ -665,6 +665,6 @@ int RWFloodAlgorithm::getNextPointId(int id, char flag)
 void RWFloodAlgorithm::changeAttr()
 {
     this->waterThreshold = conf.getWaterThreshold();
-    this->run(ter);
+    this->run(terrain);
     emit reload();
 }

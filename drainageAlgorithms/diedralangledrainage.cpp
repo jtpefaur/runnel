@@ -22,22 +22,22 @@ DiedralAngleDrainage::~DiedralAngleDrainage(){
     }
 }
 
-void DiedralAngleDrainage::run(Terrain *ter){
-    terr = ter;
+void DiedralAngleDrainage::run(Terrain *terrain){
+    this->terrain = terrain;
 
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
-    std::vector<glm::vec3> angle_value_edge = ter->calculateNeighbourByEdges();
-    std::vector<glm::vec3> height = ter->calculateHeightArray();
+    std::vector<glm::vec3> angle_value_edge = terrain->calculateNeighbourByEdges();
+    std::vector<glm::vec3> height = terrain->calculateHeightArray();
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
     cout << "Elapsed time on Sequential Diedral: " <<  duration/1000 << " miliseg" << endl;
 
-    position_terrain = ter->getVectorPoints();
+    position_terrain = terrain->getVectorPoints();
     shader->fillPositionBuffer(position_terrain, angle_value_edge, height );
 }
 
-void DiedralAngleDrainage::runParallel(Terrain *ter){
-    terr = ter;
+void DiedralAngleDrainage::runParallel(Terrain *terrain){
+    terrain = terrain;
 
     high_resolution_clock::time_point t1;
     high_resolution_clock::time_point t2;
@@ -85,7 +85,7 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     checkError(error, "Creating program");
     free((char*)kernelSource);
 
-    std::unordered_set <runnel::Triangle*>  &triangles = ter->struct_triangle;
+    std::unordered_set <runnel::Triangle*>  &triangles = terrain->struct_triangle;
     int trianglesSize = triangles.size();
 
     int trianglePointsCoordsSize = trianglesSize * sizeof(cl_float3)*3;
@@ -323,7 +323,7 @@ void DiedralAngleDrainage::runParallel(Terrain *ter){
     duration = duration_cast<microseconds>( t2 - t1 ).count();
     cout << "Elapsed time on Parallel Diedral: " <<  duration/1000 << " miliseg" << endl;
 
-    position_terrain = ter->getVectorPoints();
+    position_terrain = terrain->getVectorPoints();
     shader->fillPositionBuffer(position_terrain, angles, anglesBytes/sizeof(glm::vec3),  triangleHeight, triangleHeightBytes/sizeof(glm::vec3));
     free(triangleHeight);
     free(angles);
@@ -353,7 +353,7 @@ QWidget* DiedralAngleDrainage::getConf(){
 }
 
 void DiedralAngleDrainage::changeAttr(){
-    this->run(terr);
+    this->run(terrain);
     emit reload();
 }
 

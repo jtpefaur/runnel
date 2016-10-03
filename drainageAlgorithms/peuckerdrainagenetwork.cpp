@@ -18,7 +18,7 @@ PeuckerDrainageNetwork::PeuckerDrainageNetwork():
     DrainageAlgorithms()
 {
     shader = 0;
-    terr = 0;
+    terrain = 0;
 
 }
 
@@ -28,10 +28,10 @@ PeuckerDrainageNetwork::~PeuckerDrainageNetwork(){
     }
 }
 
-void PeuckerDrainageNetwork::run(Terrain *ter){
-    terr = ter;
+void PeuckerDrainageNetwork::run(Terrain *terrain){
+    this->terrain = terrain;
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
-    this->calculateGrid(ter);
+    this->calculateGrid(this->terrain);
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
     cout << "Elapsed time on Sequential Peucker: " <<  duration/1000 << " miliseg" << endl;
@@ -40,9 +40,9 @@ void PeuckerDrainageNetwork::run(Terrain *ter){
     shader->fillPositionBuffer(points_edge, color);
 }
 
-void PeuckerDrainageNetwork::runParallel(Terrain *ter){
-    terr = ter;
-    this->calculateGridParallel(ter);
+void PeuckerDrainageNetwork::runParallel(Terrain *terrain){
+    this->terrain = terrain;
+    this->calculateGridParallel(this->terrain);
     points_edge.clear();
     std::vector<glm::vec3> color = this->getDrainageColor();
     shader->fillPositionBuffer(points_edge, color);
@@ -409,7 +409,7 @@ std::vector<glm::vec3> PeuckerDrainageNetwork::getPathTree(){
 
 std::vector<glm::vec3> PeuckerDrainageNetwork::getDrainageColor(){
     std::vector<glm::vec3> color;
-    for( runnel::Edge* ed : terr->struct_edge){
+    for( runnel::Edge* ed : terrain->struct_edge){
 
         runnel::Point* p1 = ed->point1;
         runnel::Point* p2 = ed->point2;

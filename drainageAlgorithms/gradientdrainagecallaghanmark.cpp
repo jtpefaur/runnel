@@ -47,25 +47,25 @@ void GradientDrainageCallaghanMark::sortElement(std::vector<runnel::Point *> poi
 }
 
 
-void GradientDrainageCallaghanMark::run(Terrain* ter){
-    this->ter = ter;
+void GradientDrainageCallaghanMark::run(Terrain* terrain){
+    this->terrain = terrain;
 
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
     count_water.clear();
     position_water_points.clear();
-    w = this->ter->width;
-    h = this->ter->height;
+    w = this->terrain->width;
+    h = this->terrain->height;
     max_value_water = 0;
 
-    for(runnel::Point* pto: this->ter->struct_point){
+    for(runnel::Point* pto: this->terrain->struct_point){
         pto->water_value = 1;
         pto->water_parent.clear();
     }
 
-    GradientDrainageCallaghanMark::sortElement(ter->struct_point);
+    GradientDrainageCallaghanMark::sortElement(terrain->struct_point);
 
     for(runnel::Point* pto : points_terrain){
-        this->chooseMoreDepthPoint(ter->struct_point, pto);
+        this->chooseMoreDepthPoint(terrain->struct_point, pto);
     }
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>( t2 - t1 ).count();
@@ -78,8 +78,8 @@ void GradientDrainageCallaghanMark::run(Terrain* ter){
 }
 
 
-void GradientDrainageCallaghanMark::runParallel(Terrain* ter){
-    this->ter = ter;
+void GradientDrainageCallaghanMark::runParallel(Terrain* terrain){
+    this->terrain = terrain;
 
     cl_int error = CL_SUCCESS;
 
@@ -124,28 +124,28 @@ void GradientDrainageCallaghanMark::runParallel(Terrain* ter){
 
     count_water.clear();
     position_water_points.clear();
-    w = ter->width;
-    h = ter->height;
+    w = terrain->width;
+    h = terrain->height;
     max_value_water = 0;
 
-    for(runnel::Point* pto: this->ter->struct_point){
+    for(runnel::Point* pto: this->terrain->struct_point){
         pto->water_parent.clear();
     }
 
     moreWater = conf.getWater()/100.0f;
     float deltaWater = moreWater;
 
-    int coordszMemorySize = (ter->width)*(ter->height)*sizeof(float);
-    int maxNeighboursMemorySize = (ter->width)*(ter->height)*sizeof(int);
-    int waterValuesMemorySize = (ter->width)*(ter->height)*sizeof(int);
+    int coordszMemorySize = (terrain->width)*(terrain->height)*sizeof(float);
+    int maxNeighboursMemorySize = (terrain->width)*(terrain->height)*sizeof(int);
+    int waterValuesMemorySize = (terrain->width)*(terrain->height)*sizeof(int);
 
-    float* coordsz = ter->pointsCoordZ.data();
+    float* coordsz = terrain->pointsCoordZ.data();
     int* waterValues = (int*)malloc(waterValuesMemorySize);
     int* maxNeighbours = (int*)malloc(waterValuesMemorySize);
 
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
-    std::vector<runnel::Point*>& points = ter->struct_point;
-    for(int i = 0; i < (ter->width)*(ter->height); i++){
+    std::vector<runnel::Point*>& points = terrain->struct_point;
+    for(int i = 0; i < (terrain->width)*(terrain->height); i++){
         waterValues[i] = 0;
     }
 
@@ -169,9 +169,9 @@ void GradientDrainageCallaghanMark::runParallel(Terrain* ter){
     checkError(error, "Writing from cpu to device\n");
     error = clEnqueueWriteBuffer(commandQueue, d_waterValues, CL_TRUE, 0, waterValuesMemorySize, waterValues, 0, 0, NULL);
     checkError(error, "Writing from cpu to device\n");
-    error = clEnqueueWriteBuffer(commandQueue, d_width, CL_TRUE, 0, sizeof(int), &(ter->width), 0, 0, NULL);
+    error = clEnqueueWriteBuffer(commandQueue, d_width, CL_TRUE, 0, sizeof(int), &(terrain->width), 0, 0, NULL);
     checkError(error, "Writing from cpu to device\n");
-    error = clEnqueueWriteBuffer(commandQueue, d_height, CL_TRUE, 0, sizeof(int), &(ter->height), 0, 0, NULL);
+    error = clEnqueueWriteBuffer(commandQueue, d_height, CL_TRUE, 0, sizeof(int), &(terrain->height), 0, 0, NULL);
     checkError(error, "Writing from cpu to device\n");
     error = clEnqueueWriteBuffer(commandQueue, d_deltaWater, CL_TRUE, 0, sizeof(float), &deltaWater, 0, 0, NULL);
     checkError(error, "Writing from cpu to device\n");
@@ -205,7 +205,7 @@ void GradientDrainageCallaghanMark::runParallel(Terrain* ter){
 
     size_t localWorkSizeX;
     clGetKernelWorkGroupInfo(setWaterPathKernel, deviceIds[0], CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE, sizeof(size_t), &localWorkSizeX, NULL);
-    int globalWorkSizeX = ter->height*ter->width;
+    int globalWorkSizeX = terrain->height*terrain->width;
     globalWorkSizeX = globalWorkSizeX - (globalWorkSizeX%localWorkSizeX) + localWorkSizeX;
     const size_t globalWorkSize [] = { globalWorkSizeX, 0, 0 };
     const size_t localWorkSize [] = { localWorkSizeX, 0, 0 };
@@ -306,7 +306,7 @@ QWidget* GradientDrainageCallaghanMark::getConf(){
 }
 
 void GradientDrainageCallaghanMark::changeAttr(){
-    this->run(ter);
+    this->run(terrain);
     emit reload();
 }
 
@@ -326,7 +326,7 @@ std::vector<glm::vec3> GradientDrainageCallaghanMark::getPathTree(){
 
 void GradientDrainageCallaghanMark::getMoreWaterPoint(){
 
-    for (runnel::Edge* edge: this->ter->struct_edge){
+    for (runnel::Edge* edge: terrain->struct_edge){
         float water_1 = edge->point1->water_value;
         float water_2 = edge->point2->water_value;
         float value_water =  std::max(water_1, water_2);
